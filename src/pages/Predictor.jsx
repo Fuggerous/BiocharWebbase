@@ -1,6 +1,6 @@
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
-import PredictorForm from '../components/predictor/Predictorform';
+import PredictorForm from '../components/predictor/PredictorForm';
 import { motion } from 'framer-motion';
 import { Zap, Shield, BarChart3, Brain } from 'lucide-react';
 
