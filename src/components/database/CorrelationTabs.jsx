@@ -16,15 +16,22 @@ function IsothermTab() {
 
   const seriesMap = useMemo(() => {
     const filtered = DB44_RECORDS.filter(r => r.adsorpTemp === adsorpTemp);
-    // Group by biomass+activator+pyroTemp for unique series
+    // Group by isothermId — each unique isotherm experiment is one curve
     const groups = {};
     filtered.forEach(r => {
-      const key = `${r.biomass.split(' ')[0]} ${r.activator} ${r.pyroTemp}°C`;
-      if (!groups[key]) groups[key] = [];
-      groups[key].push({ pressure: r.pressure, co2Uptake: r.co2Uptake });
+      const key = r.isothermId;
+      if (!groups[key]) {
+        const label = `${r.biomass.split(' ')[0]} ${r.activator === 'Non' ? '' : r.activator} ${r.pyroTemp}°C #${r.isothermId}`.trim();
+        groups[key] = { label, points: [] };
+      }
+      groups[key].points.push({ pressure: r.pressure, co2Uptake: r.co2Uptake });
     });
-    Object.values(groups).forEach(pts => pts.sort((a, b) => a.pressure - b.pressure));
-    return groups;
+    // Sort points within each isotherm by pressure (ascending)
+    Object.values(groups).forEach(g => g.points.sort((a, b) => a.pressure - b.pressure));
+    // Return as { label: points[] } map for rendering
+    const out = {};
+    Object.values(groups).forEach(g => { out[g.label] = g.points; });
+    return out;
   }, [adsorpTemp]);
 
   const SERIES_COLORS = ['#22c55e','#3b82f6','#a855f7','#f59e0b','#ef4444','#06b6d4','#ec4899','#84cc16'];

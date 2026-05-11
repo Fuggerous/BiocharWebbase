@@ -10,25 +10,17 @@ function distScore(record, target) {
   return Math.abs(record.co2Uptake - target);
 }
 
-// Common blends (single-species) are favored; hybrids are fine; exotic combos penalized
+// Blend feasibility scores matching actual DB blend values
 const BLEND_FEASIBILITY = {
-  'Pure':              1.0,
-  'Corn straw':        1.0,
-  'Coffee grounds':    1.0,
-  'Pine sawdust':      1.0,
-  'Corn/Coffee':       0.85,
-  'Coffee/Pine':       0.85,
-  'Corn/Pine':         0.85,
-  'Tri-blend':         0.7,
+  'Non':     1.0,
+  '0.5PKBC': 0.9,
+  '0.5TKBC': 0.9,
+  '20PKBC':  0.8,
+  '20TKBC':  0.8,
 };
 
 function blendFeasibilityFactor(blend) {
-  if (!blend) return 1.0;
-  for (const [key, val] of Object.entries(BLEND_FEASIBILITY)) {
-    if (blend.includes(key) || key.includes(blend)) return val;
-  }
-  // Default: single = 1.0, multi-word = slightly lower
-  return blend.split('/').length > 2 ? 0.7 : blend.split('/').length > 1 ? 0.85 : 1.0;
+  return BLEND_FEASIBILITY[blend] ?? 0.85;
 }
 
 /**

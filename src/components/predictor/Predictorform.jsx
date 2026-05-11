@@ -3,13 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { Zap, ChevronDown, Thermometer, Clock, TrendingUp, FlaskConical, Database } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { TOTAL_DATA_POINTS } from '../../lib/biocharKnowledgeBase';
+import { BIOMASS_LIST } from '../../lib/database44';
 import OutOfRangeAlert from './OutOfRangeAlert';
 
-const biomassOptions = [
-  'Corn straw',
-  'Coffee ground-based',
-  'Pine sawdust powders',
-];
+const biomassOptions = BIOMASS_LIST;
 
 const agentOptions = [
   { value: 'Non', label: 'None (No Activation)' },

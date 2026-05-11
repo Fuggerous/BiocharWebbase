@@ -186,9 +186,12 @@ export const REAL_TEMP_DISTRIBUTION = Object.entries(TEMPERATURE_STATS).map(([te
 })).sort((a, b) => parseInt(a.temp) - parseInt(b.temp));
 
 export const REAL_SCATTER_SUMMARY = PEAK_RECORDS.map(r => ({
-  surface: r.surfaceArea,
-  co2:     r.co2Uptake,
-  type:    r.biomass.replace(' ground-based', '').replace(' sawdust powders', ''),
+  surface:     r.surfaceArea,
+  co2:         r.co2Uptake,
+  type:        r.biomass.replace(' ground-based', '').replace(' sawdust powders', ''),
+  isothermId:  r.isothermId,
+  activator:   r.activator,
+  pyroTemp:    r.pyroTemp,
 }));
 
 // ── Normalizers ───────────────────────────────────────────────────────────────
@@ -220,21 +223,47 @@ function normalizeActivator(activator) {
 }
 
 // ── Expert Guidance Query ─────────────────────────────────────────────────────
-export function queryExpertGuidance({ biomass, temperature, activator }) {
+export function queryExpertGuidance({ biomass, temperature, activator, residenceTime }) {
   const bioKey   = normalizeBiomass(biomass);
   const tempBkt  = getTempBracket(temperature);
   const activKey = normalizeActivator(activator);
+  const rt       = Number(residenceTime) || 60;
 
-  // Progressively broader matching: exact → bio+temp → bio only
-  const exact    = PEAK_RECORDS.filter(r => r.biomass === bioKey && getTempBracket(r.pyroTemp) === tempBkt && r.activator === activKey);
+  // Level 1a — exact match including residenceTime window (±40 min)
+  const exactRT  = PEAK_RECORDS.filter(r =>
+    r.biomass === bioKey && getTempBracket(r.pyroTemp) === tempBkt && r.activator === activKey &&
+    Math.abs((r.residenceTime || 60) - rt) <= 40
+  );
+  // Level 1b — exact match without RT constraint (fallback if 1a empty)
+  const exact    = exactRT.length > 0 ? exactRT :
+    PEAK_RECORDS.filter(r => r.biomass === bioKey && getTempBracket(r.pyroTemp) === tempBkt && r.activator === activKey);
   const bioTemp  = exact.length > 0 ? exact : PEAK_RECORDS.filter(r => r.biomass === bioKey && getTempBracket(r.pyroTemp) === tempBkt);
   const pool     = bioTemp.length > 0 ? bioTemp : PEAK_RECORDS.filter(r => r.biomass === bioKey);
   const fallback = pool.length > 0 ? pool : PEAK_RECORDS;
 
   const co2s  = fallback.map(r => r.co2Uptake);
-  const mean  = co2s.reduce((a, b) => a + b, 0) / co2s.length;
+  const n     = co2s.length;
+  const mean  = co2s.reduce((a, b) => a + b, 0) / n;
   const min   = Math.min(...co2s);
   const max   = Math.max(...co2s);
+
+  // Sample std deviation (Bessel corrected)
+  const variance = co2s.reduce((a, v) => a + (v - mean) ** 2, 0) / Math.max(1, n - 1);
+  const std  = Math.sqrt(variance);
+  const se   = std / Math.sqrt(n); // standard error of the mean
+
+  // Prediction interval factor: σ × √(1 + 1/n)  — accounts for single future observation
+  const predSigma = std * Math.sqrt(1 + 1 / n);
+
+  // Percentiles from sorted data
+  const sorted = [...co2s].sort((a, b) => a - b);
+  const pct = (p) => sorted[Math.max(0, Math.min(n - 1, Math.floor(p * n)))];
+
+  // Which fallback level was used
+  const matchLevel =
+    exact.length   > 0 ? 'exact'   :
+    bioTemp.length > 0 ? 'bioTemp' :
+    pool.length    > 0 ? 'biomass' : 'global';
 
   const biomassData = BIOMASS_STATS[bioKey] || Object.values(BIOMASS_STATS)[0];
   const activData   = ACTIVATOR_STATS[activKey] || ACTIVATOR_STATS['Non'];
@@ -257,7 +286,22 @@ export function queryExpertGuidance({ biomass, temperature, activator }) {
     min:               +Math.max(0.01, min).toFixed(2),
     max:               +max.toFixed(2),
     mean:              +mean.toFixed(3),
-    dataPointsUsed:    fallback.length,
+    std:               +std.toFixed(3),
+    se:                +se.toFixed(4),
+    predSigma:         +predSigma.toFixed(3),
+    n,
+    matchLevel,
+    // Prediction intervals (z × predSigma, clamped ≥ 0.01)
+    pi95lo:  +Math.max(0.01, mean - 1.96 * predSigma).toFixed(2),
+    pi95hi:  +Math.min(max * 1.5, mean + 1.96 * predSigma).toFixed(2),
+    pi80lo:  +Math.max(0.01, mean - 1.28 * predSigma).toFixed(2),
+    pi80hi:  +Math.min(max * 1.4, mean + 1.28 * predSigma).toFixed(2),
+    // Percentiles from observed data
+    p25:     +pct(0.25).toFixed(2),
+    p75:     +pct(0.75).toFixed(2),
+    p05:     +pct(0.05).toFixed(2),
+    p95:     +pct(0.95).toFixed(2),
+    dataPointsUsed:    n,
     totalDataPoints:   TOTAL_DATA_POINTS,
     biomassStats:      { ...biomassData, name: bioKey },
     activatorStats:    activData,

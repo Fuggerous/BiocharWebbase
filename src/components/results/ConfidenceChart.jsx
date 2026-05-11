@@ -1,19 +1,7 @@
-import { ResponsiveContainer, ComposedChart, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, Area, Bar, Cell, BarChart, LabelList } from 'recharts';
-
-const CI_DATA = [
-  { label: '99% CI', low: 2.8, mid: 4.0, high: 5.2, color: 'rgba(34,197,94,0.15)' },
-  { label: '95% CI', low: 3.1, mid: 4.0, high: 4.9, color: 'rgba(34,197,94,0.25)' },
-  { label: '90% CI', low: 3.3, mid: 4.0, high: 4.7, color: 'rgba(34,197,94,0.35)' },
-  { label: 'Prediction', low: 4.0, mid: 4.0, high: 4.0, color: 'rgba(34,197,94,1)' },
-];
-
-const BENCHMARK_DATA = [
-  { name: 'This Prediction', value: 4.0, fill: '#22c55e', isMain: true },
-  { name: 'Wood Avg', value: 3.8, fill: '#3b82f6' },
-  { name: 'Ag Waste Avg', value: 3.2, fill: '#f59e0b' },
-  { name: 'Sludge Avg', value: 2.1, fill: '#a855f7' },
-  { name: 'All Types Avg', value: 2.9, fill: '#94a3b8' },
-];
+// @ts-nocheck
+import { ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Bar, Cell, BarChart, LabelList } from 'recharts';
+import { BIOMASS_STATS, DB_OVERALL_AVG } from '../../lib/biocharKnowledgeBase';
+import { BIOMASS_COLORS } from '../../lib/database44';
 
 const CustomCI = ({ viewBox, data }) => null;
 
@@ -81,12 +69,18 @@ export function ConfidenceIntervalChart({ prediction }) {
 
 export function BenchmarkChart({ prediction }) {
   const pred = prediction || 4.0;
+  const biomassRows = Object.entries(BIOMASS_STATS)
+    .map(([name, s]) => ({
+      name: name.replace(' ground-based', '').replace(' sawdust powders', ''),
+      value: +s.mean.toFixed(3),
+      fill: BIOMASS_COLORS[name] || '#94a3b8',
+    }))
+    .sort((a, b) => b.value - a.value)
+    .slice(0, 4);
   const data = [
-    { name: 'This Prediction', value: pred, fill: '#22c55e' },
-    { name: 'Wood Avg', value: 3.8, fill: '#3b82f6' },
-    { name: 'Ag Waste Avg', value: 3.2, fill: '#f59e0b' },
-    { name: 'Sludge Avg', value: 2.1, fill: '#a855f7' },
-    { name: 'All Types', value: 2.9, fill: '#94a3b8' },
+    { name: 'Your Prediction', value: pred, fill: '#22c55e' },
+    ...biomassRows,
+    { name: 'DB Overall', value: +DB_OVERALL_AVG.toFixed(3), fill: '#64748b' },
   ];
   return (
     <div className="glass-card rounded-2xl p-5 border border-border">

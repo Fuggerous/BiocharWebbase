@@ -19,21 +19,47 @@ const ELEMENTAL_PROFILES = {
     C: { base: 72, activated: 84 }, H: { base: 2.5, activated: 1.2 },
     O: { base: 23, activated: 13 }, N: { base: 0.4, activated: 0.3 }, S: { base: 0.05, activated: 0.04 },
   },
+  'Bamboo': {
+    C: { base: 70, activated: 83 }, H: { base: 2.7, activated: 1.3 },
+    O: { base: 24, activated: 13 }, N: { base: 0.5, activated: 0.4 }, S: { base: 0.08, activated: 0.06 },
+  },
+  'Banana straw': {
+    C: { base: 58, activated: 75 }, H: { base: 3.5, activated: 1.9 },
+    O: { base: 32, activated: 18 }, N: { base: 1.2, activated: 0.9 }, S: { base: 0.15, activated: 0.10 },
+  },
+  'Pomelo peel': {
+    C: { base: 55, activated: 72 }, H: { base: 3.8, activated: 2.0 },
+    O: { base: 35, activated: 20 }, N: { base: 0.9, activated: 0.7 }, S: { base: 0.12, activated: 0.09 },
+  },
+  'Sugarcane bagasse': {
+    C: { base: 60, activated: 76 }, H: { base: 3.3, activated: 1.7 },
+    O: { base: 30, activated: 17 }, N: { base: 0.7, activated: 0.5 }, S: { base: 0.10, activated: 0.08 },
+  },
+  'Cotton straw': {
+    C: { base: 63, activated: 79 }, H: { base: 3.0, activated: 1.6 },
+    O: { base: 27, activated: 15 }, N: { base: 1.5, activated: 1.1 }, S: { base: 0.20, activated: 0.14 },
+  },
 };
 
 export function estimateProperties({ biomass, pyroTemp, residenceTime, activator }) {
   // Filter matching records (same biomass + activator, nearest pyro temp)
-  const biomasRecords = DB44_RECORDS.filter(r => r.biomass === biomass && r.activator === activator && r.blend === 'Base');
+  const biomasRecords = DB44_RECORDS.filter(r => r.biomass === biomass && r.activator === activator && r.blend === 'Non');
 
   let matched = biomasRecords;
 
   // If no exact activator match, fall back to same biomass
   if (matched.length === 0) {
-    matched = DB44_RECORDS.filter(r => r.biomass === biomass && r.blend === 'Base');
+    matched = DB44_RECORDS.filter(r => r.biomass === biomass && r.blend === 'Non');
   }
 
-  // Sort by proximity to requested pyroTemp
-  matched = matched.sort((a, b) => Math.abs(a.pyroTemp - pyroTemp) - Math.abs(b.pyroTemp - pyroTemp));
+  // Sort by combined proximity: pyroTemp (primary 70%) + residenceTime (secondary 30%)
+  matched = matched.sort((a, b) => {
+    const tempA = Math.abs(a.pyroTemp - pyroTemp) / 100;
+    const tempB = Math.abs(b.pyroTemp - pyroTemp) / 100;
+    const rtA   = Math.abs((a.residenceTime || 60) - residenceTime) / 100;
+    const rtB   = Math.abs((b.residenceTime || 60) - residenceTime) / 100;
+    return (tempA * 0.7 + rtA * 0.3) - (tempB * 0.7 + rtB * 0.3);
+  });
 
   // Take top 5 closest
   const closest = matched.slice(0, Math.min(5, matched.length));
@@ -56,13 +82,14 @@ export function estimateProperties({ biomass, pyroTemp, residenceTime, activator
   // Elemental profile
   const ep = ELEMENTAL_PROFILES[biomass] || ELEMENTAL_PROFILES['Corn straw'];
   const isActivated = activator && activator !== 'Non';
-  const tempFactor = Math.min(1, (pyroTemp - 300) / 600); // 0–1 scale
+  const tempFactor = Math.min(1, (pyroTemp - 300) / 600);       // 0–1: temp effect
+  const rtFactor   = Math.min(1, (residenceTime - 10) / 290);   // 0–1: longer RT → more carbonization
 
   const elem = {
-    C: parseFloat((ep.C.base + (isActivated ? ep.C.activated - ep.C.base : 0) * 0.6 + tempFactor * 5).toFixed(1)),
-    H: parseFloat((ep.H.base - tempFactor * 0.8 - (isActivated ? 0.5 : 0)).toFixed(1)),
-    O: parseFloat((ep.O.base - tempFactor * 8 - (isActivated ? 4 : 0)).toFixed(1)),
-    N: parseFloat((ep.N.base - tempFactor * 0.3).toFixed(2)),
+    C: parseFloat((ep.C.base + (isActivated ? ep.C.activated - ep.C.base : 0) * 0.6 + tempFactor * 5 + rtFactor * 2).toFixed(1)),
+    H: parseFloat((ep.H.base - tempFactor * 0.8 - (isActivated ? 0.5 : 0) - rtFactor * 0.3).toFixed(1)),
+    O: parseFloat((ep.O.base - tempFactor * 8  - (isActivated ? 4 : 0) - rtFactor * 2).toFixed(1)),
+    N: parseFloat((ep.N.base - tempFactor * 0.3 - rtFactor * 0.1).toFixed(2)),
     S: parseFloat((ep.S.base).toFixed(2)),
   };
 
@@ -92,7 +119,7 @@ export function adviseConditionsForProperties({ targetSurfaceArea, targetPoreVol
   // Convert poreVolume from cm³/g to m³/kg (* 0.001) for DB comparison
   const pvThreshold = targetPoreVolume ? targetPoreVolume / 1000 : 0;
 
-  let candidates = DB44_RECORDS.filter(r => r.blend === 'Base');
+  let candidates = DB44_RECORDS.filter(r => r.blend === 'Non');
   if (biomass && biomass !== 'All') {
     candidates = candidates.filter(r => r.biomass === biomass);
   }

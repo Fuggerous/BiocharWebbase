@@ -5,6 +5,8 @@ import Footer from '../components/layout/Footer';
 import { reverseQuery, getCoverageMatrix } from '../components/advisor/AdvisorEngine';
 import { BIOMASS_LIST, BIOMASS_COLORS } from '../lib/database44';
 import { DB_OVERALL_MIN, DB_OVERALL_MAX } from '../lib/biocharKnowledgeBase';
+import { mlPipelineLookup } from '../lib/mlPredictor';
+import { Brain } from 'lucide-react';
 import {
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
   ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -117,15 +119,30 @@ export default function MaterialsAdvisor() {
 
   const coverageData = getCoverageMatrix();
 
+  const [mlValidations, setMlValidations] = useState({});
+
   const handleAnalyze = async () => {
     setLoading(true);
     await new Promise(r => setTimeout(r, 900));
     const res = reverseQuery({ targetCO2, biomass, tolerance, secondaryObjective, tertiaryObjective });
     setResult(res);
+    // Run ML pipeline for top-6 results
+    const validations = {};
+    (res.results || []).slice(0, 6).forEach((r, i) => {
+      const ml = mlPipelineLookup({
+        biomass:       r.biomasses?.[0] ?? (biomass !== 'All' ? biomass : 'Corn straw'),
+        temperature:   r.pyroTemp,
+        activator:     r.activator === 'None' ? 'Non' : r.activator,
+        residenceTime: r.avgResidenceTime ?? 60,
+        heatingRate:   10,
+      });
+      if (ml) validations[i] = ml;
+    });
+    setMlValidations(validations);
     setLoading(false);
   };
 
-  const reset = () => { setResult(null); };
+  const reset = () => { setResult(null); setMlValidations({}); };
 
   // Radar data from top result
   const radarData = result?.results?.[0] ? [
@@ -353,9 +370,40 @@ export default function MaterialsAdvisor() {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Left: ranked cards */}
                 <div className="lg:col-span-2 space-y-4">
-                  {result.results.map((r, i) => (
-                    <ResultCard key={i} result={r} rank={i} target={targetCO2} />
-                  ))}
+                  {result.results.map((r, i) => {
+                    const ml = mlValidations[i];
+                    return (
+                      <div key={i} className="space-y-2">
+                        <ResultCard result={r} rank={i} target={targetCO2} />
+                        {ml && (
+                          <div className="ml-2 px-4 py-2.5 rounded-xl border border-purple-500/20 bg-purple-500/5 flex items-center gap-4 flex-wrap text-xs">
+                            <div className="flex items-center gap-1.5">
+                              <Brain className="w-3.5 h-3.5 text-purple-500 flex-shrink-0" />
+                              <span className="font-semibold text-purple-700">ML Validation</span>
+                            </div>
+                            <div className="flex gap-4 flex-wrap">
+                              <span>
+                                <span className="text-muted-foreground">CO₂ predicted: </span>
+                                <span className={`font-bold ${Math.abs(ml.co2 - r.meanCO2) < 0.5 ? 'text-green-600' : 'text-amber-600'}`}>
+                                  {ml.co2} mmol/g
+                                </span>
+                              </span>
+                              <span>
+                                <span className="text-muted-foreground">BET: </span>
+                                <span className="font-semibold text-purple-600">{ml.sa.toLocaleString()} m²/g</span>
+                              </span>
+                              <span>
+                                <span className="text-muted-foreground">Agreement: </span>
+                                <span className={`font-bold ${Math.abs(ml.co2 - r.meanCO2) < 0.3 ? 'text-green-600' : Math.abs(ml.co2 - r.meanCO2) < 0.7 ? 'text-amber-600' : 'text-red-500'}`}>
+                                  {Math.abs(ml.co2 - r.meanCO2) < 0.3 ? '✓ High' : Math.abs(ml.co2 - r.meanCO2) < 0.7 ? '~ Moderate' : '✗ Low'}
+                                </span>
+                              </span>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
 
                 {/* Right: Radar + Feasibility + bar */}

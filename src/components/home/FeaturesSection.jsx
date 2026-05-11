@@ -1,12 +1,14 @@
+// @ts-nocheck
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Database, Zap, Share2, ArrowRight, BarChart3 } from 'lucide-react';
+import { Database, Zap, Brain, BarChart3, ArrowRight } from 'lucide-react';
+import { TOTAL_DATA_POINTS } from '../../lib/biocharKnowledgeBase';
 
 const features = [
   {
     icon: Database,
     title: 'Scientific Database',
-    desc: 'Access 1,500+ curated biochar datasets with advanced filtering by feedstock, temperature, activation method, and surface properties.',
+    desc: `Browse ${TOTAL_DATA_POINTS.toLocaleString()} curated experimental records with advanced filtering by feedstock, temperature, activation method, and structural properties. Export filtered subsets as CSV.`,
     link: '/database',
     cta: 'Explore Database',
     color: 'green',
@@ -18,7 +20,7 @@ const features = [
   {
     icon: Zap,
     title: 'Property Estimator',
-    desc: 'Phase 1 → 2: Input pyrolysis conditions and get estimated BET Surface Area, Pore Volume, and CHNS-O elemental composition from matching database records.',
+    desc: 'Input pyrolysis conditions and get estimated BET surface area, pore volume, and CHNS-O elemental composition — matched from real database records with ML comparison.',
     link: '/property-estimator',
     cta: 'Estimate Properties',
     color: 'amber',
@@ -30,9 +32,9 @@ const features = [
   {
     icon: BarChart3,
     title: 'CO₂ Estimator',
-    desc: 'Phase 3: Get statistically-derived CO₂ adsorption estimates based on 1,255 peer-reviewed experimental records — select your feedstock, temperature, and activation method.',
+    desc: '3-method prediction: statistical DB lookup + Ridge approximation + trained sklearn ML pipeline (KNN → SVR). Results shown side-by-side with agreement indicator.',
     link: '/predictor',
-    cta: 'Get Estimate',
+    cta: 'Get CO₂ Estimate',
     color: 'blue',
     gradient: 'from-blue-500/10 to-sky-500/5',
     border: 'border-blue-500/20',
@@ -40,28 +42,16 @@ const features = [
     iconColor: 'text-blue-500',
   },
   {
-    icon: Share2,
-    title: 'Contribute Data',
-    desc: 'Share your experimental biochar data with the global research community. Manual entry or bulk CSV/Excel upload supported.',
-    link: '/share',
-    cta: 'Share Data',
+    icon: Brain,
+    title: 'Materials Advisor',
+    desc: 'Reverse design: input your target CO₂ uptake and get the optimal activator and pyrolysis conditions ranked by feasibility score and ML validation.',
+    link: '/advisor',
+    cta: 'Find Optimal Conditions',
     color: 'purple',
     gradient: 'from-purple-500/10 to-violet-500/5',
     border: 'border-purple-500/20',
     iconBg: 'bg-purple-500/10',
     iconColor: 'text-purple-500',
-  },
-  {
-    icon: BarChart3,
-    title: 'Interactive Analytics',
-    desc: 'Visualize trends across feedstock types, surface areas, and adsorption capacities with publication-ready charts and plots.',
-    link: '/database',
-    cta: 'View Charts',
-    color: 'amber',
-    gradient: 'from-amber-500/10 to-orange-500/5',
-    border: 'border-amber-500/20',
-    iconBg: 'bg-amber-500/10',
-    iconColor: 'text-amber-500',
   },
 ];
 
@@ -76,10 +66,11 @@ export default function FeaturesSection() {
           className="text-center mb-14"
         >
           <h2 className="font-space font-bold text-3xl lg:text-4xl">
-            Everything You Need for <span className="text-gradient-blue">Biochar Research</span>
+            Four Tools. <span className="text-gradient-blue">One Platform.</span>
           </h2>
           <p className="mt-3 text-muted-foreground text-lg max-w-2xl mx-auto">
-            An integrated platform combining open data, AI prediction, and collaborative science.
+            From raw synthesis conditions to optimised production parameters —
+            BiocharHub covers the full biochar CO₂ adsorption workflow.
           </p>
         </motion.div>
 

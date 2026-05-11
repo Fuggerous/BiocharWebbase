@@ -4,12 +4,12 @@ import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import DatabaseCharts from '../components/database/DatabaseCharts';
 import CorrelationTabs from '../components/database/CorrelationTabs';
-import AdvancedFilters, { DEFAULT_FILTERS } from '../components/database/AdvancedFilters';
+import AdvancedFilters from '../components/database/AdvancedFilters';
 import ComparisonTool from '../components/database/ComparisonTool';
 import { motion } from 'framer-motion';
 import { Database as DbIcon, Download, FlaskConical } from 'lucide-react';
 import { TOTAL_DATA_POINTS, DB_OVERALL_MAX, TEMPERATURE_STATS } from '../lib/biocharKnowledgeBase';
-import { DB44_RECORDS, BIOMASS_COLORS, BLEND_COLORS, ADSORPTION_TEMP_LIST, BIOMASS_LIST, ACTIVATOR_LIST } from '../lib/database44';
+import { DB44_RECORDS, BIOMASS_COLORS, BLEND_COLORS, ADSORPTION_TEMP_LIST, BIOMASS_LIST, ACTIVATOR_LIST, DEFAULT_FILTERS } from '../lib/database44';
 import BlendingAnalysis from '../components/database/BlendingAnalysis';
 
 
@@ -43,18 +43,6 @@ const ANOMALY_MAP = new Map(DB44_RECORDS.map(r => {
 export default function Database() {
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
 
-  const handleExportCSV = useCallback(() => {
-    const cols = ['id','isothermId','biomass','pyroTemp','residenceTime','heatingRate','activator','activationType','activationTemp','blend','surfaceArea','poreVolume','adsorpTemp','pressure','co2Uptake','C_cha','H_cha','O_cha','N_cha','S_cha'];
-    const escape = v => (v == null ? '' : String(v).includes(',') ? `"${v}"` : String(v));
-    const lines = [cols.join(','), ...filtered.map(r => cols.map(c => escape(r[c])).join(','))];
-    const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = `44Database_filtered_${filtered.length}records.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-  }, [filtered]);
-
   const filtered = useMemo(() => {
     return DB44_RECORDS.filter(r => {
       if (filters.biomass.length > 0 && !filters.biomass.includes(r.biomass)) return false;
@@ -73,6 +61,18 @@ export default function Database() {
       return true;
     });
   }, [filters]);
+
+  const handleExportCSV = useCallback(() => {
+    const cols = ['id','isothermId','biomass','pyroTemp','residenceTime','heatingRate','activator','activationType','activationTemp','blend','surfaceArea','poreVolume','adsorpTemp','pressure','co2Uptake','C_cha','H_cha','O_cha','N_cha','S_cha'];
+    const escape = v => (v == null ? '' : String(v).includes(',') ? `"${v}"` : String(v));
+    const lines = [cols.join(','), ...filtered.map(r => cols.map(c => escape(r[c])).join(','))];
+    const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `44Database_filtered_${filtered.length}records.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }, [filtered]);
 
   const activationBadgeClass = {
     Chemical: 'bg-green-500/10 text-green-600',

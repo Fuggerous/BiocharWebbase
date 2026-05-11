@@ -50,7 +50,7 @@ const PHASES = [
     inputs: ['Adsorption Temp (°C)', 'Pressure (atm)', 'Biochar Properties'],
     outputs: ['CO₂ Uptake (mmol/g)', 'Min–Mean–Max Range', 'Confidence Level'],
     tool: { label: 'CO₂ Estimator →', path: '/predictor' },
-    detail: 'CO₂ adsorption is measured at standard conditions (25–50°C, 0.15–1.0 atm). Top-performing KOH-activated biochars achieve up to 7.5 mmol/g. Statistical range analysis across 1,255 experimental records gives min, mean, and max projections for your specific conditions.',
+    detail: 'CO₂ adsorption estimated using 3 parallel methods: statistical DB lookup (1,263 records), Ridge approximation, and a trained sklearn ML pipeline (KNN → SVR). Results shown side-by-side with agreement indicator — divergence flags limited data or model uncertainty.',
   },
 ];
 

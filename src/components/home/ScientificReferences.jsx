@@ -104,10 +104,10 @@ export const REFS = [
   {
     id: 12,
     authors: '44Database (BiocharHub)',
-    year: '2024',
+    year: '2025',
     title: 'Experimental CO₂ Adsorption Isotherm Records — 44Database.xlsx.',
     journal: 'BiocharHub Internal Dataset',
-    detail: '93 records across 3 biomass species, 6 activators, 5 pyrolysis temperature levels.',
+    detail: '1,263 records across 8 biomass species, 6 activators, 92 unique isotherm experiments.',
     doi: null,
   },
 ];

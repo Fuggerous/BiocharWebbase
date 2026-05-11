@@ -1,6 +1,8 @@
+
+
 import { useState } from 'react';
 import { X, Filter, ChevronDown, ChevronUp, Search } from 'lucide-react';
-import { BIOMASS_LIST, ACTIVATOR_LIST, ACTIVATION_TYPE_LIST, ADSORPTION_TEMP_LIST, BLEND_LIST, BIOMASS_COLORS } from '../../lib/database44';
+import { BIOMASS_LIST, ACTIVATOR_LIST, ACTIVATION_TYPE_LIST, ADSORPTION_TEMP_LIST, BLEND_LIST, BIOMASS_COLORS, DEFAULT_FILTERS } from '../../lib/database44';
 
 function MultiSelectGroup({ label, options, selected, onChange, colorMap }) {
   const [open, setOpen] = useState(true);
@@ -75,19 +77,6 @@ function RangeFilter({ label, min, max, value, onChange, unit = '' }) {
     </div>
   );
 }
-
-export const DEFAULT_FILTERS = {
-  biomass: [],
-  activator: [],
-  activationType: [],
-  blend: [],
-  adsorpTemp: [],
-  surfaceAreaRange: [0, 3200],
-  poreVolRange: [0, 1600],
-  co2Range: [0, 8],
-  pyroTempRange: [300, 900],
-  search: '',
-};
 
 export default function AdvancedFilters({ filters, onChange, resultCount, totalCount }) {
   const setFilter = (key, val) => onChange({ ...filters, [key]: val });

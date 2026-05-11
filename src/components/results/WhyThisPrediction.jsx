@@ -1,6 +1,8 @@
+// @ts-nocheck
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Info, ChevronDown, ChevronUp, Cpu, Thermometer, FlaskConical, Leaf, BarChart3 } from 'lucide-react';
+import { DB_OVERALL_AVG } from '../../lib/biocharKnowledgeBase';
 
 const featureColors = {
   biomass: { color: '#22c55e', bg: 'bg-green-500/10', border: 'border-green-500/20', icon: Leaf },
@@ -71,7 +73,7 @@ export default function WhyThisPrediction({ result, params }) {
   const methodSteps = [
     `Retrieve all ${params.biomass} records from the database (n=${result.biomassStats.count}).`,
     `Apply pyrolysis temperature bracket modifier (${params.temperature}°C → bracket mean = ${result.temperatureBracket?.mean?.toFixed(2) ?? 'N/A'} mmol/g).`,
-    `Apply activation modifier for ${params.activator === 'Non' ? 'no activation' : params.activator} (modifier = ×${result.activatorStats ? (result.activatorStats.mean / 3.02).toFixed(2) : '1.00'}).`,
+    `Apply activation modifier for ${params.activator === 'Non' ? 'no activation' : params.activator} (modifier = ×${result.activatorStats ? (result.activatorStats.mean / DB_OVERALL_AVG).toFixed(2) : '1.00'}).`,
     `Compute blended weighted mean: 50% biomass base + 30% temp-adjusted + 20% activator-adjusted.`,
     `Compute spread from biomass min/max range (±25% of total spread).`,
     `Assign confidence level based on matching data point count (High >20 · Moderate >8 · Indicative otherwise).`,

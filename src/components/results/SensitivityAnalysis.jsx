@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Activity } from 'lucide-react';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, Legend } from 'recharts';
-import { queryExpertGuidance } from '../../lib/biocharKnowledgeBase';
+import { queryExpertGuidance, DB_OVERALL_MAX } from '../../lib/biocharKnowledgeBase';
 
 const TEMP_RANGE = [350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900];
 
@@ -12,7 +12,7 @@ export default function SensitivityAnalysis({ params }) {
     TEMP_RANGE.map(temp => {
       const r = queryExpertGuidance({ ...params, temperature: temp });
       return { temp: `${temp}°C`, mean: +r.mean.toFixed(3), min: +r.min.toFixed(2), max: +r.max.toFixed(2) };
-    }), [params.biomass, params.activator]);
+    }), [params.biomass, params.activator, params.residenceTime]);
 
   // Compare activators at current temperature
   const activatorOptions = ['Non', 'KOH', 'K2CO3', 'KOH-CO2', 'CO2', 'LiCl'];
@@ -21,7 +21,7 @@ export default function SensitivityAnalysis({ params }) {
     activatorOptions.map(act => {
       const r = queryExpertGuidance({ ...params, activator: act });
       return { activator: activatorLabels[act], mean: +r.mean.toFixed(3), min: +r.min.toFixed(2), max: +r.max.toFixed(2), isCurrent: act === params.activator };
-    }), [params.biomass, params.temperature]);
+    }), [params.biomass, params.temperature, params.residenceTime]);
 
   const currentTemp = `${params.temperature}°C`;
 
@@ -46,7 +46,7 @@ export default function SensitivityAnalysis({ params }) {
           <LineChart data={tempSweepData} margin={{ top: 4, right: 16, left: -10, bottom: 4 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
             <XAxis dataKey="temp" tick={{ fontSize: 9 }} interval={1} />
-            <YAxis tick={{ fontSize: 10 }} unit=" mmol/g" domain={[0, 8]} />
+            <YAxis tick={{ fontSize: 10 }} unit=" mmol/g" domain={[0, dataMax => +Math.min(Math.ceil(dataMax * 1.2), 10).toFixed(1)]} />
             <Tooltip formatter={v => [`${Number(v).toFixed(2)} mmol/g`]} contentStyle={{ fontSize: 11, borderRadius: 8 }} />
             <ReferenceLine x={currentTemp} stroke="#22c55e" strokeDasharray="4 4" label={{ value: 'Your Temp', position: 'top', fontSize: 9, fill: '#22c55e' }} />
             <Line type="monotone" dataKey="max" stroke="#94a3b8" strokeWidth={1} dot={false} name="Max" strokeDasharray="3 3" />
@@ -64,7 +64,7 @@ export default function SensitivityAnalysis({ params }) {
         </p>
         <div className="space-y-2.5">
           {activatorData.map(d => {
-            const pct = Math.min(100, (d.mean / 8) * 100);
+            const pct = Math.min(100, (d.mean / DB_OVERALL_MAX) * 100);
             return (
               <div key={d.activator} className={`space-y-1 p-2.5 rounded-xl border transition-all ${d.isCurrent ? 'bg-green-500/5 border-green-500/25' : 'border-transparent'}`}>
                 <div className="flex items-center justify-between text-xs">

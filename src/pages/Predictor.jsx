@@ -5,9 +5,9 @@ import { motion } from 'framer-motion';
 import { Zap, Shield, BarChart3, Brain } from 'lucide-react';
 
 const features = [
-  { icon: Brain, label: 'Statistical Model', desc: 'Aggregated from 1,255 peer-reviewed experimental records' },
-  { icon: Shield, label: 'Data-Backed', desc: 'Estimates derived directly from validated research data' },
-  { icon: BarChart3, label: 'Range Analysis', desc: 'Min, mean, and max from matching database entries' },
+  { icon: Brain, label: '3-Method Prediction', desc: 'Statistical lookup + Ridge approximation + Sklearn ML pipeline (KNN → SVR)' },
+  { icon: Shield, label: 'Data-Backed', desc: '1,263 peer-reviewed experimental records · 8 biomass species · 6 activators' },
+  { icon: BarChart3, label: 'Prediction Intervals', desc: 'Real statistical confidence intervals from matched DB records' },
 ];
 
 export default function Predictor() {

@@ -186,7 +186,7 @@ function BlendRatioCorrelation() {
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
           <XAxis dataKey="ppRatio" type="number" name="PP%" unit="%" tick={{ fontSize: 11 }}
             label={{ value: 'Blend Ratio (%)', position: 'insideBottom', offset: -10, fontSize: 11 }}
-            domain={[0, 100]} />
+            domain={[0, 30]} />
           <YAxis dataKey="co2" type="number" name="CO₂ Uptake" unit=" mmol/g" tick={{ fontSize: 11 }}
             label={{ value: 'CO₂ Uptake (mmol/g)', angle: -90, position: 'insideLeft', fontSize: 11 }} />
           <ZAxis range={[40, 80]} />
@@ -210,7 +210,7 @@ function BlendRatioCorrelation() {
           {/* Mean trend dots */}
           <Scatter name="Mean per ratio" data={avgByRatio.map(d => ({ ppRatio: d.ppRatio, co2: d.mean }))}
             fill="#06b6d4" fillOpacity={1} shape="diamond" />
-          <Legend wrapperStyle={{ fontSize: 11 }} />
+          <Legend wrapperStyle={{ position: 'absolute', middle: 10, bottom: 10, fontSize: 11 }} />
         </ScatterChart>
       </ResponsiveContainer>
 

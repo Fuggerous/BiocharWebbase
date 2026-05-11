@@ -15,6 +15,7 @@ import ResearchNewsFeed from '../components/home/ResearchNewsFeed';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Leaf } from 'lucide-react';
+import { TOTAL_DATA_POINTS } from '../lib/biocharKnowledgeBase';
 
 export default function Home() {
   return (
@@ -46,10 +47,11 @@ export default function Home() {
               <Leaf className="w-7 h-7 text-white" />
             </div>
             <h2 className="font-space font-bold text-3xl lg:text-4xl mb-4">
-              Start Estimating <span className="text-gradient-green">CO₂ Adsorption</span> Today
+              Start Predicting <span className="text-gradient-green">CO₂ Adsorption</span> Now
             </h2>
             <p className="text-muted-foreground text-lg mb-8 max-w-2xl mx-auto">
-              Join 120+ researchers using BiocharHub to accelerate carbon capture research with data-driven insights.
+              {TOTAL_DATA_POINTS.toLocaleString()} peer-reviewed experimental records.
+              Statistical lookup + trained ML pipeline. Free, open, and runs entirely in your browser.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link

@@ -3,9 +3,11 @@ import { motion } from 'framer-motion';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import { Flame, Layers, ChevronDown, Thermometer, Clock, TrendingUp, FlaskConical, Database, ShieldCheck, ArrowRight } from 'lucide-react';
-import { estimateProperties } from '../lib/propertyEstimatorLogic';
+import { estimateProperties } from '../lib/properyEstimatorLogic';
 import { BIOMASS_LIST, ACTIVATOR_LIST } from '../lib/database44';
+import { mlPipelineLookup } from '../lib/mlPredictor';
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { Brain } from 'lucide-react';
 
 const ELEM_COLORS = { C: '#22c55e', H: '#3b82f6', O: '#f59e0b', N: '#a855f7', S: '#ef4444' };
 
@@ -22,11 +24,20 @@ export default function PropertyEstimator() {
 
   const set = (k, v) => setParams(p => ({ ...p, [k]: v }));
 
+  const [mlResult, setMlResult] = useState(null);
+
   const handleRun = async () => {
     setLoading(true);
     await new Promise(r => setTimeout(r, 900));
     const res = estimateProperties(params);
     setResult(res);
+    setMlResult(mlPipelineLookup({
+      biomass:       params.biomass,
+      temperature:   params.pyroTemp,
+      activator:     params.activator,
+      residenceTime: params.residenceTime,
+      heatingRate:   10,
+    }));
     setLoading(false);
   };
 
@@ -212,6 +223,43 @@ export default function PropertyEstimator() {
                     </div>
                   </div>
                 </div>
+
+                {/* ML Model comparison */}
+                {mlResult && (
+                  <div className="glass-card rounded-2xl p-5 border border-purple-500/25">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Brain className="w-4 h-4 text-purple-500" />
+                      <h3 className="font-space font-semibold text-sm">ML Pipeline Estimate (KNN Model)</h3>
+                      <span className="ml-auto text-[10px] px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-600 font-semibold border border-purple-500/20">
+                        R²={mlResult.r2_prop}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      {[
+                        { label: 'BET Surface Area', db: result.surfaceArea.mean, ml: mlResult.sa, unit: 'm²/g', max: 3200, color: '#f59e0b' },
+                        { label: 'Pore Volume', db: result.poreVolume.mean, ml: +(mlResult.pv * 1e6).toFixed(3), unit: 'cm³/kg×10⁶', max: 1.6, color: '#a855f7' },
+                      ].map(item => (
+                        <div key={item.label} className="p-3 rounded-xl bg-muted/40 border border-border space-y-1">
+                          <p className="text-[10px] font-semibold text-muted-foreground">{item.label}</p>
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-muted-foreground">DB lookup</span>
+                            <span className="font-bold text-amber-600">{item.db.toLocaleString()}</span>
+                          </div>
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-muted-foreground">ML model</span>
+                            <span className="font-bold" style={{ color: item.color }}>{item.ml.toLocaleString()}</span>
+                          </div>
+                          <div className="text-[10px] text-muted-foreground">
+                            Δ = {Math.abs(item.db - item.ml).toFixed(1)} {item.unit}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-[10px] text-muted-foreground mt-2">
+                      ML: KNN trained on 58 experiments (R²_BET={mlResult.r2_prop}). Agreement with DB lookup = higher reliability.
+                    </p>
+                  </div>
+                )}
 
                 {/* CHNS-O Elemental Composition */}
                 <div className="glass-card rounded-2xl p-5 border border-border">

@@ -10,13 +10,38 @@ import {
   REAL_TEMP_DISTRIBUTION,
   TOTAL_DATA_POINTS,
 } from '../../lib/biocharKnowledgeBase';
+import { BIOMASS_COLORS } from '../../lib/database44';
 
-const SCATTER_COLORS = {
-  'Corn Straw': '#3b82f6',
-  'Coffee Ground': '#22c55e',
-  'Pine Sawdust': '#a855f7',
-  'Corn Straw (raw)': '#f59e0b',
-};
+// Derive unique type labels from actual data (REAL_SCATTER_SUMMARY applies
+// .replace(' ground-based','').replace(' sawdust powders','') to biomass names)
+const SCATTER_TYPES = [...new Set(REAL_SCATTER_SUMMARY.map(d => d.type))];
+
+// Map shortened type names back to BIOMASS_COLORS using partial match
+function colorForType(type) {
+  const match = Object.keys(BIOMASS_COLORS).find(k =>
+    k.toLowerCase().startsWith(type.toLowerCase()) ||
+    type.toLowerCase().startsWith(k.split(' ')[0].toLowerCase())
+  );
+  return match ? BIOMASS_COLORS[match] : '#94a3b8';
+}
+
+function ScatterTooltip({ active, payload }) {
+  if (!active || !payload?.length) return null;
+  const d = payload[0]?.payload;
+  if (!d) return null;
+  return (
+    <div className="glass-card rounded-xl p-3 border border-border text-xs shadow-lg space-y-1 bg-background">
+      <p className="font-space font-bold text-sm text-foreground">Isotherm #{d.isothermId}</p>
+      <div className="space-y-0.5 text-muted-foreground">
+        <p><span className="font-semibold text-foreground">Biomass:</span> {d.type}</p>
+        <p><span className="font-semibold text-foreground">Activator:</span> {d.activator === 'Non' ? 'None' : d.activator}</p>
+        <p><span className="font-semibold text-foreground">Pyro Temp:</span> {d.pyroTemp}°C</p>
+        <p><span className="font-semibold text-green-600">BET Surface Area:</span> {d.surface?.toLocaleString()} m²/g</p>
+        <p><span className="font-semibold text-green-600">Peak CO₂:</span> {d.co2?.toFixed(3)} mmol/g</p>
+      </div>
+    </div>
+  );
+}
 
 function ChartCard({ title, subtitle, badge, children }) {
   return (
@@ -124,17 +149,17 @@ export default function DatabaseCharts() {
               dataKey="co2" name="CO₂ Adsorption" unit=" mmol/g" tick={{ fontSize: 11 }}
               label={{ value: 'CO₂ Adsorption (mmol/g)', angle: -90, position: 'insideLeft', fontSize: 11 }}
             />
-            <Tooltip cursor={{ strokeDasharray: '3 3' }} formatter={(v, n) => [v.toFixed ? v.toFixed(2) : v, n]} />
-            {['Corn Straw', 'Coffee Ground', 'Pine Sawdust', 'Corn Straw (raw)'].map(type => (
+            <Tooltip cursor={{ strokeDasharray: '3 3' }} content={<ScatterTooltip />} />
+            {SCATTER_TYPES.map(type => (
               <Scatter
                 key={type}
                 name={type}
                 data={REAL_SCATTER_SUMMARY.filter(d => d.type === type)}
-                fill={SCATTER_COLORS[type]}
-                fillOpacity={0.8}
+                fill={colorForType(type)}
+                fillOpacity={0.75}
               />
             ))}
-            <Legend wrapperStyle={{ fontSize: 11 }} />
+            <Legend wrapperStyle={{ position: 'absolute', right: 10, bottom: 10, fontSize: 11 }} />
           </ScatterChart>
         </ResponsiveContainer>
       </ChartCard>

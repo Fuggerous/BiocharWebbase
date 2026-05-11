@@ -3,3 +3,12 @@ dist/
 .DS_Store
 .env
 .env.*
+
+# ML scripts and outputs (not needed for the website)
+ML/
+Database/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pkl
