@@ -63,9 +63,13 @@ export default function Navbar() {
                 key={link.path}
                 to={link.path}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-1.5 ${
-                  location.pathname === link.path
-                    ? 'bg-green-500/10 text-green-600 font-semibold'
-                    : 'text-foreground/70 hover:text-foreground hover:bg-muted'
+                  link.path === '/property-estimator'
+                    ? location.pathname === link.path
+                      ? 'bg-green-500 text-white font-semibold shadow-md shadow-green-500/20'
+                      : 'bg-green-500/10 text-green-700 font-semibold border border-green-500/20 hover:bg-green-500/15 hover:text-green-800'
+                    : location.pathname === link.path
+                      ? 'bg-green-500/10 text-green-600 font-semibold'
+                      : 'text-foreground/70 hover:text-foreground hover:bg-muted'
                 }`}
               >
                 {t(link.labelKey)}
@@ -127,9 +131,13 @@ export default function Navbar() {
                   to={link.path}
                   onClick={() => setMenuOpen(false)}
                   className={`block px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                    location.pathname === link.path
-                      ? 'bg-green-500/10 text-green-600'
-                      : 'text-foreground/70 hover:text-foreground hover:bg-muted'
+                    link.path === '/property-estimator'
+                      ? location.pathname === link.path
+                        ? 'bg-green-500 text-white'
+                        : 'bg-green-500/10 text-green-700 border border-green-500/20'
+                      : location.pathname === link.path
+                        ? 'bg-green-500/10 text-green-600'
+                        : 'text-foreground/70 hover:text-foreground hover:bg-muted'
                   }`}
                 >
                   {t(link.labelKey)}
