@@ -169,3 +169,70 @@ export function mlPipelineLookup({ biomass, temperature, activator, residenceTim
     modelNote: `KNN Property Estimator (R²=${ML_LOOKUP.metrics.model_01_avg_r2}) → SVR CO₂ (R²=${ML_LOOKUP.metrics.model_02_r2}) · Pre-computed lookup`,
   };
 }
+
+// ── Blend-aware lightweight ensemble predictor ─────────────────────────────
+// Accepts a primary biomass and a secondary biomass + ratio (0-100)
+// Returns arrays of predictions for multiple blend ratios (0,25,50,75,100)
+export function mlBlendPredict({ biomass, secondary, ratio = 50, temperature, activator, residenceTime = 60, heatingRate = 10, ratios = [0,25,50,75,100] }) {
+  const makeStat = (bio) => mlPredict({ biomass: bio, temperature, activator, residenceTime, heatingRate }).mlMean;
+  const makeML = (bio) => {
+    const p = mlPipelineLookup({ biomass: bio, temperature, activator, residenceTime, heatingRate });
+    if (p && Number.isFinite(p.co2)) return p.co2;
+    // fallback to ridge-style mlPredict mean
+    return mlPredict({ biomass: bio, temperature, activator, residenceTime, heatingRate }).mlMean;
+  };
+
+  const primaryStat = makeStat(biomass);
+  const secondaryStat = makeStat(secondary);
+  const primaryML = makeML(biomass);
+  const secondaryML = makeML(secondary);
+
+  const out = ratios.map(r => {
+    const w = Number(r) / 100;
+    const stat = +(primaryStat * (1 - w) + secondaryStat * w).toFixed(3);
+    const ml   = +(primaryML * (1 - w) + secondaryML * w).toFixed(3);
+    return { ratio: r, statMean: stat, mlMean: ml };
+  });
+
+  return out;
+}
+
+// ── Blend lookup by categorical `blend` feature (from export JSON)
+const _PREDS_BLEND = ML_LOOKUP.predictions_by_blend || null;
+export function mlBlendLookup({ biomass, temperature, activator, residenceTime = 60, heatingRate = 10, blend }) {
+  if (!_PREDS_BLEND || !blend) return null;
+
+  // Filter entries matching biomass + activator + blend
+  const candidates = _PREDS_BLEND.filter(p => p.biomass === biomass && p.activator === activator && p.blend === blend);
+  if (!candidates.length) return null;
+
+  // Find nearest in pyroTemp/reTime/heatRate space
+  const desiredPt = Number(temperature) || 600;
+  let best = null, bestDist = Infinity;
+  for (const p of candidates) {
+    const d = ((p.pyroTemp - desiredPt) ** 2) + ((p.reTime - residenceTime) ** 2) + ((p.heatRate - heatingRate) ** 2);
+    if (d < bestDist) { bestDist = d; best = p; }
+  }
+  if (!best) return null;
+
+  const co2 = best.co2;
+  // Attempt to read RMSE from metrics.model_04 if present, fallback to 1.0
+  let rmse = 1.0;
+  try {
+    if (ML_LOOKUP.metrics && ML_LOOKUP.metrics.model_04) {
+      const m = ML_LOOKUP.metrics.model_04;
+      if (typeof m === 'object' && m.rmse) rmse = Number(m.rmse);
+      else if (m && m.get && m.get('rmse')) rmse = Number(m.get('rmse'));
+    }
+  } catch (e) { /* ignore */ }
+
+  return {
+    co2:      co2,
+    co2Low:   +Math.max(0.05, co2 - rmse).toFixed(2),
+    co2High:  +(co2 + rmse).toFixed(2),
+    sa:       best.sa,
+    pv:       best.pv,
+    r2_blend: (ML_LOOKUP.metrics && ML_LOOKUP.metrics.model_04) ? ML_LOOKUP.metrics.model_04 : null,
+    modelNote: 'Blend-aware precomputed lookup (model_04)'
+  };
+}

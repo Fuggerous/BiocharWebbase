@@ -49,28 +49,7 @@ export default function PropertyEstimator() {
     <div className="min-h-screen bg-background">
       <Navbar />
 
-      {/* Header */}
-      <div className="bg-gradient-to-r from-slate-900 via-amber-950 to-slate-900 pt-24 pb-12 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'linear-gradient(rgba(245,158,11,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(245,158,11,0.3) 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
-        <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 mb-4">
-              <Flame className="w-4 h-4 text-amber-400" />
-              <span className="text-amber-400 text-sm font-medium">Phase 1 → Phase 2 · Forward Pathway</span>
-            </div>
-            <h1 className="font-space font-bold text-4xl lg:text-5xl text-white mb-3">
-              Biochar Property<br />
-              <span className="text-amber-400">Estimator</span>
-            </h1>
-            <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-              Input pyrolysis conditions → get estimated BET Surface Area, Pore Volume, and CHNS-O elemental composition from matching database records.
-            </p>
-          </motion.div>
-        </div>
-      </div>
-
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Input Form */}
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>

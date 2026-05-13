@@ -90,6 +90,7 @@ export default function PredictorForm() {
     residenceTime: 60,
     heatingRate: 10,
     activator: 'Non',
+    blend: { enabled: false, secondary: 'Corn straw', ratio: 50 },
   });
 
   const handleSubmit = async () => {
@@ -186,6 +187,47 @@ export default function PredictorForm() {
         </div>
 
         <OutOfRangeAlert params={params} />
+
+        {/* Optional Blend */}
+        <div className="border-t border-border pt-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-3">
+              <input
+                id="useBlend"
+                type="checkbox"
+                checked={params.blend.enabled}
+                onChange={e => setParams(p => ({ ...p, blend: { ...p.blend, enabled: e.target.checked } }))}
+                className="w-4 h-4 rounded-md"
+              />
+              <label htmlFor="useBlend" className="text-sm font-medium">Enable Blend / Composite</label>
+            </div>
+            <p className="text-xs text-muted-foreground">Compare predictions across mixed feedstocks</p>
+          </div>
+
+          {params.blend.enabled && (
+            <div className="space-y-4">
+              <SelectField
+                label="Secondary Biomass"
+                value={params.blend.secondary}
+                options={biomassOptions}
+                onChange={v => setParams(p => ({ ...p, blend: { ...p.blend, secondary: v } }))}
+              />
+
+              <div>
+                <label className="text-sm font-medium">Blend Ratio ({params.blend.ratio}% secondary)</label>
+                <input
+                  type="range"
+                  min={0}
+                  max={100}
+                  value={params.blend.ratio}
+                  onChange={e => setParams(p => ({ ...p, blend: { ...p.blend, ratio: Number(e.target.value) } }))}
+                  className="w-full mt-2"
+                />
+                <div className="text-xs text-muted-foreground mt-1">0% = pure primary · 100% = pure secondary</div>
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* CTA */}
         <button

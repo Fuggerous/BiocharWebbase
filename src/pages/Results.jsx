@@ -11,7 +11,7 @@ import {
   ResponsiveContainer, LabelList, ReferenceLine
 } from 'recharts';
 import { queryExpertGuidance, TOTAL_DATA_POINTS, DB_OVERALL_AVG } from '../lib/biocharKnowledgeBase';
-import { mlPredict, mlPipelineLookup } from '../lib/mlPredictor';
+import { mlPredict, mlPipelineLookup, mlBlendPredict } from '../lib/mlPredictor';
 import WhyThisPrediction from '../components/results/WhyThisPrediction';
 import DataDensityGauge from '../components/results/DataDensityGauge';
 import SensitivityAnalysis from '../components/results/SensitivityAnalysis';
@@ -293,6 +293,33 @@ export default function Results() {
     heatingRate:   params.heatingRate,
   });
 
+  // Blend: support two modes
+  // 1) legacy mix-enabled UI -> array of ratios via mlBlendPredict
+  // 2) categorical `blend` feature (string or params.blend.category) -> lookup via mlBlendLookup
+  let blendPreds = null;
+  let blendCategoryPred = null;
+  const blendCategory = typeof params.blend === 'string' ? params.blend : params.blend?.category || null;
+  if (params.blend?.enabled && params.blend?.secondary) {
+    blendPreds = mlBlendPredict({
+      biomass: params.biomass,
+      secondary: params.blend.secondary,
+      temperature: params.temperature,
+      activator: params.activator,
+      residenceTime: params.residenceTime,
+      heatingRate: params.heatingRate,
+      ratios: [0,25,50,75,100],
+    });
+  } else if (blendCategory) {
+    blendCategoryPred = mlBlendLookup({
+      biomass: params.biomass,
+      temperature: params.temperature,
+      activator: params.activator,
+      residenceTime: params.residenceTime,
+      heatingRate: params.heatingRate,
+      blend: blendCategory,
+    });
+  }
+
   const confidenceColors = {
     High: 'bg-green-100 text-green-700 border-green-200',
     Moderate: 'bg-blue-100 text-blue-700 border-blue-200',
@@ -427,6 +454,8 @@ export default function Results() {
             </motion.div>
           </div>
 
+          {/* Blend comparison will be shown below (moved) */}
+
           {/* Right: Charts */}
           <div className="lg:col-span-2 space-y-5">
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
@@ -555,6 +584,64 @@ export default function Results() {
           </div>
         </div>
       </div>
+
+      {/* Blend comparison section (moved below main content) */}
+      {(blendPreds || blendCategoryPred) && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="glass-card rounded-2xl p-5 border border-border">
+            <h3 className="font-space font-semibold text-base mb-3">Blend Comparison</h3>
+            {blendPreds && (
+              <>
+                <p className="text-xs text-muted-foreground mb-3">Weighted average predictions for blend ratios between <span className="font-semibold">{params.biomass}</span> and <span className="font-semibold">{params.blend.secondary}</span>.</p>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-border">
+                        <th className="text-left py-2 px-2 text-xs font-semibold text-muted-foreground">Metric</th>
+                        {blendPreds.map(b => (
+                          <th key={b.ratio} className="text-left py-2 px-2 text-xs font-semibold text-muted-foreground">{b.ratio}%</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td className="py-2 px-2 font-semibold">Statistical Mean (mmol/g)</td>
+                        {blendPreds.map(b => (
+                          <td key={b.ratio} className="py-2 px-2">{b.statMean.toFixed(2)}</td>
+                        ))}
+                      </tr>
+                      <tr className="border-t border-border">
+                        <td className="py-2 px-2 font-semibold">ML Mean (mmol/g)</td>
+                        {blendPreds.map(b => (
+                          <td key={b.ratio} className="py-2 px-2">{b.mlMean.toFixed(2)}</td>
+                        ))}
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            )}
+
+            {blendCategoryPred && (
+              <>
+                <p className="text-xs text-muted-foreground mb-3">Predictions for blend category <span className="font-semibold">{typeof params.blend === 'string' ? params.blend : params.blend.category}</span>.</p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-4 rounded-lg bg-slate-50 border border-slate-200">
+                    <p className="text-xs text-muted-foreground">Statistical (DB) Mean</p>
+                    <p className="text-2xl font-bold mt-2">{result.mean.toFixed(2)} mmol/g</p>
+                    <p className="text-[10px] text-muted-foreground mt-1">Based on matched DB records for selected biomass/params</p>
+                  </div>
+                  <div className="p-4 rounded-lg bg-blue-50 border border-blue-200">
+                    <p className="text-xs text-muted-foreground">ML (Blend-aware) Prediction</p>
+                    <p className="text-2xl font-bold mt-2">{blendCategoryPred.co2.toFixed(2)} mmol/g</p>
+                    <p className="text-[10px] text-muted-foreground mt-1">{blendCategoryPred.modelNote}</p>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       <Footer />
     </div>

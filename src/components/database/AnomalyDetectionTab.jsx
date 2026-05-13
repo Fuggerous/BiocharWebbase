@@ -14,17 +14,18 @@ import { AlertTriangle, Info } from 'lucide-react';
  */
 function computeAnomalyScores(records) {
   const features = ['pyroTemp', 'surfaceArea', 'poreVolume', 'co2Uptake', 'pressure'];
+  const analyzedRecords = records.filter(r => features.every(f => Number.isFinite(r[f])));
 
   // Compute mean + std for each feature
   const stats = {};
   features.forEach(f => {
-    const vals = records.map(r => r[f]);
+    const vals = analyzedRecords.map(r => r[f]);
     const mean = vals.reduce((s, v) => s + v, 0) / vals.length;
     const std = Math.sqrt(vals.reduce((s, v) => s + (v - mean) ** 2, 0) / vals.length) || 1;
     stats[f] = { mean, std };
   });
 
-  return records.map(r => {
+  return analyzedRecords.map(r => {
     // Mahalanobis-lite: sum of squared z-scores
     const zScores = features.map(f => Math.abs((r[f] - stats[f].mean) / stats[f].std));
     const anomalyScore = zScores.reduce((s, v) => s + v * v, 0); // sum of z²
@@ -130,7 +131,7 @@ export default function AnomalyDetectionTab() {
       </div>
 
       <p className="text-xs text-muted-foreground">
-        Method: Isolation Forest–style multivariate z² scoring across 5 features (Pyro Temp, BET Area, Pore Vol, CO₂ Uptake, Pressure) + structural heuristics for unexpected feature combinations (e.g. high BET + low CO₂).
+        Method: Isolation Forest–style multivariate z² scoring across 5 features (Pyro Temp, BET Area, Pore Vol, CO₂ Uptake, Pressure) + structural heuristics for unexpected feature combinations (e.g. high BET + low CO₂). Records with missing numeric inputs are excluded from this chart.
       </p>
 
       {/* Axis selectors */}

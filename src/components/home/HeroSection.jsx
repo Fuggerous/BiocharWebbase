@@ -2,8 +2,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, Zap, Database } from 'lucide-react';
-import { PEAK_RECORDS } from '../../lib/biocharKnowledgeBase';
+import { ArrowRight, Zap, Database, TrendingUp } from 'lucide-react';
+import { PEAK_RECORDS, TOTAL_DATA_POINTS, TOTAL_EXPERIMENTS } from '../../lib/biocharKnowledgeBase';
 
 const ACTIVATOR_LABELS = {
   Non: 'None', CO2: 'CO₂', LiCl: 'LiCl',
@@ -25,8 +25,14 @@ export default function HeroSection() {
 
   const rec = topRecords[idx] ?? topRecords[0];
 
+  const avgCO2 = useMemo(() => {
+    const valid = topRecords.filter(r => Number.isFinite(r.co2Uptake));
+    const sum = valid.reduce((a, b) => a + b.co2Uptake, 0);
+    return (sum / valid.length).toFixed(2);
+  }, [topRecords]);
+
   return (
-    <section className="relative gradient-hero min-h-screen flex items-center overflow-hidden">
+    <section className="relative gradient-hero py-20 lg:py-28 flex items-center overflow-hidden">
       {/* Background animated blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 -left-32 w-96 h-96 bg-green-500/20 rounded-full blur-3xl animate-pulse" />
@@ -41,8 +47,8 @@ export default function HeroSection() {
         />
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -55,32 +61,46 @@ export default function HeroSection() {
             </div>
 
             <h1 className="font-space font-bold text-white leading-tight">
-              <span className="text-5xl lg:text-6xl block">The Global</span>
-              <span className="text-5xl lg:text-6xl block text-green-400">Biochar</span>
-              <span className="text-5xl lg:text-6xl block">Intelligence</span>
-              <span className="text-5xl lg:text-6xl block">Platform.</span>
+              <span className="text-4xl lg:text-5xl block">The Global</span>
+              <span className="text-4xl lg:text-5xl block text-green-400">Biochar</span>
+              <span className="text-4xl lg:text-5xl block">Intelligence Platform</span>
             </h1>
 
-            <p className="mt-6 text-blue-100/70 text-lg leading-relaxed max-w-lg">
-              Data-Driven Insights powered by 1,200+ Global Experimental Records. From feedstock pyrolysis to structural design to CO₂ performance validation.
+            <p className="mt-4 text-blue-100/70 text-base leading-relaxed max-w-lg">
+              Data-driven insights from {TOTAL_DATA_POINTS.toLocaleString()} experimental records. Predict biochar performance instantly.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 mt-10">
+            <div className="flex flex-col sm:flex-row gap-3 mt-8 mb-8">
               <Link
                 to="/database"
-                className="inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-xl gradient-green text-white font-semibold text-base glow-green hover:scale-105 transition-all"
+                className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg gradient-green text-white font-semibold text-sm glow-green hover:scale-105 transition-all"
               >
-                <Database className="w-5 h-5" />
+                <Database className="w-4 h-4" />
                 Explore Data
-                <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
                 to="/predictor"
-                className="inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-xl gradient-blue text-white font-semibold text-base glow-blue hover:scale-105 transition-all"
+                className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg gradient-blue text-white font-semibold text-sm glow-blue hover:scale-105 transition-all"
               >
-                <Zap className="w-5 h-5" />
+                <Zap className="w-4 h-4" />
                 CO₂ Estimator
               </Link>
+            </div>
+
+            {/* 3 Stat Badges */}
+            <div className="grid grid-cols-3 gap-3 max-w-sm">
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="p-3 rounded-lg bg-green-500/10 border border-green-500/30 text-center">
+                <p className="text-green-400 text-lg font-bold font-space">{TOTAL_DATA_POINTS.toLocaleString()}</p>
+                <p className="text-xs text-green-400/70 mt-0.5">Records</p>
+              </motion.div>
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/30 text-center">
+                <p className="text-blue-300 text-lg font-bold font-space">{TOTAL_EXPERIMENTS.toLocaleString()}</p>
+                <p className="text-xs text-blue-300/70 mt-0.5">Experiments</p>
+              </motion.div>
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }} className="p-3 rounded-lg bg-purple-500/10 border border-purple-500/30 text-center">
+                <p className="text-purple-300 text-lg font-bold font-space">{avgCO2}</p>
+                <p className="text-xs text-purple-300/70 mt-0.5">Avg CO₂</p>
+              </motion.div>
             </div>
           </motion.div>
 

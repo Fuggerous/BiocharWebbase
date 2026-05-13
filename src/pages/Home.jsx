@@ -2,36 +2,63 @@ import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import HeroSection from '../components/home/HeroSection';
 import StatsSection from '../components/home/StatsSection';
-import FeaturesSection from '../components/home/FeaturesSection';
-import BiocharFlow from '../components/home/BiocharFlow';
-import TriplePhaseFlow from '../components/home/TriplePhaseFlow';
-import ThailandContext from '../components/home/ThailandContext';
-import AdsorptionScience from '../components/home/AdsorptionScience';
-import CarbonImpact from '../components/home/CarbonImpact';
-import ScientificReferences from '../components/home/ScientificReferences';
-import HeatmapSection from '../components/home/HeatmapSection';
-import AIRoadmapSection from '../components/home/AIRoadmapSection';
+import IntroSection from '../components/home/IntroSection';
 import ResearchNewsFeed from '../components/home/ResearchNewsFeed';
+import KnowledgeCenterSection from '../components/home/KnowledgeCenterSection';
+import BiocharSocietySection from '../components/home/BiocharSocietySection';
+import TriplePhaseFlow from '../components/home/TriplePhaseFlow';
+import HeatmapSection from '../components/home/HeatmapSection';
+import ScientificReferences from '../components/home/ScientificReferences';
+import SectionNavDots from '../components/home/SectionNavDots';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Leaf } from 'lucide-react';
 import { TOTAL_DATA_POINTS } from '../lib/biocharKnowledgeBase';
+import { useLang } from '../lib/LanguageContext';
 
 export default function Home() {
+  const { t } = useLang();
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <HeroSection />
-      <StatsSection />
-      <TriplePhaseFlow />
-      <ResearchNewsFeed />
-      <BiocharFlow />
-      <ThailandContext />
-      <AdsorptionScience />
-      <HeatmapSection />
-      <CarbonImpact />
-      <AIRoadmapSection />
-      <FeaturesSection />
+      <SectionNavDots />
+
+      {/* 1. Database highlight */}
+      <div id="section-hero">
+        <HeroSection />
+        <StatsSection />
+      </div>
+
+      {/* 2. Introduce the website */}
+      <div id="section-intro">
+        <IntroSection />
+      </div>
+
+      {/* 3. Database Chemical Space */}
+      <div id="section-chemical">
+        <ResearchNewsFeed />
+      </div>
+
+      {/* 4. Knowledge Center (What is Biochar / Thailand / Process Flow / Docs) */}
+      <div id="section-knowledge">
+        <KnowledgeCenterSection />
+      </div>
+
+      {/* 5. Biochar Society in Thailand */}
+      <div id="section-society">
+        <BiocharSocietySection />
+      </div>
+
+      {/* 6. Triple-Phase Intelligence Framework */}
+      <div id="section-triplephase">
+        <TriplePhaseFlow />
+      </div>
+
+      {/* 7. CO₂ Adsorption Hotspots — Temperature × Activator Matrix */}
+      <div id="section-heatmap">
+        <HeatmapSection />
+      </div>
 
       {/* CTA Banner */}
       <section className="py-20 bg-background relative overflow-hidden">
@@ -47,24 +74,23 @@ export default function Home() {
               <Leaf className="w-7 h-7 text-white" />
             </div>
             <h2 className="font-space font-bold text-3xl lg:text-4xl mb-4">
-              Start Predicting <span className="text-gradient-green">CO₂ Adsorption</span> Now
+              {t('cta.heading')} <span className="text-gradient-green">{t('cta.headingHighlight')}</span>
             </h2>
             <p className="text-muted-foreground text-lg mb-8 max-w-2xl mx-auto">
-              {TOTAL_DATA_POINTS.toLocaleString()} peer-reviewed experimental records.
-              Statistical lookup + trained ML pipeline. Free, open, and runs entirely in your browser.
+              {TOTAL_DATA_POINTS.toLocaleString()} {t('cta.desc')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 to="/predictor"
                 className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl gradient-green text-white font-semibold glow-green hover:scale-105 transition-transform"
               >
-                Launch CO₂ Estimator <ArrowRight className="w-4 h-4" />
+                {t('cta.launch')} <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
                 to="/database"
                 className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl border-2 border-green-200 hover:border-green-400 text-foreground font-semibold transition-colors"
               >
-                Browse Database
+                {t('cta.browse')}
               </Link>
             </div>
           </motion.div>

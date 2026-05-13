@@ -152,6 +152,7 @@ function FeatureEffectsTab() {
     const groupKey = feature === 'activator' ? 'activator' : feature === 'biomass' ? 'biomass' : 'activationType';
     const groups = {};
     DB44_RECORDS.forEach(r => {
+      if (!Number.isFinite(r.co2Uptake)) return;
       const k = r[groupKey] === 'Non' ? 'None' : r[groupKey];
       if (!groups[k]) groups[k] = [];
       groups[k].push(r.co2Uptake);
@@ -181,7 +182,7 @@ function FeatureEffectsTab() {
         ))}
       </div>
       <p className="text-xs text-muted-foreground">
-        Distribution of CO₂ Uptake (mmol/g) by {feature} — bars show mean, error-style lines show min/max from real records
+        Distribution of CO₂ Uptake (mmol/g) by {feature} — bars show mean, error-style lines show min/max from records with measured CO₂ uptake
       </p>
       <ResponsiveContainer width="100%" height={320}>
         <BarChart data={chartData} margin={{ top: 16, right: 20, left: 0, bottom: 10 }}>

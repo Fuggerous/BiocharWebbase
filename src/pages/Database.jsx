@@ -14,17 +14,18 @@ import BlendingAnalysis from '../components/database/BlendingAnalysis';
 
 
 
-// Statistical outlier detection (univariate)
-const ALL_CO2 = DB44_RECORDS.map(r => r.co2Uptake);
+// Statistical outlier detection — filter null co2Uptake (non-isotherm records)
+const ALL_CO2 = DB44_RECORDS.map(r => r.co2Uptake).filter(v => v != null);
 const CO2_MEAN = ALL_CO2.reduce((s, v) => s + v, 0) / ALL_CO2.length;
 const CO2_STD = Math.sqrt(ALL_CO2.reduce((s, v) => s + (v - CO2_MEAN) ** 2, 0) / ALL_CO2.length);
-function isOutlier(val) { return Math.abs(val - CO2_MEAN) > 1.8 * CO2_STD; }
+function isOutlier(val) { return val != null && Math.abs(val - CO2_MEAN) > 1.8 * CO2_STD; }
 
 // Multivariate anomaly detection (Isolation Forest–style z² scoring)
 const ANOM_FEATURES = ['pyroTemp', 'residenceTime', 'surfaceArea', 'poreVolume', 'co2Uptake', 'pressure'];
 const ANOM_STATS = {};
 ANOM_FEATURES.forEach(f => {
-  const vals = DB44_RECORDS.map(r => r[f]);
+  // Filter nulls — non-isotherm records may have null co2Uptake/poreVolume/pressure
+  const vals = DB44_RECORDS.map(r => r[f]).filter(v => v != null);
   const mean = vals.reduce((s, v) => s + v, 0) / vals.length;
   const std = Math.sqrt(vals.reduce((s, v) => s + (v - mean) ** 2, 0) / vals.length) || 1;
   ANOM_STATS[f] = { mean, std };
@@ -52,7 +53,7 @@ export default function Database() {
       if (filters.adsorpTemp.length > 0 && !filters.adsorpTemp.includes(String(r.adsorpTemp))) return false;
       if (r.surfaceArea < filters.surfaceAreaRange[0] || r.surfaceArea > filters.surfaceAreaRange[1]) return false;
       if (r.poreVolume * 1e6 < filters.poreVolRange[0] || r.poreVolume * 1e6 > filters.poreVolRange[1]) return false;
-      if (r.co2Uptake < filters.co2Range[0] || r.co2Uptake > filters.co2Range[1]) return false;
+      if (r.co2Uptake != null && (r.co2Uptake < filters.co2Range[0] || r.co2Uptake > filters.co2Range[1])) return false;
       if (r.pyroTemp < filters.pyroTempRange[0] || r.pyroTemp > filters.pyroTempRange[1]) return false;
       if (filters.search) {
         const q = filters.search.toLowerCase();
@@ -166,9 +167,9 @@ export default function Database() {
                   </button>
                 </div>
               </div>
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto overflow-y-auto max-h-96" style={{ maxHeight: '400px' }}>
                 <table className="w-full text-sm">
-                  <thead>
+                  <thead className="sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-10">
                     <tr className="border-b border-border">
                       {['#', 'Biomass Species', 'Pyro Temp', 'Res. Time', 'Activator', 'Act. Type', 'Blend / Composite', 'BET Area (m²/g)', 'Pore Vol (m³/kg)', 'Ads Temp', 'Pressure', 'CO₂ (mmol/g)', 'Anomaly'].map(h => (
                         <th key={h} className="text-left py-3 px-2 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider whitespace-nowrap">{h}</th>
@@ -208,22 +209,28 @@ export default function Database() {
                             {row.blend}
                           </span>
                         </td>
-                        <td className="py-2.5 px-2 font-mono text-xs">{row.surfaceArea.toLocaleString()}</td>
-                        <td className="py-2.5 px-2 font-mono text-xs">{row.poreVolume.toFixed(6)}</td>
-                        <td className="py-2.5 px-2 text-xs">{row.adsorpTemp}°C</td>
-                        <td className="py-2.5 px-2 text-xs">{row.pressure} atm</td>
+                        <td className="py-2.5 px-2 font-mono text-xs">{row.surfaceArea?.toLocaleString() ?? '—'}</td>
+                        <td className="py-2.5 px-2 font-mono text-xs">{row.poreVolume != null ? row.poreVolume.toFixed(6) : '—'}</td>
+                        <td className="py-2.5 px-2 text-xs">{row.adsorpTemp != null ? `${row.adsorpTemp}°C` : '—'}</td>
+                        <td className="py-2.5 px-2 text-xs">{row.pressure != null ? `${row.pressure} atm` : '—'}</td>
                         <td className="py-2.5 px-2">
                           <div className="flex items-center gap-1.5">
-                            <span className={`font-bold text-sm ${row.co2Uptake >= 6 ? 'text-green-500' : row.co2Uptake >= 4 ? 'text-blue-500' : row.co2Uptake >= 2.5 ? 'text-amber-500' : 'text-muted-foreground'}`}>
-                              {row.co2Uptake.toFixed(3)}
-                            </span>
-                            {isOutlier(row.co2Uptake) && (
-                              <span
-                                title="Statistically significant variance — potential breakthrough or experimental anomaly (>1.8σ from mean)"
-                                className={`px-1.5 py-0.5 rounded-full text-[8px] font-bold border cursor-help ${row.co2Uptake > CO2_MEAN ? 'bg-green-500/10 text-green-600 border-green-400/30' : 'bg-red-500/10 text-red-500 border-red-400/30'}`}
-                              >
-                                {row.co2Uptake > CO2_MEAN ? '↑ Outlier' : '↓ Outlier'}
-                              </span>
+                            {row.co2Uptake != null ? (
+                              <>
+                                <span className={`font-bold text-sm ${row.co2Uptake >= 6 ? 'text-green-500' : row.co2Uptake >= 4 ? 'text-blue-500' : row.co2Uptake >= 2.5 ? 'text-amber-500' : 'text-muted-foreground'}`}>
+                                  {row.co2Uptake.toFixed(3)}
+                                </span>
+                                {isOutlier(row.co2Uptake) && (
+                                  <span
+                                    title="Statistically significant variance — potential breakthrough or experimental anomaly (>1.8σ from mean)"
+                                    className={`px-1.5 py-0.5 rounded-full text-[8px] font-bold border cursor-help ${row.co2Uptake > CO2_MEAN ? 'bg-green-500/10 text-green-600 border-green-400/30' : 'bg-red-500/10 text-red-500 border-red-400/30'}`}
+                                  >
+                                    {row.co2Uptake > CO2_MEAN ? '↑ Outlier' : '↓ Outlier'}
+                                  </span>
+                                )}
+                              </>
+                            ) : (
+                              <span className="text-[10px] text-muted-foreground/50 italic">BET only</span>
                             )}
                           </div>
                         </td>

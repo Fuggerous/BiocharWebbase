@@ -75,11 +75,11 @@ export default function ResearchNewsFeed() {
             <span className="text-green-400 text-sm font-medium">Real Data · Computed from 44Database</span>
           </div>
           <h2 className="font-space font-bold text-3xl lg:text-4xl text-white mb-3">
-            What the Database <span className="text-gradient-green">Tells Us</span>
+            Database <span className="text-gradient-green">Chemical Space</span>
           </h2>
           <p className="text-slate-400 text-base max-w-2xl mx-auto">
-            Key findings computed directly from {TOTAL_DATA_POINTS.toLocaleString()} peer-reviewed experimental records.
-            No estimates — only real measured data.
+            Key findings computed directly from {TOTAL_DATA_POINTS.toLocaleString()} peer-reviewed experimental records —
+            biomass types, activators, temperatures, and their effect on CO₂ uptake.
           </p>
         </motion.div>
 
