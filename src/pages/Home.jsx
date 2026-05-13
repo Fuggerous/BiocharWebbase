@@ -5,6 +5,7 @@ import StatsSection from '../components/home/StatsSection';
 import IntroSection from '../components/home/IntroSection';
 import ResearchNewsFeed from '../components/home/ResearchNewsFeed';
 import KnowledgeCenterSection from '../components/home/KnowledgeCenterSection';
+import DocumentsSection from '../components/home/DocumentsSection';
 import BiocharSocietySection from '../components/home/BiocharSocietySection';
 import TriplePhaseFlow from '../components/home/TriplePhaseFlow';
 import HeatmapSection from '../components/home/HeatmapSection';
@@ -45,17 +46,22 @@ export default function Home() {
         <KnowledgeCenterSection />
       </div>
 
-      {/* 5. Biochar Society in Thailand */}
+      {/* 5. Documents */}
+      <div id="section-documents">
+        <DocumentsSection />
+      </div>
+
+      {/* 6. Biochar Society in Thailand */}
       <div id="section-society">
         <BiocharSocietySection />
       </div>
 
-      {/* 6. Triple-Phase Intelligence Framework */}
+      {/* 7. Triple-Phase Intelligence Framework */}
       <div id="section-triplephase">
         <TriplePhaseFlow />
       </div>
 
-      {/* 7. CO₂ Adsorption Hotspots — Temperature × Activator Matrix */}
+      {/* 8. CO₂ Adsorption Hotspots — Temperature × Activator Matrix */}
       <div id="section-heatmap">
         <HeatmapSection />
       </div>

@@ -33,7 +33,7 @@ export const translations = {
     'kc.badge':               '📚 แหล่งความรู้',
     'kc.heading':             'Knowledge',
     'kc.headingHighlight':    'Center',
-    'kc.desc':                'Everything you need to understand biochar — from the science to Thailand\'s context, the production process, and downloadable research documents.',
+    'kc.desc':                'Everything you need to understand biochar — from the science to Thailand\'s context and the production process.',
     'kc.tab.what':            'What is Biochar',
     'kc.tab.thailand':        'Biochar in Thailand',
     'kc.tab.process':         'Process Flow',
@@ -50,6 +50,12 @@ export const translations = {
     'kc.docs.empty':          'No documents found matching your search.',
     'kc.docs.open':           'Open File',
     'kc.docs.source':         'Documents from Biochar Consortium Thailand · MTEC-NZE Biochar Programme',
+
+    // ── Documents Section ───────────────────────────────────────────────────
+    'docs.badge':             '📄 Research Documents',
+    'docs.heading':           'Documents',
+    'docs.headingHighlight':  'Library',
+    'docs.desc':              'Browse curated documents, standards, and field materials from the Thai biochar community.',
 
     // ── Biochar Society ───────────────────────────────────────────────────────
     'soc.badge':              '🇹🇭 Biochar Network',
@@ -95,7 +101,7 @@ export const translations = {
     'kc.badge':               '📚 แหล่งความรู้',
     'kc.heading':             'ศูนย์',
     'kc.headingHighlight':    'ความรู้',
-    'kc.desc':                'ทุกสิ่งที่คุณต้องการเพื่อทำความเข้าใจไบโอชาร์ — ตั้งแต่หลักวิทยาศาสตร์ บริบทในไทย กระบวนการผลิต ไปจนถึงเอกสารวิจัยที่ดาวน์โหลดได้',
+    'kc.desc':                'ทุกสิ่งที่คุณต้องการเพื่อทำความเข้าใจไบโอชาร์ — ตั้งแต่หลักวิทยาศาสตร์ บริบทในไทย และกระบวนการผลิต',
     'kc.tab.what':            'ไบโอชาร์คืออะไร',
     'kc.tab.thailand':        'ไบโอชาร์ในไทย',
     'kc.tab.process':         'กระบวนการผลิต',
@@ -112,6 +118,12 @@ export const translations = {
     'kc.docs.empty':          'ไม่พบเอกสารที่ตรงกับการค้นหา',
     'kc.docs.open':           'เปิดไฟล์',
     'kc.docs.source':         'เอกสารจาก Biochar Consortium Thailand · โครงการ MTEC-NZE Biochar',
+
+    // ── Documents Section ───────────────────────────────────────────────────
+    'docs.badge':             '📄 เอกสารวิจัย',
+    'docs.heading':           'คลัง',
+    'docs.headingHighlight':  'เอกสาร',
+    'docs.desc':              'รวมเอกสาร มาตรฐาน และสื่อภาคสนามที่คัดสรรจากชุมชนไบโอชาร์ในประเทศไทย',
 
     // ── Biochar Society ───────────────────────────────────────────────────────
     'soc.badge':              '🇹🇭 เครือข่ายไบโอชาร์',

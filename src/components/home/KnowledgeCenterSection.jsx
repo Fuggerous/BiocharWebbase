@@ -1,7 +1,7 @@
 // @ts-nocheck
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Leaf, MapPin, GitBranch, FileDown, Download, ExternalLink, Search, Star, Tag, ChevronRight, Zap, Flame, Droplets, Wind, BarChart3 } from 'lucide-react';
+import { Leaf, MapPin, GitBranch, Search, Zap, Flame, Droplets, Wind } from 'lucide-react';
 import BiocharFlow from './BiocharFlow';
 import ThailandContext from './ThailandContext';
 import { useLang } from '../../lib/LanguageContext';
@@ -105,139 +105,25 @@ const TABS = [
   { id: 'what',     icon: Leaf,      labelKey: 'kc.tab.what' },
   { id: 'thailand', icon: MapPin,    labelKey: 'kc.tab.thailand' },
   { id: 'process',  icon: GitBranch, labelKey: 'kc.tab.process' },
-  { id: 'docs',     icon: FileDown,  labelKey: 'kc.tab.docs' },
 ];
-
-// ─── Forum Zone Component ─────────────────────────────────────────────────────
-function ForumZone() {
-  const { t } = useLang();
-  const [activeFilter, setActiveFilter] = useState('ทั้งหมด');
-  const [search, setSearch] = useState('');
-
-  const filtered = FORUM_DOCS.filter(doc => {
-    const matchCat = activeFilter === 'ทั้งหมด' || doc.category === activeFilter;
-    const matchSearch = !search || doc.title.toLowerCase().includes(search.toLowerCase()) || doc.titleEn.toLowerCase().includes(search.toLowerCase());
-    return matchCat && matchSearch;
-  });
-
-  return (
-    <div className="space-y-6">
-      {/* Search + Filters */}
-      <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder={t('kc.docs.search')}
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-muted border border-border text-sm focus:outline-none focus:ring-2 focus:ring-green-500/30"
-          />
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {FORUM_CATEGORIES.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setActiveFilter(cat)}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
-                activeFilter === cat
-                  ? 'bg-green-500 text-white'
-                  : 'bg-muted border border-border text-muted-foreground hover:border-green-400 hover:text-foreground'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Document Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <AnimatePresence mode="popLayout">
-          {filtered.map((doc, i) => (
-            <motion.div
-              key={doc.id}
-              layout
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ delay: i * 0.05 }}
-              className={`relative rounded-2xl border p-5 flex flex-col gap-3 ${
-                doc.featured
-                  ? 'bg-gradient-to-br from-green-500/10 to-emerald-600/5 border-green-400/40'
-                  : 'glass-card border-border'
-              }`}
-            >
-              {doc.featured && (
-                <span className="absolute top-3 right-3 flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-400 text-amber-900 text-xs font-bold">
-                  <Star className="w-3 h-3" /> เด่น
-                </span>
-              )}
-
-              {/* Category */}
-              <div className="flex items-center gap-1.5">
-                <div className="w-5 h-5 rounded bg-green-500/20 flex items-center justify-center">
-                  <FileDown className="w-3 h-3 text-green-600" />
-                </div>
-                <span className="text-green-600 text-xs font-semibold">{doc.category}</span>
-              </div>
-
-              {/* Title */}
-              <div>
-                <h4 className="font-semibold text-sm leading-snug mb-1">{doc.title}</h4>
-                <p className="text-muted-foreground text-xs line-clamp-3 leading-relaxed">{doc.desc}</p>
-              </div>
-
-              {/* Tags */}
-              <div className="flex flex-wrap gap-1.5 mt-auto">
-                {doc.tags.map(tag => (
-                  <span key={tag} className="px-2 py-0.5 rounded-full bg-muted border border-border text-xs text-muted-foreground">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-
-              {/* Actions */}
-              <div className="flex items-center gap-2 pt-1 border-t border-border">
-                <a
-                  href={doc.url}
-                  className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-sm font-medium transition-all ${
-                    doc.featured
-                      ? 'bg-green-500 text-white hover:bg-green-600'
-                      : 'bg-muted hover:bg-green-500/10 hover:text-green-600 border border-border'
-                  }`}
-                >
-                  <ExternalLink className="w-3.5 h-3.5" />
-                  {t('kc.docs.open')}
-                </a>
-                <a
-                  href={doc.url}
-                  className="w-9 h-9 flex items-center justify-center rounded-xl bg-muted border border-border hover:bg-green-500/10 hover:border-green-400 hover:text-green-600 transition-all"
-                >
-                  <Download className="w-4 h-4" />
-                </a>
-              </div>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-        {filtered.length === 0 && (
-          <div className="col-span-3 text-center py-12 text-muted-foreground">
-            {t('kc.docs.empty')}
-          </div>
-        )}
-      </div>
-
-      <p className="text-xs text-muted-foreground text-center pt-2">
-        {t('kc.docs.source')}
-      </p>
-    </div>
-  );
-}
 
 // ─── Main Section ─────────────────────────────────────────────────────────────
 export default function KnowledgeCenterSection() {
   const [activeTab, setActiveTab] = useState('what');
   const { t } = useLang();
+
+  useEffect(() => {
+    const autoTabs = ['what', 'thailand', 'process'];
+    const timer = window.setInterval(() => {
+      setActiveTab(current => {
+        const index = autoTabs.indexOf(current);
+        const nextIndex = index === -1 ? 0 : (index + 1) % autoTabs.length;
+        return autoTabs[nextIndex];
+      });
+    }, 6500);
+
+    return () => window.clearInterval(timer);
+  }, []);
 
   return (
     <section id="knowledge" className="py-20 bg-muted/30">
