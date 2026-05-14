@@ -5,7 +5,7 @@ import {
   ScatterChart, Scatter, XAxis, YAxis, CartesianGrid,
   BarChart, Bar, LabelList,
 } from 'recharts';
-import { BIOMASS_COLORS, BIOMASS_SPECIES_MAP } from '../../lib/database44';
+import { BIOMASS_COLORS, BIOMASS_SPECIES_MAP, SPECIES_COLORS } from '../../lib/database44';
 
 // Fallback color palette for biomasses without a dedicated color
 const FALLBACK_PALETTE = [
@@ -28,9 +28,8 @@ function speciesForBiomass(biomass) {
   return BIOMASS_TO_SPECIES[biomass] ?? biomass;
 }
 
-function colorForSpecies(species, idx) {
-  const representativePart = BIOMASS_SPECIES_MAP[species]?.[0];
-  return colorFor(representativePart ?? species, idx);
+function colorForSpecies(species) {
+  return SPECIES_COLORS[species] ?? FALLBACK_PALETTE[0];
 }
 
 function ChartCard({ title, subtitle, children }) {
@@ -57,7 +56,7 @@ export default function DatabaseCharts({ records = [] }) {
       counts[species] = (counts[species] ?? 0) + 1;
     });
     return Object.entries(counts)
-      .map(([name, value], i) => ({ name, value, color: colorForSpecies(name, i) }))
+      .map(([name, value]) => ({ name, value, color: colorForSpecies(name) }))
       .sort((a, b) => b.value - a.value);
   }, [records]);
 

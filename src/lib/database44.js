@@ -1431,6 +1431,26 @@ export const BLEND_COLORS = {
   '0.5TKBC': '#e879f9',
 };
 
+// Layer-1 species color palette — ensures each species gets a unique, consistent color
+export const SPECIES_COLORS = {
+  'Rice':       '#3b82f6',  // blue
+  'Corn':       '#22c55e',  // green
+  'Cotton':     '#a855f7',  // purple
+  'Banana':     '#f59e0b',  // amber
+  'Coconut':    '#ec4899',  // pink
+  'Sugarcane':  '#06b6d4',  // cyan
+  'Palm':       '#ef4444',  // red
+  'Pine':       '#8b5cf6',  // violet
+  'Wood':       '#f97316',  // orange
+  'Bamboo':     '#14b8a6',  // teal
+  'Wheat':      '#eab308',  // yellow
+  'Coffee':     '#d97706',  // amber-600
+  'Pomelo':     '#6366f1',  // indigo
+  'Durian':     '#84cc16',  // lime
+  'Algae':      '#10b981',  // emerald
+  'Other':      '#64748b',  // slate
+};
+
 
 // Two-layer biomass hierarchy: species → individual biomass names
 export const BIOMASS_SPECIES_MAP = {
