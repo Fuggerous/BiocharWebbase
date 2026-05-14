@@ -339,18 +339,7 @@ export default function Results() {
     }
   }
 
-  if (false) { // legacy biomass-blend UI removed
-    blendPreds = null;
-  } else if (false) {
-    blendCategoryPred = mlBlendLookup({
-      biomass: params.biomass,
-      temperature: params.temperature,
-      activator: params.activator,
-      residenceTime: params.residenceTime,
-      heatingRate: params.heatingRate,
-      blend: blendCategory,
-    });
-  }
+  // legacy blend code removed
 
   const confidenceColors = {
     High: 'bg-green-100 text-green-700 border-green-200',
@@ -689,63 +678,7 @@ export default function Results() {
         </div>
       </div>
 
-      {/* Blend comparison section (moved below main content) */}
-      {(blendPreds || blendCategoryPred) && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="glass-card rounded-2xl p-5 border border-border">
-            <h3 className="font-space font-semibold text-base mb-3">Blend Comparison</h3>
-            {blendPreds && (
-              <>
-                <p className="text-xs text-muted-foreground mb-3">Weighted average predictions for blend ratios between <span className="font-semibold">{params.biomass}</span> and <span className="font-semibold">{params.blend.secondary}</span>.</p>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b border-border">
-                        <th className="text-left py-2 px-2 text-xs font-semibold text-muted-foreground">Metric</th>
-                        {blendPreds.map(b => (
-                          <th key={b.ratio} className="text-left py-2 px-2 text-xs font-semibold text-muted-foreground">{b.ratio}%</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td className="py-2 px-2 font-semibold">Statistical Mean (mmol/g)</td>
-                        {blendPreds.map(b => (
-                          <td key={b.ratio} className="py-2 px-2">{b.statMean.toFixed(2)}</td>
-                        ))}
-                      </tr>
-                      <tr className="border-t border-border">
-                        <td className="py-2 px-2 font-semibold">ML Mean (mmol/g)</td>
-                        {blendPreds.map(b => (
-                          <td key={b.ratio} className="py-2 px-2">{b.mlMean.toFixed(2)}</td>
-                        ))}
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </>
-            )}
-
-            {blendCategoryPred && (
-              <>
-                <p className="text-xs text-muted-foreground mb-3">Predictions for blend category <span className="font-semibold">{typeof params.blend === 'string' ? params.blend : params.blend.category}</span>.</p>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="p-4 rounded-lg bg-slate-50 border border-slate-200">
-                    <p className="text-xs text-muted-foreground">Statistical (DB) Mean</p>
-                    <p className="text-2xl font-bold mt-2">{result.mean.toFixed(2)} mmol/g</p>
-                    <p className="text-[10px] text-muted-foreground mt-1">Based on matched DB records for selected biomass/params</p>
-                  </div>
-                  <div className="p-4 rounded-lg bg-blue-50 border border-blue-200">
-                    <p className="text-xs text-muted-foreground">ML (Blend-aware) Prediction</p>
-                    <p className="text-2xl font-bold mt-2">{blendCategoryPred.co2.toFixed(2)} mmol/g</p>
-                    <p className="text-[10px] text-muted-foreground mt-1">{blendCategoryPred.modelNote}</p>
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      )}
+      {/* Legacy blend section removed — blend results are now inside the main grid above */}
 
       <Footer />
     </div>

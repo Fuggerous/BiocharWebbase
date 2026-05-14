@@ -7,7 +7,7 @@ import CorrelationTabs from '../components/database/CorrelationTabs';
 import AdvancedFilters from '../components/database/AdvancedFilters';
 import ComparisonTool from '../components/database/ComparisonTool';
 import { motion } from 'framer-motion';
-import { Database as DbIcon, Download, FlaskConical } from 'lucide-react';
+import { Database as DbIcon, Download, FlaskConical, Layers } from 'lucide-react';
 import { TOTAL_DATA_POINTS, DB_OVERALL_MAX, TEMPERATURE_STATS } from '../lib/biocharKnowledgeBase';
 import { DB44_RECORDS, BIOMASS_COLORS, BLEND_COLORS, ADSORPTION_TEMP_LIST, BIOMASS_LIST, ACTIVATOR_LIST, DEFAULT_FILTERS } from '../lib/database44';
 import BlendingAnalysis from '../components/database/BlendingAnalysis';
@@ -46,13 +46,17 @@ export default function Database() {
 
   const filtered = useMemo(() => {
     return DB44_RECORDS.filter(r => {
+      // Data type filter
+      if (filters.dataType === 'isotherm' && !r.isIsotherm) return false;
+      if (filters.dataType === 'bet' && r.isIsotherm) return false;
+      // Biomass filter (individual parts)
       if (filters.biomass.length > 0 && !filters.biomass.includes(r.biomass)) return false;
       if (filters.activator.length > 0 && !filters.activator.includes(r.activator)) return false;
       if (filters.activationType.length > 0 && !filters.activationType.includes(r.activationType)) return false;
       if (filters.blend.length > 0 && !filters.blend.includes(r.blend)) return false;
       if (filters.adsorpTemp.length > 0 && !filters.adsorpTemp.includes(String(r.adsorpTemp))) return false;
-      if (r.surfaceArea < filters.surfaceAreaRange[0] || r.surfaceArea > filters.surfaceAreaRange[1]) return false;
-      if (r.poreVolume * 1e6 < filters.poreVolRange[0] || r.poreVolume * 1e6 > filters.poreVolRange[1]) return false;
+      if (r.surfaceArea != null && (r.surfaceArea < filters.surfaceAreaRange[0] || r.surfaceArea > filters.surfaceAreaRange[1])) return false;
+      if (r.poreVolume != null && (r.poreVolume * 1e6 < filters.poreVolRange[0] || r.poreVolume * 1e6 > filters.poreVolRange[1])) return false;
       if (r.co2Uptake != null && (r.co2Uptake < filters.co2Range[0] || r.co2Uptake > filters.co2Range[1])) return false;
       if (r.pyroTemp < filters.pyroTempRange[0] || r.pyroTemp > filters.pyroTempRange[1]) return false;
       if (filters.search) {
@@ -138,26 +142,45 @@ export default function Database() {
           <div className="flex-1 space-y-6 min-w-0">
 
             {/* Overview Charts (Feedstock Distribution + Avg CO2) */}
-            <DatabaseCharts />
+            <DatabaseCharts records={filtered} />
 
             {/* Co-Pyrolysis / Blending Analysis */}
-            <BlendingAnalysis />
+            <BlendingAnalysis records={filtered} />
 
             {/* Correlation Analysis Tabs */}
-            <CorrelationTabs />
+            <CorrelationTabs records={filtered} />
 
             {/* Data Table */}
             <div className="glass-card rounded-2xl p-5 border border-border">
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-3 flex-wrap gap-3">
                 <div>
                   <h3 className="font-space font-semibold text-base flex items-center gap-2">
-                    <FlaskConical className="w-4 h-4 text-green-500" /> Isotherm Records
+                    <FlaskConical className="w-4 h-4 text-green-500" /> Dataset Records
                   </h3>
                   <p className="text-xs text-muted-foreground mt-0.5">
                     {filtered.length} records shown · {TOTAL_DATA_POINTS.toLocaleString()} total in 44Database
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
+                  {/* Quick data-type tab strip */}
+                  <div className="flex gap-1 p-1 bg-muted rounded-lg">
+                    {[
+                      { key: 'all',      label: 'All',      count: DB44_RECORDS.length },
+                      { key: 'isotherm', label: 'Isotherm', count: DB44_RECORDS.filter(r => r.isIsotherm).length },
+                      { key: 'bet',      label: 'BET Only', count: DB44_RECORDS.filter(r => !r.isIsotherm).length },
+                    ].map(opt => (
+                      <button key={opt.key}
+                        onClick={() => setFilters(f => ({ ...f, dataType: opt.key }))}
+                        className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all ${
+                          filters.dataType === opt.key
+                            ? 'bg-card shadow-sm text-foreground'
+                            : 'text-muted-foreground hover:text-foreground'
+                        }`}>
+                        {opt.label}
+                        <span className="ml-1 text-[9px] text-muted-foreground/60">{opt.count}</span>
+                      </button>
+                    ))}
+                  </div>
                   <ComparisonTool />
                   <button
                     onClick={handleExportCSV}

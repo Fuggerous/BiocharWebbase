@@ -1431,11 +1431,33 @@ export const BLEND_COLORS = {
   '0.5TKBC': '#e879f9',
 };
 
+
+// Two-layer biomass hierarchy: species → individual biomass names
+export const BIOMASS_SPECIES_MAP = {
+  'Rice':       ['Rice Straw', 'Rice husk'],
+  'Corn':       ['Corn straw', 'Corn stalk', 'Corncob'],
+  'Cotton':     ['Cotton straw', 'Cotton stalk'],
+  'Banana':     ['Banana straw', 'Banana pseudo-stem'],
+  'Coconut':    ['Coconut husk', 'Coconut shell', 'Cocopeat', 'Green coconuts'],
+  'Sugarcane':  ['Sugarcane bagasse', 'Bagasse', 'Orange Bagasse'],
+  'Palm':       ['Palm fibre', 'Palm kernel shell', 'Date palm'],
+  'Pine':       ['Pine sawdust powders', 'Pinewood sawdust', 'Pitch pine', 'Pinus Pinea L. cone', 'Pinus halepensis Mill'],
+  'Wood':       ['Hickory wood', 'Douglas fir wood', 'Hybrid popular wood', 'Spruce wood', 'Wood', 'Wood bark', 'Wood stem', 'Acacia wood Sawdust', 'Mixed wood sawdust'],
+  'Bamboo':     ['Bamboo'],
+  'Wheat':      ['Raw wheat straw', 'Straw'],
+  'Coffee':     ['Coffee ground-based'],
+  'Pomelo':     ['Pomelo peel'],
+  'Durian':     ['Durian peel'],
+  'Algae':      ['Dry algae'],
+  'Other':      ['Agro-food waste', 'Food waste solid digestate', 'Green waste', 'Dried Okara biomass', 'non-thermal dried okara'],
+};
+
 // Default filter state for the Database page
 export const DEFAULT_FILTERS = {
   biomass: [], activator: [], activationType: [], blend: [], adsorpTemp: [],
   surfaceAreaRange: [0, 3200], poreVolRange: [0, 1600],
   co2Range: [0, 8], pyroTempRange: [300, 900], search: '',
+  dataType: 'all',   // 'all' | 'isotherm' | 'bet'
 };
 
 
