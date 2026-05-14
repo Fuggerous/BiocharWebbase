@@ -3,7 +3,7 @@ import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   FileText, Video, BookOpen, Shield, Lightbulb,
-  Download, ExternalLink, Search, Star, ChevronRight, X
+  Download, ExternalLink, Search, Star, ChevronRight, X,
 } from 'lucide-react';
 import { useLang } from '../../lib/LanguageContext';
 
@@ -307,22 +307,75 @@ function ForumZone() {
         </AnimatePresence>
       </motion.div>
 
-      {/* ── Overflow horizontal scroll ── */}
+      {/* ── Overflow: compact horizontal slide strip ── */}
       {overflowDocs.length > 0 && (
-        <div>
-          <p className="text-[11px] text-muted-foreground mb-2 flex items-center gap-1.5">
-            <span className="w-4 h-0.5 bg-border rounded inline-block" />
-            {overflowDocs.length} {lang === 'en' ? 'more' : 'รายการเพิ่มเติม'}
-            <span className="w-4 h-0.5 bg-border rounded inline-block" />
-          </p>
-          <div className="flex gap-4 overflow-x-auto pb-3 scrollbar-thin
-            scrollbar-thumb-border scrollbar-track-transparent snap-x snap-mandatory">
-            {overflowDocs.map((doc, i) => (
-              <div key={doc.id} className="flex-shrink-0 w-72 snap-start">
-                <DocCard doc={doc} index={i} lang={lang} t={t} />
-              </div>
-            ))}
+        <div className="relative">
+          {/* Divider label */}
+          <div className="flex items-center gap-3 mb-3">
+            <div className="flex-1 h-px bg-border" />
+            <span className="text-[11px] font-medium text-muted-foreground whitespace-nowrap flex items-center gap-1.5">
+              <ChevronRight className="w-3 h-3" />
+              {overflowDocs.length} {lang === 'en' ? 'more' : 'รายการเพิ่มเติม'} — {lang === 'en' ? 'scroll →' : 'เลื่อนดู →'}
+            </span>
+            <div className="flex-1 h-px bg-border" />
           </div>
+
+          {/* Compact horizontal scroll strip */}
+          <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory
+            scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent
+            -mx-1 px-1">
+            {overflowDocs.map((doc, i) => {
+              const catCfg  = getCatConfig(doc.category);
+              const typeCfg = TYPE_CONFIG[doc.type] ?? TYPE_CONFIG.pdf;
+              const TypeIcon = typeCfg.icon;
+              const title   = lang === 'en' ? doc.titleEn : doc.title;
+              return (
+                <div key={doc.id}
+                  className="flex-shrink-0 w-60 snap-start rounded-xl border border-border bg-card
+                    hover:border-green-400/40 hover:shadow-sm transition-all overflow-hidden group">
+                  {/* Color accent */}
+                  <div className="h-0.5 w-full" style={{ background: catCfg.color, opacity: 0.6 }} />
+                  <div className="p-3 flex flex-col gap-2">
+                    {/* Icon + category */}
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-6 h-6 rounded flex items-center justify-center flex-shrink-0"
+                        style={{ background: `${typeCfg.color}15` }}>
+                        <TypeIcon className="w-3 h-3" style={{ color: typeCfg.color }} />
+                      </div>
+                      <span className="text-[10px] font-semibold" style={{ color: catCfg.color }}>
+                        {t(doc.catKey)}
+                      </span>
+                      {doc.featured && (
+                        <span className="ml-auto text-[9px] font-bold text-amber-600 flex items-center gap-0.5">
+                          <Star className="w-2.5 h-2.5" />{t('docs.featured')}
+                        </span>
+                      )}
+                    </div>
+                    {/* Title */}
+                    <p className="text-xs font-semibold line-clamp-2 leading-snug
+                      group-hover:text-green-600 transition-colors min-h-[2.5rem]">
+                      {title}
+                    </p>
+                    {/* Open button */}
+                    <a href={doc.url}
+                      target={doc.url?.startsWith('http') ? '_blank' : undefined}
+                      rel={doc.url?.startsWith('http') ? 'noopener noreferrer' : undefined}
+                      className="flex items-center justify-center gap-1 py-1.5 rounded-lg
+                        bg-muted hover:bg-green-500 hover:text-white border border-border
+                        hover:border-green-500 text-[11px] font-semibold transition-all">
+                      <ExternalLink className="w-3 h-3" />
+                      {t('kc.docs.open')}
+                    </a>
+                  </div>
+                </div>
+              );
+            })}
+            {/* Fade-right sentinel */}
+            <div className="flex-shrink-0 w-6" />
+          </div>
+
+          {/* Fade overlay on right edge */}
+          <div className="absolute right-0 top-8 bottom-2 w-12 bg-gradient-to-l from-background to-transparent pointer-events-none" />
         </div>
       )}
 
