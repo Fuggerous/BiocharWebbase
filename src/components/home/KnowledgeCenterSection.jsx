@@ -38,7 +38,7 @@ export default function KnowledgeCenterSection() {
         const nextIndex = index === -1 ? 0 : (index + 1) % autoTabs.length;
         return autoTabs[nextIndex];
       });
-    }, 6500);
+    }, 20000);
 
     return () => window.clearInterval(timer);
   }, []);
@@ -99,7 +99,7 @@ export default function KnowledgeCenterSection() {
                     key={fact.titleKey}
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.08 }}
+                    transition={{ delay: i * 0.2 }}
                     className="glass-card rounded-2xl p-6 border border-border"
                   >
                     <div className={`w-11 h-11 rounded-xl ${fact.bg} border flex items-center justify-center mb-4`}>
