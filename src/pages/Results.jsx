@@ -4,7 +4,7 @@ import Footer from '../components/layout/Footer';
 import { motion } from 'framer-motion';
 import {
   ArrowLeft, Share2, Lightbulb, Thermometer, Clock,
-  TrendingUp, FlaskConical, Leaf, Database, ShieldCheck, BarChart2
+  TrendingUp, FlaskConical, Leaf, Database, ShieldCheck, BarChart2, Layers
 } from 'lucide-react';
 import {
   BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -294,23 +294,13 @@ export default function Results() {
     heatingRate:   params.heatingRate,
   });
 
-  // Blend: support two modes
-  // 1) legacy mix-enabled UI -> array of ratios via mlBlendPredict
-  // 2) categorical `blend` feature (string or params.blend.category) -> lookup via mlBlendLookup
+  // Chemical blend: use params.chemBlend (new) or legacy params.blend fallback
+  const chemBlend = params.chemBlend ?? 'Non';
   let blendPreds = null;
   let blendCategoryPred = null;
-  const blendCategory = typeof params.blend === 'string' ? params.blend : params.blend?.category || null;
-  if (params.blend?.enabled && params.blend?.secondary) {
-    blendPreds = mlBlendPredict({
-      biomass: params.biomass,
-      secondary: params.blend.secondary,
-      temperature: params.temperature,
-      activator: params.activator,
-      residenceTime: params.residenceTime,
-      heatingRate: params.heatingRate,
-      ratios: [0,25,50,75,100],
-    });
-  } else if (blendCategory) {
+  if (false) { // legacy biomass-blend UI removed
+    blendPreds = null;
+  } else if (chemBlend && chemBlend !== 'Non') {
     blendCategoryPred = mlBlendLookup({
       biomass: params.biomass,
       temperature: params.temperature,
@@ -391,11 +381,12 @@ export default function Results() {
                 <h3 className="font-space font-semibold text-base mb-4">Input Parameters</h3>
                 <div className="space-y-3">
                   {[
-                    { icon: Leaf, label: 'Feedstock', value: params.biomass, color: 'text-green-500' },
-                    { icon: Thermometer, label: 'Temperature', value: `${params.temperature}°C`, color: 'text-red-400' },
-                    { icon: Clock, label: 'Residence Time', value: `${params.residenceTime} min`, color: 'text-blue-400' },
-                    { icon: TrendingUp, label: 'Heating Rate', value: `${params.heatingRate}°C/min`, color: 'text-amber-400' },
-                    { icon: FlaskConical, label: 'Activator', value: params.activator === 'Non' ? 'None' : params.activator, color: 'text-purple-400' },
+                    { icon: Leaf,        label: 'Feedstock',      value: params.biomass,                                   color: 'text-green-500' },
+                    { icon: Thermometer, label: 'Temperature',    value: `${params.temperature}°C`,                        color: 'text-red-400'   },
+                    { icon: Clock,       label: 'Residence Time', value: `${params.residenceTime} min`,                    color: 'text-blue-400'  },
+                    { icon: TrendingUp,  label: 'Heating Rate',   value: `${params.heatingRate}°C/min`,                   color: 'text-amber-400' },
+                    { icon: FlaskConical,label: 'Activator',      value: params.activator === 'Non' ? 'None' : params.activator, color: 'text-purple-400' },
+                    ...(chemBlend !== 'Non' ? [{ icon: Layers, label: 'Chem. Blend', value: chemBlend, color: 'text-cyan-500' }] : []),
                   ].map(row => (
                     <div key={row.label} className="flex items-center justify-between p-2.5 rounded-xl bg-muted/50">
                       <div className="flex items-center gap-2">
