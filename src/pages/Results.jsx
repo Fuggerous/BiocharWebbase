@@ -294,13 +294,54 @@ export default function Results() {
     heatingRate:   params.heatingRate,
   });
 
-  // Chemical blend: use params.chemBlend (new) or legacy params.blend fallback
-  const chemBlend = params.chemBlend ?? 'Non';
-  let blendPreds = null;
+  // Chemical blend interpolation
+  const blendInput = params.chemBlend ?? { enabled: false };
+  const blendEnabled = blendInput?.enabled === true;
   let blendCategoryPred = null;
+  let blendPreds = null;
+  if (blendEnabled && blendInput.chemical && blendInput.percent > 0) {
+    // Find reference data points for this chemical from BLEND_EFFECTS
+    const chem = blendInput.chemical;
+    const pct  = Number(blendInput.percent);
+    const refs = Object.entries(BLEND_EFFECTS)
+      .filter(([key]) => key.includes(chem))
+      .map(([key, e]) => ({ pct: e.percent, delta: e.delta, key }))
+      .sort((a, b) => a.pct - b.pct);
+
+    if (refs.length >= 1) {
+      let interpDelta;
+      if (refs.length === 1) {
+        // Single point: linear from origin (0% → 0 delta)
+        interpDelta = (pct / refs[0].pct) * refs[0].delta;
+      } else {
+        // Two points: piecewise interpolation
+        const lo = refs[0], hi = refs[refs.length - 1];
+        if (pct <= lo.pct) {
+          interpDelta = (pct / lo.pct) * lo.delta;
+        } else if (pct >= hi.pct) {
+          // Extrapolate beyond known range (diminishing returns: sqrt scaling)
+          interpDelta = hi.delta * Math.sqrt(pct / hi.pct);
+        } else {
+          // Interpolate between lo and hi
+          const t = (pct - lo.pct) / (hi.pct - lo.pct);
+          interpDelta = lo.delta + t * (hi.delta - lo.delta);
+        }
+      }
+      blendCategoryPred = {
+        chemical:   chem,
+        percent:    pct,
+        delta:      +interpDelta.toFixed(3),
+        delta_pct:  +(result.mean > 0 ? interpDelta / result.mean * 100 : 0).toFixed(1),
+        n_refs:     refs.length,
+        confidence: refs.length >= 2 && pct >= refs[0].pct && pct <= refs[refs.length-1].pct
+                      ? 'Interpolated' : 'Extrapolated',
+      };
+    }
+  }
+
   if (false) { // legacy biomass-blend UI removed
     blendPreds = null;
-  } else if (chemBlend && chemBlend !== 'Non') {
+  } else if (false) {
     blendCategoryPred = mlBlendLookup({
       biomass: params.biomass,
       temperature: params.temperature,
@@ -386,7 +427,7 @@ export default function Results() {
                     { icon: Clock,       label: 'Residence Time', value: `${params.residenceTime} min`,                    color: 'text-blue-400'  },
                     { icon: TrendingUp,  label: 'Heating Rate',   value: `${params.heatingRate}°C/min`,                   color: 'text-amber-400' },
                     { icon: FlaskConical,label: 'Activator',      value: params.activator === 'Non' ? 'None' : params.activator, color: 'text-purple-400' },
-                    ...(chemBlend !== 'Non' ? [{ icon: Layers, label: 'Chem. Blend', value: chemBlend, color: 'text-cyan-500' }] : []),
+                    ...(blendEnabled ? [{ icon: Layers, label: 'Chem. Blend', value: `${blendInput.percent}% ${blendInput.chemical}`, color: 'text-cyan-500' }] : []),
                   ].map(row => (
                     <div key={row.label} className="flex items-center justify-between p-2.5 rounded-xl bg-muted/50">
                       <div className="flex items-center gap-2">
@@ -550,49 +591,76 @@ export default function Results() {
               <WhyThisPrediction result={result} params={params} />
             </motion.div>
 
-            {/* Chemical Blend Effect — ML Model 04 */}
-            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.45 }}>
-              <div className="glass-card rounded-2xl p-5 border border-cyan-500/20 bg-cyan-500/5">
-                <div className="flex items-center gap-2 mb-3 flex-wrap">
-                  <FlaskConical className="w-4 h-4 text-cyan-500" />
-                  <h3 className="font-space font-semibold text-sm">Chemical Blend Effect</h3>
-                  <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 border border-amber-500/20 text-[9px] font-bold">
-                    New Feature · Waiting for more blend data
-                  </span>
-                </div>
-                <p className="text-[11px] text-muted-foreground mb-3">
-                  Predicted CO₂ change when mixing biochar with PKBC/TKBC composites vs pure (Non) biochar.
-                  Based on XGBoost model trained on {Object.values(BLEND_EFFECTS).reduce((s,e)=>s+e.n_records,0)} blend records (R²=0.996).
-                </p>
-                {Object.keys(BLEND_EFFECTS).length > 0 ? (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {Object.entries(BLEND_EFFECTS).map(([blend, e]) => (
-                      <div key={blend} className={`p-3 rounded-xl border text-xs flex items-center justify-between gap-3 ${
-                        e.synergistic ? 'bg-green-500/5 border-green-500/20' : 'bg-muted/40 border-border'
-                      }`}>
-                        <div>
-                          <p className="font-space font-bold text-sm">{blend}</p>
-                          <p className="text-muted-foreground text-[10px]">n={e.n_records} records · Non avg: {e.mean_non_pred} mmol/g</p>
+            {/* Chemical Blend Effect — shown only when blend is enabled */}
+            {blendEnabled && (
+              <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.45 }}>
+                <div className="glass-card rounded-2xl p-5 border border-cyan-500/25 bg-cyan-500/5">
+                  <div className="flex items-center gap-2 mb-3 flex-wrap">
+                    <Layers className="w-4 h-4 text-cyan-500" />
+                    <h3 className="font-space font-semibold text-sm">
+                      Chemical Blend Effect — {blendInput.percent}% {blendInput.chemical}
+                    </h3>
+                    <span className="ml-auto px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 border border-amber-500/20 text-[9px] font-bold">
+                      New · Limited data
+                    </span>
+                  </div>
+
+                  {blendCategoryPred ? (
+                    <div className="space-y-3">
+                      {/* Main delta card */}
+                      <div className="grid grid-cols-3 gap-3">
+                        <div className="p-3 rounded-xl bg-muted/50 border border-border text-center">
+                          <p className="text-[10px] text-muted-foreground">Base (Non)</p>
+                          <p className="font-space font-bold text-base text-foreground">{result.mean.toFixed(2)}</p>
+                          <p className="text-[9px] text-muted-foreground">mmol/g</p>
                         </div>
-                        <div className="text-right flex-shrink-0">
-                          <p className={`font-bold text-base ${e.delta > 0 ? 'text-green-600' : e.delta < -0.05 ? 'text-red-500' : 'text-muted-foreground'}`}>
-                            {e.delta > 0 ? '+' : ''}{e.delta} mmol/g
+                        <div className="p-3 rounded-xl text-center"
+                          style={{ background: blendCategoryPred.delta >= 0 ? '#22c55e15' : '#ef444415',
+                                   border:     `1px solid ${blendCategoryPred.delta >= 0 ? '#22c55e30' : '#ef444430'}` }}>
+                          <p className="text-[10px] text-muted-foreground">Blend Effect</p>
+                          <p className={`font-space font-bold text-base ${blendCategoryPred.delta >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+                            {blendCategoryPred.delta >= 0 ? '+' : ''}{blendCategoryPred.delta}
                           </p>
-                          <p className={`text-[10px] font-semibold ${e.delta > 0 ? 'text-green-500' : 'text-muted-foreground'}`}>
-                            {e.delta_pct > 0 ? '+' : ''}{e.delta_pct}% vs Non
-                            {e.synergistic ? ' · Synergistic' : ''}
+                          <p className="text-[9px] text-muted-foreground">
+                            {blendCategoryPred.delta_pct >= 0 ? '+' : ''}{blendCategoryPred.delta_pct}%
                           </p>
+                        </div>
+                        <div className="p-3 rounded-xl border text-center"
+                          style={{ background: '#06b6d415', borderColor: '#06b6d430' }}>
+                          <p className="text-[10px] text-muted-foreground">Adjusted Est.</p>
+                          <p className="font-space font-bold text-base text-cyan-600">
+                            {Math.max(0.01, result.mean + blendCategoryPred.delta).toFixed(2)}
+                          </p>
+                          <p className="text-[9px] text-muted-foreground">mmol/g</p>
                         </div>
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-[11px] text-amber-600 italic">
-                    No blend records in current dataset — add experimental blend data to enable comparison.
-                  </p>
-                )}
-              </div>
-            </motion.div>
+
+                      {/* DB reference points */}
+                      <div className="text-[10px] text-muted-foreground space-y-0.5">
+                        <p className="font-semibold">Reference data for {blendInput.chemical}:</p>
+                        {Object.entries(BLEND_EFFECTS)
+                          .filter(([k]) => k.includes(blendInput.chemical))
+                          .map(([k, e]) => (
+                            <p key={k}>• {e.percent}% → {e.delta >= 0 ? '+' : ''}{e.delta} mmol/g (n={e.n} records)</p>
+                          ))}
+                        <p className="text-amber-600 mt-1">
+                          Method: {blendCategoryPred.confidence} at {blendInput.percent}% from {blendCategoryPred.n_refs} reference point{blendCategoryPred.n_refs !== 1 ? 's' : ''}.
+                          Use as indicative estimate only.
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="p-3 rounded-xl bg-amber-50 border border-amber-200">
+                      <p className="text-[11px] text-amber-700">
+                        <strong>No reference data</strong> for {blendInput.chemical} in the database.
+                        Known chemicals with data: {Object.keys(BLEND_EFFECTS).map(k => k.replace(/^\d+\.?\d*/,'')).filter((v,i,a)=>a.indexOf(v)===i).join(', ')}.
+                        Add experimental records for {blendInput.chemical} to enable blend effect estimation.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            )}
 
             {/* Action buttons */}
             <div className="flex flex-wrap gap-3">

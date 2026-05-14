@@ -18,43 +18,10 @@ const agentOptions = [
   { value: 'LiCl',    label: 'LiCl (Chemical)' },
 ];
 
-// Chemical blend options — biochar composites in the database
-const BLEND_OPTIONS = [
-  {
-    value:   'Non',
-    label:   'No Blend (Pure Biochar)',
-    desc:    'Standard single-species biochar — baseline configuration',
-    color:   '#94a3b8',
-    badge:   null,
-  },
-  {
-    value:   '0.5PKBC',
-    label:   '0.5% PKBC Composite',
-    desc:    '0.5 wt% palm kernel biochar composite — low loading',
-    color:   '#fb923c',
-    badge:   'Low ratio',
-  },
-  {
-    value:   '0.5TKBC',
-    label:   '0.5% TKBC Composite',
-    desc:    '0.5 wt% teak kernel biochar composite — low loading',
-    color:   '#e879f9',
-    badge:   'Low ratio',
-  },
-  {
-    value:   '20PKBC',
-    label:   '20% PKBC Composite',
-    desc:    '20 wt% palm kernel biochar composite — high loading',
-    color:   '#f97316',
-    badge:   'High ratio',
-  },
-  {
-    value:   '20TKBC',
-    label:   '20% TKBC Composite',
-    desc:    '20 wt% teak kernel biochar composite — high loading',
-    color:   '#8b5cf6',
-    badge:   'High ratio',
-  },
+// Known blend chemicals — used for autocomplete + data availability hint
+const KNOWN_CHEMS = [
+  { key: 'PKBC', label: 'PKBC', desc: 'Palm Kernel Biochar Composite', color: '#f97316' },
+  { key: 'TKBC', label: 'TKBC', desc: 'Teak Kernel Biochar Composite',  color: '#8b5cf6' },
 ];
 
 function SliderField({ label, icon: Icon, value, min, max, step, unit, onChange }) {
@@ -110,16 +77,22 @@ function SelectField({ label, value, options, onChange, isObject = false }) {
 export default function PredictorForm() {
   const navigate  = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [params,  setParams]  = useState({
+  const [params, setParams] = useState({
     biomass:       'Corn straw',
     temperature:   600,
     residenceTime: 60,
     heatingRate:   10,
     activator:     'Non',
-    chemBlend:     'Non',   // chemical blend type
+    chemBlend: {
+      enabled:  false,
+      chemical: 'PKBC',  // chemical name (PKBC, TKBC, or custom)
+      percent:  5.0,     // weight percent (0.1 – 100)
+    },
   });
 
   const set = (k, v) => setParams(p => ({ ...p, [k]: v }));
+  const setBlend = (field, val) =>
+    setParams(p => ({ ...p, chemBlend: { ...p.chemBlend, [field]: val } }));
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -128,7 +101,7 @@ export default function PredictorForm() {
     navigate('/results', { state: { params } });
   };
 
-  const selectedBlend = BLEND_OPTIONS.find(b => b.value === params.chemBlend) ?? BLEND_OPTIONS[0];
+  const knownChem = KNOWN_CHEMS.find(c => c.key === params.chemBlend.chemical);
 
   return (
     <div className="glass-card rounded-3xl p-8 border border-border max-w-2xl mx-auto">
@@ -198,78 +171,125 @@ export default function PredictorForm() {
 
         <div className="border-t border-border" />
 
-        {/* ── Step 4: Chemical Blend ── */}
+        {/* ── Step 4: Chemical Blend (optional) ── */}
         <div>
           <div className="flex items-center gap-2 mb-1">
             <div className="w-7 h-7 rounded-lg bg-cyan-500 text-white text-xs font-bold flex items-center justify-center">4</div>
-            <h3 className="font-space font-semibold text-base">Chemical Blend Type</h3>
+            <h3 className="font-space font-semibold text-base">Chemical Blend</h3>
+            <span className="text-xs text-muted-foreground font-normal ml-1">— optional</span>
             <span className="ml-auto text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 border border-amber-500/20 font-semibold">
               New · Limited data
             </span>
           </div>
           <p className="text-xs text-muted-foreground mb-4 ml-9">
-            Select a biochar composite type. Blend refers to mixing biochar with PKBC or TKBC composites — <em>not</em> biomass mixing.
+            Mix biochar with a chemical composite (PKBC / TKBC). Enter the chemical name and weight %.
+            Effect is interpolated from experimental records.
           </p>
 
-          {/* Blend cards */}
-          <div className="grid grid-cols-1 gap-2">
-            {BLEND_OPTIONS.map(opt => {
-              const active = params.chemBlend === opt.value;
-              return (
-                <button
-                  key={opt.value}
-                  type="button"
-                  onClick={() => set('chemBlend', opt.value)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl border text-left transition-all ${
-                    active
-                      ? 'border-2 shadow-sm'
-                      : 'border-border bg-muted/30 hover:bg-muted/60'
-                  }`}
-                  style={active ? {
-                    borderColor:     opt.color,
-                    background:      `${opt.color}10`,
-                    boxShadow:       `0 0 0 1px ${opt.color}30`,
-                  } : {}}
-                >
-                  {/* Color dot */}
-                  <span className="w-3 h-3 rounded-full flex-shrink-0"
-                    style={{ background: opt.color, opacity: active ? 1 : 0.4 }} />
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className={`text-sm font-semibold ${active ? 'text-foreground' : 'text-muted-foreground'}`}>
-                        {opt.label}
-                      </span>
-                      {opt.badge && (
-                        <span className="text-[9px] px-1.5 py-0.5 rounded-full border font-bold"
-                          style={{ background: `${opt.color}15`, color: opt.color, borderColor: `${opt.color}40` }}>
-                          {opt.badge}
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">{opt.desc}</p>
-                  </div>
-
-                  {active && (
-                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
-                      className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
-                      style={{ background: opt.color }}>
-                      <span className="text-white text-[10px] font-bold">✓</span>
-                    </motion.div>
-                  )}
-                </button>
-              );
-            })}
+          {/* Enable toggle */}
+          <div className="flex items-center gap-3 mb-4">
+            <button
+              type="button"
+              onClick={() => setBlend('enabled', !params.chemBlend.enabled)}
+              className={`relative w-11 h-6 rounded-full transition-colors flex-shrink-0 ${
+                params.chemBlend.enabled ? 'bg-cyan-500' : 'bg-muted border border-border'
+              }`}
+            >
+              <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${
+                params.chemBlend.enabled ? 'translate-x-5' : 'translate-x-0.5'
+              }`} />
+            </button>
+            <span className="text-sm font-medium">
+              {params.chemBlend.enabled ? 'Blend enabled' : 'No blend (pure biochar)'}
+            </span>
           </div>
 
-          {params.chemBlend !== 'Non' && (
+          {params.chemBlend.enabled && (
             <motion.div initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }}
-              className="mt-3 flex items-start gap-2 p-3 rounded-xl bg-amber-50 border border-amber-200">
-              <Layers className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
-              <p className="text-[11px] text-amber-700">
-                <strong>Note:</strong> Blend effect estimates are based on {' '}
-                <strong>limited experimental records</strong> (3–7 blend data points).
-                Results are indicative. The ML Model 04 provides a delta comparison vs pure biochar.
+              className="space-y-4 p-4 rounded-2xl border border-cyan-500/20 bg-cyan-500/5">
+
+              {/* Chemical name */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium flex items-center gap-2">
+                  <Layers className="w-4 h-4 text-cyan-500" /> Chemical Name
+                </label>
+                <div className="flex gap-2 flex-wrap">
+                  {KNOWN_CHEMS.map(c => (
+                    <button key={c.key} type="button"
+                      onClick={() => setBlend('chemical', c.key)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
+                        params.chemBlend.chemical === c.key
+                          ? 'text-white border-transparent'
+                          : 'border-border bg-muted text-muted-foreground hover:text-foreground'
+                      }`}
+                      style={params.chemBlend.chemical === c.key
+                        ? { background: c.color, borderColor: c.color }
+                        : {}}
+                    >
+                      {c.label}
+                      <span className="ml-1 opacity-60 font-normal">{c.desc}</span>
+                    </button>
+                  ))}
+                  {/* Custom input */}
+                  {!KNOWN_CHEMS.find(c => c.key === params.chemBlend.chemical) && (
+                    <span className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-cyan-500 bg-cyan-500/10 text-cyan-700">
+                      Custom: {params.chemBlend.chemical}
+                    </span>
+                  )}
+                </div>
+                <input
+                  type="text"
+                  value={params.chemBlend.chemical}
+                  onChange={e => setBlend('chemical', e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,''))}
+                  placeholder="or type custom chemical (e.g. PKBC)"
+                  className="w-full px-3 py-2 rounded-lg bg-muted border border-border text-sm font-mono focus:outline-none focus:ring-2 focus:ring-cyan-500/30"
+                  maxLength={12}
+                />
+              </div>
+
+              {/* Percentage */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-medium">Blend Ratio (wt%)</label>
+                  <div className="flex items-center gap-1">
+                    <input
+                      type="number"
+                      value={params.chemBlend.percent}
+                      min={0.1} max={100} step={0.5}
+                      onChange={e => setBlend('percent', Math.min(100, Math.max(0.1, Number(e.target.value))))}
+                      className="w-20 text-right px-2 py-1 rounded-lg bg-muted border border-border text-sm font-bold focus:outline-none focus:ring-2 focus:ring-cyan-500/30"
+                    />
+                    <span className="text-xs text-muted-foreground">wt%</span>
+                  </div>
+                </div>
+                <input
+                  type="range" min={0.1} max={30} step={0.5}
+                  value={Math.min(30, params.chemBlend.percent)}
+                  onChange={e => setBlend('percent', Number(e.target.value))}
+                  className="w-full h-2 rounded-full appearance-none cursor-pointer"
+                  style={{ background: `linear-gradient(to right, #06b6d4 ${(Math.min(30,params.chemBlend.percent)/30)*100}%, #e2e8f0 ${(Math.min(30,params.chemBlend.percent)/30)*100}%)` }}
+                />
+                <div className="flex justify-between text-[10px] text-muted-foreground">
+                  <span>0.1%</span><span>5%</span><span>10%</span><span>20%</span><span>30%+</span>
+                </div>
+              </div>
+
+              {/* Preview label */}
+              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-white/60 border border-cyan-500/20">
+                <span className="w-2.5 h-2.5 rounded-full bg-cyan-500 flex-shrink-0" />
+                <span className="text-xs font-semibold text-cyan-700">
+                  {params.chemBlend.percent}% {params.chemBlend.chemical} composite
+                </span>
+                {knownChem
+                  ? <span className="text-[10px] text-muted-foreground">— {knownChem.desc}</span>
+                  : <span className="text-[10px] text-amber-600">— custom chemical (no DB reference)</span>
+                }
+              </div>
+
+              <p className="text-[10px] text-amber-600 flex items-start gap-1">
+                <span>⚠</span>
+                Blend effect is interpolated from limited records (2–3 per blend type).
+                Use results as indicative estimates only.
               </p>
             </motion.div>
           )}
