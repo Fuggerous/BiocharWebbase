@@ -1,0 +1,11 @@
+{
+  "0.5TKBC": {
+    "n_records": 3,
+    "mean_actual": 1.883,
+    "mean_pred": 1.897,
+    "mean_non_pred": 1.855,
+    "delta": 0.042,
+    "delta_pct": 2.3,
+    "synergistic": false
+  }
+}

@@ -4,93 +4,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Leaf, MapPin, GitBranch, Search, Zap, Flame, Droplets, Wind } from 'lucide-react';
 import BiocharFlow from './BiocharFlow';
 import ThailandContext from './ThailandContext';
+import { ForumZone } from './DocumentsSection';
 import { useLang } from '../../lib/LanguageContext';
 
 // ─── Forum Zone Data ──────────────────────────────────────────────────────────
 const FORUM_CATEGORIES = ['ทั้งหมด', 'มาตรฐาน', 'เอกสาร', 'วีดีโอ', 'สาระน่ารู้'];
-
-const FORUM_DOCS = [
-  {
-    id: 1,
-    category: 'เอกสาร',
-    title: 'บทบาทของ Biochar Consortium',
-    titleEn: 'Role of the Biochar Consortium',
-    desc: 'เอกสารประกอบการสัมมนา Biochar Consortium ครั้งที่ 4 ในหัวข้อ บทบาทของ Biochar Consortium',
-    tags: ['ไบโอชาร์', 'Biochar Consortium'],
-    featured: false,
-    url: '#',
-  },
-  {
-    id: 2,
-    category: 'เอกสาร',
-    title: 'การนำไบโอชาร์ไปใช้ในการเกษตรอินทรีย์',
-    titleEn: 'Applying Biochar in Organic Agriculture',
-    desc: 'เอกสารประกอบการสัมมนา Biochar Consortium ครั้งที่ 4 ในหัวข้อ การนำไบโอชาร์ไปใช้ในการเกษตรอินทรีย์',
-    tags: ['ไบโอชาร์', 'เกษตรอินทรีย์'],
-    featured: false,
-    url: '#',
-  },
-  {
-    id: 3,
-    category: 'เอกสาร',
-    title: 'ไบโอชาร์ในนครพนมและจังหวัดอื่นๆ ของไทย',
-    titleEn: 'Biochar in Nakhon Phanom and Other Thai Provinces',
-    desc: 'เอกสารประกอบการสัมมนา Biochar Consortium ครั้งที่ 4 ในหัวข้อ Biochar in Nakhon Phanom and other provinces',
-    tags: ['ไบโอชาร์', 'นครพนม'],
-    featured: false,
-    url: '#',
-  },
-  {
-    id: 4,
-    category: 'เอกสาร',
-    title: 'ผลของการใช้ไบโอชาร์ต่อการปลูกข้าวในพื้นที่ดินเค็มของประเทศไทยและความท้าทายในอนาคต',
-    titleEn: 'Biochar Effects on Rice in Salt-Affected Soils of Thailand',
-    desc: 'เอกสารประกอบการสัมมนา Biochar Consortium ครั้งที่ 4 ในหัวข้อ ผลของการใช้ไบโอชาร์ต่อการปลูกข้าวในพื้นที่ดินเค็ม',
-    tags: ['ไบโอชาร์', 'ดินเค็ม'],
-    featured: false,
-    url: '#',
-  },
-  {
-    id: 5,
-    category: 'เอกสาร',
-    title: 'ผลกระทบของการใช้ไบโอชาร์ต่อการปล่อยก๊าซเรือนกระจกและผลผลิตพืชเกษตรไทย',
-    titleEn: 'Biochar Impact on GHG Emissions and Thai Agricultural Yields',
-    desc: 'เอกสารประกอบการสัมมนา Biochar Consortium ครั้งที่ 4 ในหัวข้อ ผลกระทบของการใช้ไบโอชาร์ต่อการปล่อยก๊าซเรือนกระจก',
-    tags: ['ไบโอชาร์', 'ก๊าซเรือนกระจก'],
-    featured: false,
-    url: '#',
-  },
-  {
-    id: 6,
-    category: 'สาระน่ารู้',
-    title: 'สรุปข้อมูลสำคัญ-ไบโอชาร์',
-    titleEn: 'Biochar Key Facts — MTEC-NZE Factsheet',
-    desc: 'สรุปข้อมูลสำคัญ (Factsheet) งานภายใต้ยุทธศาสตร์ MTEC-NZE Biochar ของเอ็มเทค เพื่อยกระดับไบโอชาร์',
-    tags: ['ไบโอชาร์', 'MTEC', 'Factsheet'],
-    featured: true,
-    url: '#',
-  },
-  {
-    id: 7,
-    category: 'มาตรฐาน',
-    title: 'มาตรฐานไบโอชาร์ระดับสากล (EBC / IBI)',
-    titleEn: 'International Biochar Standards — EBC / IBI',
-    desc: 'ภาพรวมมาตรฐานคุณภาพไบโอชาร์ตามเกณฑ์ European Biochar Certificate และ International Biochar Initiative',
-    tags: ['มาตรฐาน', 'EBC', 'IBI'],
-    featured: false,
-    url: '#',
-  },
-  {
-    id: 8,
-    category: 'วีดีโอ',
-    title: 'แนะนำไบโอชาร์',
-    titleEn: 'Introduction to Biochar',
-    desc: 'วิดีโอแนะนำเกี่ยวกับไบโอชาร์และประโยชน์ของมัน',
-    tags: ['ไบโอชาร์', 'แนะนำ'],
-    featured: false,
-    url: '#',
-  }
-];
 
 // ─── What is Biochar — fact card metadata (static icons/colors only) ──────────
 const BIOCHAR_FACT_META = [

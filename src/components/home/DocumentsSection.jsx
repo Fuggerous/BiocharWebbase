@@ -15,7 +15,7 @@ const FORUM_DOCS = [
     desc: 'เอกสารประกอบการสัมมนา Biochar Consortium ครั้งที่ 4 ในหัวข้อ บทบาทของ Biochar Consortium',
     tags: ['ไบโอชาร์', 'Biochar Consortium'],
     featured: false,
-    url: '#',
+    url: 'https://www.nstda.or.th/nac/2025/seminar/nac-28/',
   },
   {
     id: 2,
@@ -175,6 +175,8 @@ function ForumZone() {
               <div className="flex items-center gap-2 pt-1 border-t border-border">
                 <a
                   href={doc.url}
+                  target={doc.url && doc.url.startsWith('http') ? '_blank' : undefined}
+                  rel={doc.url && doc.url.startsWith('http') ? 'noopener noreferrer' : undefined}
                   className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-sm font-medium transition-all ${
                     doc.featured
                       ? 'bg-green-500 text-white hover:bg-green-600'
@@ -186,6 +188,8 @@ function ForumZone() {
                 </a>
                 <a
                   href={doc.url}
+                  target={doc.url && doc.url.startsWith('http') ? '_blank' : undefined}
+                  rel={doc.url && doc.url.startsWith('http') ? 'noopener noreferrer' : undefined}
                   className="w-9 h-9 flex items-center justify-center rounded-xl bg-muted border border-border hover:bg-green-500/10 hover:border-green-400 hover:text-green-600 transition-all"
                 >
                   <Download className="w-4 h-4" />
@@ -238,3 +242,5 @@ export default function DocumentsSection() {
     </section>
   );
 }
+
+export { ForumZone };

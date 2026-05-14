@@ -12,6 +12,7 @@ import {
 } from 'recharts';
 import { queryExpertGuidance, TOTAL_DATA_POINTS, DB_OVERALL_AVG } from '../lib/biocharKnowledgeBase';
 import { mlPredict, mlPipelineLookup, mlBlendPredict } from '../lib/mlPredictor';
+import BLEND_EFFECTS from '../lib/blend_effects.json';
 import WhyThisPrediction from '../components/results/WhyThisPrediction';
 import DataDensityGauge from '../components/results/DataDensityGauge';
 import SensitivityAnalysis from '../components/results/SensitivityAnalysis';
@@ -556,6 +557,50 @@ export default function Results() {
             </motion.div>
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 }}>
               <WhyThisPrediction result={result} params={params} />
+            </motion.div>
+
+            {/* Chemical Blend Effect — ML Model 04 */}
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.45 }}>
+              <div className="glass-card rounded-2xl p-5 border border-cyan-500/20 bg-cyan-500/5">
+                <div className="flex items-center gap-2 mb-3 flex-wrap">
+                  <FlaskConical className="w-4 h-4 text-cyan-500" />
+                  <h3 className="font-space font-semibold text-sm">Chemical Blend Effect</h3>
+                  <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 border border-amber-500/20 text-[9px] font-bold">
+                    New Feature · Waiting for more blend data
+                  </span>
+                </div>
+                <p className="text-[11px] text-muted-foreground mb-3">
+                  Predicted CO₂ change when mixing biochar with PKBC/TKBC composites vs pure (Non) biochar.
+                  Based on XGBoost model trained on {Object.values(BLEND_EFFECTS).reduce((s,e)=>s+e.n_records,0)} blend records (R²=0.996).
+                </p>
+                {Object.keys(BLEND_EFFECTS).length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {Object.entries(BLEND_EFFECTS).map(([blend, e]) => (
+                      <div key={blend} className={`p-3 rounded-xl border text-xs flex items-center justify-between gap-3 ${
+                        e.synergistic ? 'bg-green-500/5 border-green-500/20' : 'bg-muted/40 border-border'
+                      }`}>
+                        <div>
+                          <p className="font-space font-bold text-sm">{blend}</p>
+                          <p className="text-muted-foreground text-[10px]">n={e.n_records} records · Non avg: {e.mean_non_pred} mmol/g</p>
+                        </div>
+                        <div className="text-right flex-shrink-0">
+                          <p className={`font-bold text-base ${e.delta > 0 ? 'text-green-600' : e.delta < -0.05 ? 'text-red-500' : 'text-muted-foreground'}`}>
+                            {e.delta > 0 ? '+' : ''}{e.delta} mmol/g
+                          </p>
+                          <p className={`text-[10px] font-semibold ${e.delta > 0 ? 'text-green-500' : 'text-muted-foreground'}`}>
+                            {e.delta_pct > 0 ? '+' : ''}{e.delta_pct}% vs Non
+                            {e.synergistic ? ' · Synergistic' : ''}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-[11px] text-amber-600 italic">
+                    No blend records in current dataset — add experimental blend data to enable comparison.
+                  </p>
+                )}
+              </div>
             </motion.div>
 
             {/* Action buttons */}

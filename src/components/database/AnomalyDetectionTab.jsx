@@ -78,14 +78,14 @@ export default function AnomalyDetectionTab() {
   const xLabel = AXIS_OPTIONS.find(o => o.key === xAxis)?.label;
   const yLabel = AXIS_OPTIONS.find(o => o.key === yAxis)?.label;
 
-  // Stats for reference lines
+  // Stats for reference lines — filter nulls from non-isotherm records
   const xMean = useMemo(() => {
-    const v = DB44_RECORDS.map(r => r[xAxis]);
-    return v.reduce((s, x) => s + x, 0) / v.length;
+    const v = DB44_RECORDS.map(r => r[xAxis]).filter(x => Number.isFinite(x));
+    return v.length ? v.reduce((s, x) => s + x, 0) / v.length : 0;
   }, [xAxis]);
   const yMean = useMemo(() => {
-    const v = DB44_RECORDS.map(r => r[yAxis]);
-    return v.reduce((s, y) => s + y, 0) / v.length;
+    const v = DB44_RECORDS.map(r => r[yAxis]).filter(y => Number.isFinite(y));
+    return v.length ? v.reduce((s, y) => s + y, 0) / v.length : 0;
   }, [yAxis]);
 
   const CustomDot = ({ cx, cy, payload }) => {
