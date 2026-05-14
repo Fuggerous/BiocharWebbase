@@ -9,10 +9,19 @@ import ComparisonTool from '../components/database/ComparisonTool';
 import { motion } from 'framer-motion';
 import { Database as DbIcon, Download, FlaskConical, Layers } from 'lucide-react';
 import { TOTAL_DATA_POINTS, DB_OVERALL_MAX, TEMPERATURE_STATS } from '../lib/biocharKnowledgeBase';
-import { DB44_RECORDS, BIOMASS_COLORS, BLEND_COLORS, ADSORPTION_TEMP_LIST, BIOMASS_LIST, ACTIVATOR_LIST, DEFAULT_FILTERS } from '../lib/database44';
+import { DB44_RECORDS, BIOMASS_COLORS, BLEND_COLORS, ADSORPTION_TEMP_LIST, BIOMASS_LIST, ACTIVATOR_LIST, DEFAULT_FILTERS, BIOMASS_SPECIES_MAP, SPECIES_COLORS } from '../lib/database44';
 import BlendingAnalysis from '../components/database/BlendingAnalysis';
 
 
+
+// Reverse lookup: biomass part → parent species (for table badges + stable colors)
+const BIOMASS_TO_SPECIES = Object.entries(BIOMASS_SPECIES_MAP).reduce((acc, [species, parts]) => {
+  parts.forEach(p => { acc[p] = species; });
+  return acc;
+}, {});
+function speciesDotColor(biomass) {
+  return BIOMASS_COLORS[biomass] ?? SPECIES_COLORS[BIOMASS_TO_SPECIES[biomass]] ?? '#94a3b8';
+}
 
 // Statistical outlier detection — filter null co2Uptake (non-isotherm records)
 const ALL_CO2 = DB44_RECORDS.map(r => r.co2Uptake).filter(v => v != null);
@@ -142,7 +151,7 @@ export default function Database() {
           <div className="flex-1 space-y-6 min-w-0">
 
             {/* Overview Charts (Feedstock Distribution + Avg CO2) */}
-            <DatabaseCharts records={filtered} />
+            <DatabaseCharts records={filtered} biomassFilter={filters.biomass} />
 
             {/* Co-Pyrolysis / Blending Analysis */}
             <BlendingAnalysis records={filtered} />
@@ -201,7 +210,7 @@ export default function Database() {
                   </thead>
                   <tbody>
                     {filtered.length === 0 ? (
-                      <tr><td colSpan={12} className="py-12 text-center text-muted-foreground text-sm">
+                      <tr><td colSpan={13} className="py-12 text-center text-muted-foreground text-sm">
                         No records match the current filters.
                       </td></tr>
                     ) : filtered.map((row, i) => (
@@ -209,8 +218,16 @@ export default function Database() {
                         <td className="py-2.5 px-2 font-mono text-xs text-blue-500">{String(row.id).padStart(2,'0')}</td>
                         <td className="py-2.5 px-2 text-xs font-medium">
                           <span className="flex items-center gap-1.5">
-                            <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: BIOMASS_COLORS[row.biomass] }} />
-                            {row.biomass}
+                            <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: speciesDotColor(row.biomass) }} />
+                            <span>
+                              <span className="block leading-tight">{row.biomass}</span>
+                              {BIOMASS_TO_SPECIES[row.biomass] && (
+                                <span className="text-[9px] font-semibold px-1 py-0 rounded mt-0.5 inline-block"
+                                  style={{ background: `${speciesDotColor(row.biomass)}22`, color: speciesDotColor(row.biomass) }}>
+                                  {BIOMASS_TO_SPECIES[row.biomass]}
+                                </span>
+                              )}
+                            </span>
                           </span>
                         </td>
                         <td className="py-2.5 px-2 text-xs">{row.pyroTemp}°C</td>

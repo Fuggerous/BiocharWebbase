@@ -13,9 +13,6 @@ const FALLBACK_PALETTE = [
   '#06b6d4','#ec4899','#84cc16','#f97316','#8b5cf6',
   '#14b8a6','#e879f9','#fb923c','#a3e635','#38bdf8',
 ];
-function colorFor(biomass, idx) {
-  return BIOMASS_COLORS[biomass] ?? FALLBACK_PALETTE[idx % FALLBACK_PALETTE.length];
-}
 
 const BIOMASS_TO_SPECIES = Object.entries(BIOMASS_SPECIES_MAP).reduce((acc, [species, parts]) => {
   parts.forEach(part => {
@@ -47,18 +44,44 @@ function ChartCard({ title, subtitle, children }) {
   );
 }
 
-export default function DatabaseCharts({ records = [] }) {
+// Pre-assign each individual biomass part a unique stable color based on sorted position.
+// This ensures parts within the same species still get distinct colors.
+const _ALL_PARTS = [...new Set(Object.values(BIOMASS_SPECIES_MAP).flat())].sort();
+const BIOMASS_PART_COLOR = Object.fromEntries(
+  _ALL_PARTS.map((name, i) => [name, FALLBACK_PALETTE[i % FALLBACK_PALETTE.length]])
+);
+
+// Stable color for any biomass:
+//   1. Explicit per-part BIOMASS_COLORS (e.g. "Corn straw")
+//   2. Direct species lookup — catches first-word abbreviations used by the scatter chart (e.g. "Corn", "Pine")
+//   3. Pre-assigned per-part palette (full names from BIOMASS_SPECIES_MAP)
+//   4. Hard fallback
+function stableColorForBiomass(biomass) {
+  return BIOMASS_COLORS[biomass]
+    ?? SPECIES_COLORS[biomass]
+    ?? BIOMASS_PART_COLOR[biomass]
+    ?? FALLBACK_PALETTE[0];
+}
+
+export default function DatabaseCharts({ records = [], biomassFilter = [] }) {
   // ── 1. Feedstock distribution donut ─────────────────────────────────────
+  // When specific parts are selected (biomassFilter non-empty), show each part separately.
+  // When nothing selected (default), group by species to keep the legend clean.
   const feedstockDist = useMemo(() => {
+    const showByPart = biomassFilter.length > 0;
     const counts = {};
     records.forEach(r => {
-      const species = speciesForBiomass(r.biomass);
-      counts[species] = (counts[species] ?? 0) + 1;
+      const key = showByPart ? r.biomass : speciesForBiomass(r.biomass);
+      counts[key] = (counts[key] ?? 0) + 1;
     });
     return Object.entries(counts)
-      .map(([name, value]) => ({ name, value, color: colorForSpecies(name) }))
+      .map(([name, value], idx) => ({
+        name,
+        value,
+        color: showByPart ? stableColorForBiomass(name) : colorForSpecies(name),
+      }))
       .sort((a, b) => b.value - a.value);
-  }, [records]);
+  }, [records, biomassFilter]);
 
   // ── 2. Avg CO₂ by biomass — horizontal bar, biomass on Y ─────────────────
   const avgCO2ByBiomass = useMemo(() => {
@@ -74,7 +97,7 @@ export default function DatabaseCharts({ records = [] }) {
         biomass,
         avg: +(sum / count).toFixed(3),
         count,
-        fill: colorFor(biomass, i),
+        fill: stableColorForBiomass(biomass),
       }))
       .sort((a, b) => b.avg - a.avg);  // descending by avg CO₂
   }, [records]);
@@ -169,7 +192,9 @@ export default function DatabaseCharts({ records = [] }) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <ChartCard
           title="Feedstock Distribution"
-          subtitle={`${records.length} filtered records by biomass type`}
+          subtitle={biomassFilter.length > 0
+            ? `${records.length} records · showing individual parts (${biomassFilter.length} selected)`
+            : `${records.length} filtered records · grouped by species`}
         >
           <ResponsiveContainer width="100%" height={260}>
             <PieChart>
@@ -254,10 +279,10 @@ export default function DatabaseCharts({ records = [] }) {
               <XAxis type="number" dataKey="surface" name="BET Surface Area"  tick={{ fontSize: 11 }}
                 label={{ value: 'BET Surface Area (m²/g)', position: 'bottom', offset: 10, fontSize: 10, fontWeight: 600 }} />
               <Tooltip cursor={{ strokeDasharray: '3 3' }} content={<ScatterTooltip />} />
-              {scatterBiomassTypes.map((type, i) => (
+              {scatterBiomassTypes.map((type) => (
                 <Scatter key={type} name={type}
                   data={isothermAverages.filter(d => d.biomass === type)}
-                  fill={colorFor(type, i)} fillOpacity={0.85} shape="diamond" />
+                  fill={stableColorForBiomass(type)} fillOpacity={0.85} shape="diamond" />
               ))}
               <Legend verticalAlign="top" height={30} wrapperStyle={{ fontSize: 11, paddingBottom: '20px' }} />
             </ScatterChart>

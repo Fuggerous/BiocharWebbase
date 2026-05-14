@@ -64,7 +64,7 @@ function IsothermTab({ records }) {
       <ResponsiveContainer width="100%" height={320}>
         <LineChart margin={{ top: 10, right: 20, left: 0, bottom: 10 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
-          <XAxis dataKey="pressure" type="number" domain={[0, 1.1]} tickCount={6}
+          <XAxis dataKey="pressure" type="number" domain={[0, 'auto']} tickCount={6}
             label={{ value: 'Pressure (atm)', position: 'insideBottom', offset: -4, fontSize: 11 }}
             tick={{ fontSize: 11 }} />
           <YAxis label={{ value: 'CO₂ Uptake (mmol/g)', angle: -90, position: 'Left', fontSize: 11 }}
@@ -141,7 +141,7 @@ function MultiDimTab({ records }) {
           <ZAxis dataKey="z" range={[40, 400]} />
           <Tooltip cursor={{ strokeDasharray: '3 3' }}
             formatter={(v, n) => [typeof v === 'number' ? v.toFixed(3) : v, n]} />
-          {/* <Legend wrapperStyle={{ fontSize: 11 }} /> */}
+          <Legend wrapperStyle={{ fontSize: 10, paddingTop: 4 }} />
           {biomassInRecords.map(b => (
             <Scatter key={b} name={b.split(' ')[0]}
               data={seriesByBiomass[b]}
