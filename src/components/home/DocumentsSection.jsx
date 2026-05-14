@@ -1,20 +1,26 @@
 // @ts-nocheck
+/**
+ * DocumentsSection — Research Catalog layout
+ * Completely original design: vertical list + left sidebar + pagination
+ * NOT a card grid.
+ */
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   FileText, Video, BookOpen, Shield, Lightbulb,
-  Download, ExternalLink, Search, Star, ChevronRight, X,
+  Download, ExternalLink, Search, Star, ChevronRight,
+  ChevronLeft, X, Filter,
 } from 'lucide-react';
 import { useLang } from '../../lib/LanguageContext';
 
-// ── Data (bilingual) ──────────────────────────────────────────────────────────
+// ── Data ──────────────────────────────────────────────────────────────────────
 const DOCS = [
   {
     id: 1, category: 'เอกสาร', catKey: 'docs.cat.document', type: 'pdf',
     title: 'บทบาทของ Biochar Consortium',
     titleEn: 'Role of the Biochar Consortium',
-    desc: 'เอกสารประกอบการสัมมนา Biochar Consortium ครั้งที่ 4 ในหัวข้อบทบาทของ Biochar Consortium',
-    descEn: 'Seminar document from the 4th Biochar Consortium on the role and direction of the Biochar Consortium Thailand.',
+    desc: 'เอกสารประกอบการสัมมนา Biochar Consortium ครั้งที่ 4 — บทบาทและทิศทางของ Biochar Consortium Thailand',
+    descEn: 'Seminar document from the 4th Biochar Consortium covering the role and strategic direction of the Thai Biochar Consortium.',
     tags: ['Biochar Consortium'], featured: false,
     url: 'https://www.nstda.or.th/nac/2025/seminar/nac-28/',
   },
@@ -22,16 +28,16 @@ const DOCS = [
     id: 2, category: 'เอกสาร', catKey: 'docs.cat.document', type: 'pdf',
     title: 'การนำไบโอชาร์ไปใช้ในการเกษตรอินทรีย์',
     titleEn: 'Applying Biochar in Organic Agriculture',
-    desc: 'เอกสารประกอบการสัมมนา Biochar Consortium ครั้งที่ 4 ในหัวข้อการนำไบโอชาร์ไปใช้ในการเกษตรอินทรีย์',
-    descEn: 'Seminar document from the 4th Biochar Consortium on the application of biochar in organic farming practices.',
+    desc: 'เอกสารประกอบการสัมมนา Biochar Consortium ครั้งที่ 4 — การนำไบโอชาร์ไปใช้ในการเกษตรอินทรีย์',
+    descEn: 'Seminar document from the 4th Biochar Consortium on biochar applications in organic farming practices.',
     tags: ['เกษตรอินทรีย์', 'Organic'], featured: false, url: '#',
   },
   {
     id: 3, category: 'เอกสาร', catKey: 'docs.cat.document', type: 'pdf',
     title: 'ไบโอชาร์ในนครพนมและจังหวัดอื่นๆ ของไทย',
     titleEn: 'Biochar in Nakhon Phanom and Other Thai Provinces',
-    desc: 'เอกสารประกอบการสัมมนา Biochar Consortium ครั้งที่ 4 บทบาทของไบโอชาร์ในจังหวัดต่างๆ ของไทย',
-    descEn: 'Seminar document from the 4th Biochar Consortium covering biochar use in Nakhon Phanom and other provinces.',
+    desc: 'เอกสารประกอบการสัมมนา Biochar Consortium ครั้งที่ 4 — Biochar in Nakhon Phanom and other provinces',
+    descEn: 'Seminar document covering biochar use across Nakhon Phanom and other provinces in Thailand.',
     tags: ['นครพนม', 'Thailand'], featured: false, url: '#',
   },
   {
@@ -63,7 +69,7 @@ const DOCS = [
     title: 'มาตรฐานไบโอชาร์ระดับสากล (EBC / IBI)',
     titleEn: 'International Biochar Standards — EBC / IBI',
     desc: 'ภาพรวมมาตรฐานคุณภาพไบโอชาร์ตามเกณฑ์ European Biochar Certificate และ International Biochar Initiative',
-    descEn: 'Overview of biochar quality standards under the European Biochar Certificate (EBC) and International Biochar Initiative (IBI).',
+    descEn: 'Overview of biochar quality standards under the European Biochar Certificate (EBC) and IBI frameworks.',
     tags: ['EBC', 'IBI', 'Standards'], featured: false, url: '#',
   },
   {
@@ -76,335 +82,303 @@ const DOCS = [
   },
 ];
 
-// ── Category config (catKey maps to translation, thKey is the Thai category in data) ──
-const CATEGORIES = [
-  { thKey: 'ทั้งหมด',   tKey: 'docs.cat.all',      color: '#22c55e', bg: 'bg-green-500/10',  border: 'border-green-500/25'  },
-  { thKey: 'มาตรฐาน',  tKey: 'docs.cat.standard', color: '#3b82f6', bg: 'bg-blue-500/10',   border: 'border-blue-500/25'   },
-  { thKey: 'เอกสาร',   tKey: 'docs.cat.document', color: '#a855f7', bg: 'bg-purple-500/10', border: 'border-purple-500/25' },
-  { thKey: 'วีดีโอ',   tKey: 'docs.cat.video',    color: '#f59e0b', bg: 'bg-amber-500/10',  border: 'border-amber-500/25'  },
-  { thKey: 'สาระน่ารู้',tKey: 'docs.cat.info',     color: '#06b6d4', bg: 'bg-cyan-500/10',   border: 'border-cyan-500/25'   },
-];
+const PER_PAGE = 5;
 
-// ── Type icons ────────────────────────────────────────────────────────────────
-const TYPE_CONFIG = {
-  pdf:      { icon: FileText,  color: '#a855f7', label: 'PDF' },
-  video:    { icon: Video,     color: '#f59e0b', label: 'Video' },
-  article:  { icon: Lightbulb, color: '#06b6d4', label: 'Article' },
+// ── Type + Category config ─────────────────────────────────────────────────────
+const TYPE_CFG = {
+  pdf:      { icon: FileText,  color: '#a855f7', label: 'PDF'      },
+  video:    { icon: Video,     color: '#f59e0b', label: 'Video'    },
+  article:  { icon: Lightbulb, color: '#06b6d4', label: 'Article'  },
   standard: { icon: Shield,    color: '#3b82f6', label: 'Standard' },
 };
 
-// Match by Thai category key (data always stores Thai category names)
-function getCatConfig(thCat) {
-  return CATEGORIES.find(c => c.thKey === thCat) ?? CATEGORIES[0];
+const CATS = [
+  { thKey: 'ทั้งหมด',    tKey: 'docs.cat.all',      color: '#22c55e' },
+  { thKey: 'มาตรฐาน',   tKey: 'docs.cat.standard', color: '#3b82f6' },
+  { thKey: 'เอกสาร',    tKey: 'docs.cat.document', color: '#a855f7' },
+  { thKey: 'วีดีโอ',    tKey: 'docs.cat.video',    color: '#f59e0b' },
+  { thKey: 'สาระน่ารู้', tKey: 'docs.cat.info',     color: '#06b6d4' },
+];
+
+function getCat(thKey) {
+  return CATS.find(c => c.thKey === thKey) ?? CATS[0];
 }
 
-// ── Document Card ─────────────────────────────────────────────────────────────
-function DocCard({ doc, index, lang, t }) {
-  const catCfg   = getCatConfig(doc.category);
-  const typeCfg  = TYPE_CONFIG[doc.type] ?? TYPE_CONFIG.pdf;
+// ── Catalog Row ───────────────────────────────────────────────────────────────
+function CatalogRow({ doc, index, lang, t }) {
+  const typeCfg  = TYPE_CFG[doc.type] ?? TYPE_CFG.pdf;
+  const catCfg   = getCat(doc.category);
   const TypeIcon = typeCfg.icon;
   const title    = lang === 'en' ? doc.titleEn : doc.title;
   const desc     = lang === 'en' ? (doc.descEn ?? doc.desc) : doc.desc;
   const catLabel = t(doc.catKey) ?? doc.category;
 
   return (
-    <motion.article
+    <motion.div
       layout
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.97 }}
-      transition={{ delay: index * 0.04, duration: 0.25 }}
-      className={`group relative flex flex-col rounded-2xl border overflow-hidden transition-all duration-200
-        hover:shadow-lg hover:-translate-y-0.5
-        ${doc.featured
-          ? 'border-green-400/40 bg-gradient-to-br from-green-500/8 via-background to-emerald-500/5'
-          : 'border-border bg-card hover:border-green-400/30'
-        }`}
+      initial={{ opacity: 0, x: -12 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 12 }}
+      transition={{ delay: index * 0.04, duration: 0.2 }}
+      className={`group flex items-start gap-4 p-4 rounded-xl border transition-all duration-150
+        hover:shadow-sm hover:border-green-400/30 cursor-default
+        ${doc.featured ? 'bg-gradient-to-r from-green-500/5 via-background to-background border-green-400/25' : 'bg-card border-border'}`}
     >
-      {/* Category accent strip */}
-      <div className="h-1 w-full" style={{ background: catCfg.color, opacity: 0.7 }} />
+      {/* Left: type icon */}
+      <div className="flex-shrink-0 mt-0.5">
+        <div className="w-9 h-9 rounded-xl flex items-center justify-center"
+          style={{ background: `${typeCfg.color}12`, border: `1.5px solid ${typeCfg.color}30` }}>
+          <TypeIcon className="w-4 h-4" style={{ color: typeCfg.color }} />
+        </div>
+      </div>
 
-      <div className="flex flex-col flex-1 p-5 gap-3">
-        {/* Header row */}
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex items-center gap-2">
-            {/* Type icon */}
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-              style={{ background: `${typeCfg.color}15`, border: `1px solid ${typeCfg.color}30` }}>
-              <TypeIcon className="w-4 h-4" style={{ color: typeCfg.color }} />
-            </div>
-            {/* Category badge */}
-            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${catCfg.bg} ${catCfg.border}`}
-              style={{ color: catCfg.color }}>
-              {catLabel}
-            </span>
-          </div>
+      {/* Center: content */}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 mb-1 flex-wrap">
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+            style={{ background: `${catCfg.color}12`, color: catCfg.color, border: `1px solid ${catCfg.color}25` }}>
+            {catLabel}
+          </span>
           {doc.featured && (
-            <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-400/15 border border-amber-400/40 text-amber-600 text-[10px] font-bold flex-shrink-0">
+            <span className="flex items-center gap-0.5 text-[10px] font-bold text-amber-600 bg-amber-400/10 border border-amber-400/25 px-1.5 py-0.5 rounded-full">
               <Star className="w-2.5 h-2.5" /> {t('docs.featured')}
             </span>
           )}
+          <span className="text-[10px] text-muted-foreground ml-auto flex-shrink-0">
+            {typeCfg.label}
+          </span>
         </div>
 
-        {/* Title + desc */}
-        <div className="flex-1">
-          <h4 className="font-space font-semibold text-sm leading-snug mb-1.5 line-clamp-2
-            group-hover:text-green-600 transition-colors">
-            {title}
-          </h4>
-          <p className="text-muted-foreground text-xs leading-relaxed line-clamp-2">{desc}</p>
-        </div>
+        <h4 className="font-space font-semibold text-sm leading-snug mb-1
+          group-hover:text-green-600 transition-colors line-clamp-1">
+          {title}
+        </h4>
+        <p className="text-[11px] text-muted-foreground leading-relaxed line-clamp-2">{desc}</p>
 
         {/* Tags */}
-        {doc.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1">
-            {doc.tags.map(tag => (
-              <span key={tag}
-                className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-muted/80 text-muted-foreground border border-border/60">
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
-
-        {/* Actions */}
-        <div className="flex items-center gap-2 pt-2 border-t border-border/60 mt-auto">
-          <a href={doc.url}
-            target={doc.url?.startsWith('http') ? '_blank' : undefined}
-            rel={doc.url?.startsWith('http') ? 'noopener noreferrer' : undefined}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold
-              transition-all group/btn
-              ${doc.featured
-                ? 'bg-green-500 text-white hover:bg-green-600'
-                : 'bg-muted hover:bg-green-500 hover:text-white border border-border hover:border-green-500'
-              }`}
-          >
-            <ExternalLink className="w-3.5 h-3.5" />
-            เปิดไฟล์
-            <ChevronRight className="w-3 h-3 group-hover/btn:translate-x-0.5 transition-transform" />
-          </a>
-          <a href={doc.url}
-            target={doc.url?.startsWith('http') ? '_blank' : undefined}
-            rel={doc.url?.startsWith('http') ? 'noopener noreferrer' : undefined}
-            className="w-9 h-9 flex items-center justify-center rounded-xl bg-muted border border-border
-              hover:bg-green-500/10 hover:border-green-400 hover:text-green-600 transition-all"
-            title="ดาวน์โหลด"
-          >
-            <Download className="w-4 h-4" />
-          </a>
+        <div className="flex flex-wrap gap-1 mt-2">
+          {doc.tags.map(tag => (
+            <span key={tag} className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground border border-border/60">
+              {tag}
+            </span>
+          ))}
         </div>
       </div>
-    </motion.article>
+
+      {/* Right: actions */}
+      <div className="flex-shrink-0 flex items-center gap-1.5 mt-0.5">
+        <a href={doc.url}
+          target={doc.url?.startsWith('http') ? '_blank' : undefined}
+          rel={doc.url?.startsWith('http') ? 'noopener noreferrer' : undefined}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold
+            transition-all whitespace-nowrap
+            ${doc.featured
+              ? 'bg-green-500 text-white hover:bg-green-600'
+              : 'bg-muted border border-border hover:bg-green-500 hover:text-white hover:border-green-500'}`}
+        >
+          <ExternalLink className="w-3 h-3" />
+          {t('kc.docs.open')}
+        </a>
+        <a href={doc.url}
+          target={doc.url?.startsWith('http') ? '_blank' : undefined}
+          rel={doc.url?.startsWith('http') ? 'noopener noreferrer' : undefined}
+          className="w-7 h-7 rounded-lg flex items-center justify-center bg-muted border border-border
+            hover:bg-green-500/10 hover:border-green-400 hover:text-green-600 transition-all text-muted-foreground"
+          title={t('docs.download')}
+        >
+          <Download className="w-3.5 h-3.5" />
+        </a>
+      </div>
+    </motion.div>
   );
 }
 
-// ── ForumZone (main export used by KnowledgeCenterSection) ───────────────────
-const COLS = 3;       // cards per row
-const VISIBLE_ROWS = 2; // rows shown before scroll
-
+// ── ForumZone ─────────────────────────────────────────────────────────────────
 function ForumZone() {
   const { t, lang } = useLang();
-  const [activeFilter, setActiveFilter] = useState('ทั้งหมด');
+  const [activeCat, setActiveCat] = useState('ทั้งหมด');
   const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
 
-  const filtered = useMemo(() =>
-    DOCS.filter(doc => {
-      const matchCat    = activeFilter === 'ทั้งหมด' || doc.category === activeFilter;
-      const q           = search.toLowerCase();
-      const matchSearch = !q
-        || doc.title.toLowerCase().includes(q)
-        || doc.titleEn.toLowerCase().includes(q);
+  const filtered = useMemo(() => {
+    const q = search.toLowerCase();
+    return DOCS.filter(doc => {
+      const matchCat = activeCat === 'ทั้งหมด' || doc.category === activeCat;
+      const matchSearch = !q || doc.title.toLowerCase().includes(q) || doc.titleEn.toLowerCase().includes(q);
       return matchCat && matchSearch;
-    }),
-    [activeFilter, search]
-  );
+    });
+  }, [activeCat, search]);
 
-  // Count per Thai category key
+  const totalPages = Math.ceil(filtered.length / PER_PAGE);
+  const safePage   = Math.min(page, Math.max(1, totalPages));
+  const pageDocs   = filtered.slice((safePage - 1) * PER_PAGE, safePage * PER_PAGE);
+
   const counts = useMemo(() => {
     const c = { 'ทั้งหมด': DOCS.length };
     DOCS.forEach(d => { c[d.category] = (c[d.category] ?? 0) + 1; });
     return c;
   }, []);
 
-  // Split into visible (first 2 rows) + overflow
-  const visibleCount  = COLS * VISIBLE_ROWS;
-  const visibleDocs   = filtered.slice(0, visibleCount);
-  const overflowDocs  = filtered.slice(visibleCount);
+  const changeCat = (key) => { setActiveCat(key); setPage(1); };
+  const changeSearch = (v) => { setSearch(v); setPage(1); };
 
   return (
-    <div className="space-y-4">
-      {/* ── Search + filter bar ── */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1 max-w-xs">
+    <div className="flex gap-0 min-h-[520px]">
+
+      {/* ── Left sidebar: category + stats ── */}
+      <aside className="w-44 flex-shrink-0 pr-5 border-r border-border space-y-1 pt-1">
+        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-1.5">
+          <Filter className="w-3 h-3" /> {lang === 'en' ? 'Filter' : 'หมวดหมู่'}
+        </p>
+        {CATS.map(cat => {
+          const active = activeCat === cat.thKey;
+          const count  = counts[cat.thKey] ?? 0;
+          return (
+            <button key={cat.thKey} onClick={() => changeCat(cat.thKey)}
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium
+                transition-all text-left gap-2
+                ${active ? 'text-white' : 'text-muted-foreground hover:text-foreground hover:bg-muted'}`}
+              style={active ? { background: cat.color } : {}}
+            >
+              <span className="truncate">{t(cat.tKey)}</span>
+              <span className={`flex-shrink-0 text-[10px] px-1.5 py-0.5 rounded-full font-bold
+                ${active ? 'bg-white/20 text-white' : 'bg-muted text-muted-foreground'}`}>
+                {count}
+              </span>
+            </button>
+          );
+        })}
+
+        {/* Mini stats */}
+        <div className="pt-4 mt-2 border-t border-border space-y-2">
+          {[
+            { label: lang === 'en' ? 'Total' : 'ทั้งหมด', value: DOCS.length },
+            { label: lang === 'en' ? 'Featured' : 'เด่น', value: DOCS.filter(d => d.featured).length },
+          ].map(s => (
+            <div key={s.label} className="flex items-center justify-between text-[11px]">
+              <span className="text-muted-foreground">{s.label}</span>
+              <span className="font-bold text-foreground">{s.value}</span>
+            </div>
+          ))}
+        </div>
+      </aside>
+
+      {/* ── Main content ── */}
+      <div className="flex-1 pl-5 flex flex-col gap-4 min-w-0">
+
+        {/* Search bar */}
+        <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
           <input
-            type="text" value={search} onChange={e => setSearch(e.target.value)}
+            type="text" value={search} onChange={e => changeSearch(e.target.value)}
             placeholder={t('kc.docs.search')}
-            className="w-full pl-9 pr-8 py-2 rounded-xl bg-muted border border-border text-sm
-              focus:outline-none focus:ring-2 focus:ring-green-500/30"
+            className="w-full pl-9 pr-8 py-2.5 rounded-xl bg-muted border border-border text-sm
+              focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-400/50"
           />
           {search && (
-            <button onClick={() => setSearch('')}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+            <button onClick={() => changeSearch('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
               <X className="w-3.5 h-3.5" />
             </button>
           )}
         </div>
 
-        <div className="flex flex-wrap gap-1.5">
-          {CATEGORIES.map(cat => {
-            const active = activeFilter === cat.thKey;
-            return (
-              <button key={cat.thKey} onClick={() => setActiveFilter(cat.thKey)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold
-                  border transition-all ${active
-                    ? 'text-white border-transparent'
-                    : `${cat.bg} ${cat.border} text-muted-foreground hover:text-foreground`}`}
-                style={active ? { background: cat.color, borderColor: cat.color } : {}}
-              >
-                {t(cat.tKey)}
-                <span className={`px-1.5 py-0.5 rounded-full text-[9px] font-bold ${
-                  active ? 'bg-white/20 text-white' : 'bg-muted text-muted-foreground'
-                }`}>
-                  {counts[cat.thKey] ?? 0}
-                </span>
-              </button>
-            );
-          })}
+        {/* Result info row */}
+        <div className="flex items-center justify-between text-[11px] text-muted-foreground -mt-1">
+          <span>
+            {t('docs.showing')}{' '}
+            <strong className="text-foreground">{(safePage-1)*PER_PAGE+1}–{Math.min(safePage*PER_PAGE, filtered.length)}</strong>
+            {' '}{lang==='en'?'of':'/'}
+            {' '}<strong className="text-foreground">{filtered.length}</strong>
+            {' '}{t('docs.items')}
+            {search && <> · {t('docs.for')} "<span className="text-green-600">{search}</span>"</>}
+          </span>
+          {(search || activeCat !== 'ทั้งหมด') && (
+            <button onClick={() => { changeSearch(''); changeCat('ทั้งหมด'); }}
+              className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors">
+              <X className="w-3 h-3" /> {t('docs.reset')}
+            </button>
+          )}
         </div>
-      </div>
 
-      {/* ── Result count + reset ── */}
-      <div className="flex items-center justify-between">
-        <p className="text-xs text-muted-foreground">
-          {t('docs.showing')}{' '}
-          <span className="font-semibold text-foreground">{filtered.length}</span>{' '}
-          {t('docs.items')}
-          {search && <> {t('docs.for')} "<span className="text-green-600">{search}</span>"</>}
-        </p>
-        {(search || activeFilter !== 'ทั้งหมด') && (
-          <button onClick={() => { setSearch(''); setActiveFilter('ทั้งหมด'); }}
-            className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1">
-            <X className="w-3 h-3" /> {t('docs.reset')}
-          </button>
+        {/* Document list */}
+        <div className="flex flex-col gap-2 flex-1">
+          <AnimatePresence mode="popLayout">
+            {pageDocs.length > 0 ? (
+              pageDocs.map((doc, i) => (
+                <CatalogRow key={doc.id} doc={doc} index={i} lang={lang} t={t} />
+              ))
+            ) : (
+              <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                className="flex flex-col items-center justify-center py-16 text-muted-foreground gap-3">
+                <BookOpen className="w-10 h-10 opacity-25" />
+                <p className="font-medium text-sm">{t('docs.notfound')}</p>
+                <p className="text-xs">{t('docs.notfound.hint')}</p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between pt-3 border-t border-border mt-auto">
+            <button
+              onClick={() => setPage(p => Math.max(1, p-1))}
+              disabled={safePage === 1}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold
+                border border-border bg-muted hover:bg-green-500/10 hover:border-green-400 hover:text-green-600
+                disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+              {lang === 'en' ? 'Prev' : 'ก่อนหน้า'}
+            </button>
+
+            <div className="flex items-center gap-1">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                <button key={p} onClick={() => setPage(p)}
+                  className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${
+                    p === safePage
+                      ? 'bg-green-500 text-white shadow-sm shadow-green-500/30'
+                      : 'bg-muted border border-border text-muted-foreground hover:border-green-400 hover:text-foreground'
+                  }`}>
+                  {p}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={() => setPage(p => Math.min(totalPages, p+1))}
+              disabled={safePage === totalPages}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold
+                border border-border bg-muted hover:bg-green-500/10 hover:border-green-400 hover:text-green-600
+                disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+            >
+              {lang === 'en' ? 'Next' : 'ถัดไป'}
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
         )}
       </div>
-
-      {/* ── Main 2-row grid ── */}
-      <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <AnimatePresence mode="popLayout">
-          {visibleDocs.map((doc, i) => (
-            <DocCard key={doc.id} doc={doc} index={i} lang={lang} t={t} />
-          ))}
-          {filtered.length === 0 && (
-            <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-              className="col-span-3 text-center py-14 text-muted-foreground space-y-2">
-              <BookOpen className="w-10 h-10 mx-auto opacity-30" />
-              <p className="font-medium">{t('docs.notfound')}</p>
-              <p className="text-xs">{t('docs.notfound.hint')}</p>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
-
-      {/* ── Overflow: compact horizontal slide strip ── */}
-      {overflowDocs.length > 0 && (
-        <div className="relative">
-          {/* Divider label */}
-          <div className="flex items-center gap-3 mb-3">
-            <div className="flex-1 h-px bg-border" />
-            <span className="text-[11px] font-medium text-muted-foreground whitespace-nowrap flex items-center gap-1.5">
-              <ChevronRight className="w-3 h-3" />
-              {overflowDocs.length} {lang === 'en' ? 'more' : 'รายการเพิ่มเติม'} — {lang === 'en' ? 'scroll →' : 'เลื่อนดู →'}
-            </span>
-            <div className="flex-1 h-px bg-border" />
-          </div>
-
-          {/* Compact horizontal scroll strip */}
-          <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory
-            scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent
-            -mx-1 px-1">
-            {overflowDocs.map((doc, i) => {
-              const catCfg  = getCatConfig(doc.category);
-              const typeCfg = TYPE_CONFIG[doc.type] ?? TYPE_CONFIG.pdf;
-              const TypeIcon = typeCfg.icon;
-              const title   = lang === 'en' ? doc.titleEn : doc.title;
-              return (
-                <div key={doc.id}
-                  className="flex-shrink-0 w-60 snap-start rounded-xl border border-border bg-card
-                    hover:border-green-400/40 hover:shadow-sm transition-all overflow-hidden group">
-                  {/* Color accent */}
-                  <div className="h-0.5 w-full" style={{ background: catCfg.color, opacity: 0.6 }} />
-                  <div className="p-3 flex flex-col gap-2">
-                    {/* Icon + category */}
-                    <div className="flex items-center gap-1.5">
-                      <div className="w-6 h-6 rounded flex items-center justify-center flex-shrink-0"
-                        style={{ background: `${typeCfg.color}15` }}>
-                        <TypeIcon className="w-3 h-3" style={{ color: typeCfg.color }} />
-                      </div>
-                      <span className="text-[10px] font-semibold" style={{ color: catCfg.color }}>
-                        {t(doc.catKey)}
-                      </span>
-                      {doc.featured && (
-                        <span className="ml-auto text-[9px] font-bold text-amber-600 flex items-center gap-0.5">
-                          <Star className="w-2.5 h-2.5" />{t('docs.featured')}
-                        </span>
-                      )}
-                    </div>
-                    {/* Title */}
-                    <p className="text-xs font-semibold line-clamp-2 leading-snug
-                      group-hover:text-green-600 transition-colors min-h-[2.5rem]">
-                      {title}
-                    </p>
-                    {/* Open button */}
-                    <a href={doc.url}
-                      target={doc.url?.startsWith('http') ? '_blank' : undefined}
-                      rel={doc.url?.startsWith('http') ? 'noopener noreferrer' : undefined}
-                      className="flex items-center justify-center gap-1 py-1.5 rounded-lg
-                        bg-muted hover:bg-green-500 hover:text-white border border-border
-                        hover:border-green-500 text-[11px] font-semibold transition-all">
-                      <ExternalLink className="w-3 h-3" />
-                      {t('kc.docs.open')}
-                    </a>
-                  </div>
-                </div>
-              );
-            })}
-            {/* Fade-right sentinel */}
-            <div className="flex-shrink-0 w-6" />
-          </div>
-
-          {/* Fade overlay on right edge */}
-          <div className="absolute right-0 top-8 bottom-2 w-12 bg-gradient-to-l from-background to-transparent pointer-events-none" />
-        </div>
-      )}
-
-      <p className="text-[10px] text-muted-foreground text-center">
-        {t('kc.docs.source')}
-      </p>
     </div>
   );
 }
 
-// ── Standalone page section ───────────────────────────────────────────────────
+// ── Standalone section ─────────────────────────────────────────────────────────
 export default function DocumentsSection() {
-  const { t, lang } = useLang();
+  const { t } = useLang();
   return (
     <section className="py-20 bg-background">
       <div className="max-w-7xl mx-auto px-4">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }} className="text-center mb-12">
-          <span className="inline-block px-4 py-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-600 text-sm font-medium mb-4">
-            {t('docs.badge')}
-          </span>
+          <span className="inline-block px-4 py-1.5 rounded-full bg-green-500/10 border border-green-500/20
+            text-green-600 text-sm font-medium mb-4">{t('docs.badge')}</span>
           <h2 className="font-space font-bold text-3xl lg:text-4xl mb-3">
             {t('docs.heading')} <span className="text-gradient-green">{t('docs.headingHighlight')}</span>
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            {t('docs.desc')}
-          </p>
+          <p className="text-muted-foreground max-w-2xl mx-auto">{t('docs.desc')}</p>
         </motion.div>
-        <div className="bg-muted/20 rounded-3xl border border-border p-6 lg:p-8">
+        <div className="glass-card rounded-3xl border border-border p-6 lg:p-8">
           <ForumZone />
         </div>
       </div>
