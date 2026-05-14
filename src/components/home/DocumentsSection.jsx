@@ -82,7 +82,7 @@ const DOCS = [
   },
 ];
 
-const PER_PAGE = 5;
+const PER_PAGE = 4;
 
 // ── Type + Category config ─────────────────────────────────────────────────────
 const TYPE_CFG = {
@@ -115,11 +115,10 @@ function CatalogRow({ doc, index, lang, t }) {
 
   return (
     <motion.div
-      layout
-      initial={{ opacity: 0, x: -12 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 12 }}
-      transition={{ delay: index * 0.04, duration: 0.2 }}
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ delay: index * 0.04, duration: 0.15 }}
       className={`group flex items-start gap-4 p-4 rounded-xl border transition-all duration-150
         hover:shadow-sm hover:border-green-400/30 cursor-default
         ${doc.featured ? 'bg-gradient-to-r from-green-500/5 via-background to-background border-green-400/25' : 'bg-card border-border'}`}
@@ -197,21 +196,22 @@ function CatalogRow({ doc, index, lang, t }) {
 function ForumZone() {
   const { t, lang } = useLang();
   const [activeCat, setActiveCat] = useState('ทั้งหมด');
-  const [search, setSearch] = useState('');
-  const [page, setPage] = useState(1);
+  const [search,    setSearch]    = useState('');
+  const [page,      setPage]      = useState(1);
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
     return DOCS.filter(doc => {
-      const matchCat = activeCat === 'ทั้งหมด' || doc.category === activeCat;
+      const matchCat    = activeCat === 'ทั้งหมด' || doc.category === activeCat;
       const matchSearch = !q || doc.title.toLowerCase().includes(q) || doc.titleEn.toLowerCase().includes(q);
       return matchCat && matchSearch;
     });
   }, [activeCat, search]);
 
-  const totalPages = Math.ceil(filtered.length / PER_PAGE);
-  const safePage   = Math.min(page, Math.max(1, totalPages));
-  const pageDocs   = filtered.slice((safePage - 1) * PER_PAGE, safePage * PER_PAGE);
+  // Always clamp page to valid range when filtered list changes
+  const totalPages  = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+  const currentPage = Math.min(page, totalPages);
+  const pageDocs    = filtered.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
 
   const counts = useMemo(() => {
     const c = { 'ทั้งหมด': DOCS.length };
@@ -219,8 +219,10 @@ function ForumZone() {
     return c;
   }, []);
 
-  const changeCat = (key) => { setActiveCat(key); setPage(1); };
-  const changeSearch = (v) => { setSearch(v); setPage(1); };
+  // Reset to page 1 whenever filter/search changes
+  const changeCat    = (key) => { setActiveCat(key); setPage(1); };
+  const changeSearch = (v)   => { setSearch(v);      setPage(1); };
+  const goToPage     = (p)   => setPage(Math.max(1, Math.min(totalPages, p)));
 
   return (
     <div className="flex gap-0 min-h-[520px]">
@@ -287,7 +289,7 @@ function ForumZone() {
         <div className="flex items-center justify-between text-[11px] text-muted-foreground -mt-1">
           <span>
             {t('docs.showing')}{' '}
-            <strong className="text-foreground">{(safePage-1)*PER_PAGE+1}–{Math.min(safePage*PER_PAGE, filtered.length)}</strong>
+            <strong className="text-foreground">{(currentPage-1)*PER_PAGE+1}–{Math.min(currentPage*PER_PAGE, filtered.length)}</strong>
             {' '}{lang==='en'?'of':'/'}
             {' '}<strong className="text-foreground">{filtered.length}</strong>
             {' '}{t('docs.items')}
@@ -301,14 +303,18 @@ function ForumZone() {
           )}
         </div>
 
-        {/* Document list */}
+        {/* Document list — keyed to page so items re-enter cleanly on page change */}
         <div className="flex flex-col gap-2 flex-1">
-          <AnimatePresence mode="popLayout">
-            {pageDocs.length > 0 ? (
-              pageDocs.map((doc, i) => (
-                <CatalogRow key={doc.id} doc={doc} index={i} lang={lang} t={t} />
-              ))
-            ) : (
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div key={`page-${currentPage}-${activeCat}-${search}`}
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              className="flex flex-col gap-2">
+              {pageDocs.length > 0 ? (
+                pageDocs.map((doc, i) => (
+                  <CatalogRow key={doc.id} doc={doc} index={i} lang={lang} t={t} />
+                ))
+              ) : (
               <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                 className="flex flex-col items-center justify-center py-16 text-muted-foreground gap-3">
                 <BookOpen className="w-10 h-10 opacity-25" />
@@ -316,6 +322,7 @@ function ForumZone() {
                 <p className="text-xs">{t('docs.notfound.hint')}</p>
               </motion.div>
             )}
+            </motion.div>
           </AnimatePresence>
         </div>
 
@@ -323,8 +330,8 @@ function ForumZone() {
         {totalPages > 1 && (
           <div className="flex items-center justify-between pt-3 border-t border-border mt-auto">
             <button
-              onClick={() => setPage(p => Math.max(1, p-1))}
-              disabled={safePage === 1}
+              onClick={() => goToPage(currentPage - 1)}
+              disabled={currentPage === 1}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold
                 border border-border bg-muted hover:bg-green-500/10 hover:border-green-400 hover:text-green-600
                 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
@@ -335,9 +342,9 @@ function ForumZone() {
 
             <div className="flex items-center gap-1">
               {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
-                <button key={p} onClick={() => setPage(p)}
+                <button key={p} onClick={() => goToPage(p)}
                   className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${
-                    p === safePage
+                    p === currentPage
                       ? 'bg-green-500 text-white shadow-sm shadow-green-500/30'
                       : 'bg-muted border border-border text-muted-foreground hover:border-green-400 hover:text-foreground'
                   }`}>
@@ -347,8 +354,8 @@ function ForumZone() {
             </div>
 
             <button
-              onClick={() => setPage(p => Math.min(totalPages, p+1))}
-              disabled={safePage === totalPages}
+              onClick={() => goToPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold
                 border border-border bg-muted hover:bg-green-500/10 hover:border-green-400 hover:text-green-600
                 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
