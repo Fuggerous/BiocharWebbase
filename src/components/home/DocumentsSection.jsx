@@ -194,10 +194,11 @@ function CatalogRow({ doc, index, lang, t }) {
 
 // ── ForumZone ─────────────────────────────────────────────────────────────────
 function ForumZone() {
-  const { t, lang } = useLang();
+  const { t, lang }     = useLang();
   const [activeCat, setActiveCat] = useState('ทั้งหมด');
   const [search,    setSearch]    = useState('');
   const [page,      setPage]      = useState(1);
+  const [sideOpen,  setSideOpen]  = useState(false);
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
@@ -224,58 +225,58 @@ function ForumZone() {
   const changeSearch = (v)   => { setSearch(v);      setPage(1); };
   const goToPage     = (p)   => setPage(Math.max(1, Math.min(totalPages, p)));
 
+  // Sidebar panel content (shared between slide-out and inline)
+  const SidebarContent = (
+    <div className="space-y-1">
+      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-1.5">
+        <Filter className="w-3 h-3" /> {lang === 'en' ? 'Categories' : 'หมวดหมู่'}
+      </p>
+      {CATS.map(cat => {
+        const active = activeCat === cat.thKey;
+        const count  = counts[cat.thKey] ?? 0;
+        return (
+          <button key={cat.thKey}
+            onClick={() => { changeCat(cat.thKey); setSideOpen(false); }}
+            className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium
+              transition-all text-left gap-2
+              ${active ? 'text-white' : 'text-muted-foreground hover:text-foreground hover:bg-muted'}`}
+            style={active ? { background: cat.color } : {}}
+          >
+            <span className="truncate">{t(cat.tKey)}</span>
+            <span className={`flex-shrink-0 text-[10px] px-1.5 py-0.5 rounded-full font-bold
+              ${active ? 'bg-white/20 text-white' : 'bg-muted text-muted-foreground'}`}>
+              {count}
+            </span>
+          </button>
+        );
+      })}
+      <div className="pt-3 mt-2 border-t border-border space-y-2">
+        {[
+          { label: lang === 'en' ? 'Total' : 'รวมทั้งหมด', value: DOCS.length },
+          { label: lang === 'en' ? 'Featured' : 'แนะนำ',    value: DOCS.filter(d => d.featured).length },
+        ].map(s => (
+          <div key={s.label} className="flex items-center justify-between text-[11px]">
+            <span className="text-muted-foreground">{s.label}</span>
+            <span className="font-bold text-foreground">{s.value}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
-    <div className="flex gap-0 min-h-[520px]">
+    <div className="relative flex flex-col gap-4 min-h-[480px]">
 
-      {/* ── Left sidebar: category + stats ── */}
-      <aside className="w-44 flex-shrink-0 pr-5 border-r border-border space-y-1 pt-1">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-1.5">
-          <Filter className="w-3 h-3" /> {lang === 'en' ? 'Filter' : 'หมวดหมู่'}
-        </p>
-        {CATS.map(cat => {
-          const active = activeCat === cat.thKey;
-          const count  = counts[cat.thKey] ?? 0;
-          return (
-            <button key={cat.thKey} onClick={() => changeCat(cat.thKey)}
-              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium
-                transition-all text-left gap-2
-                ${active ? 'text-white' : 'text-muted-foreground hover:text-foreground hover:bg-muted'}`}
-              style={active ? { background: cat.color } : {}}
-            >
-              <span className="truncate">{t(cat.tKey)}</span>
-              <span className={`flex-shrink-0 text-[10px] px-1.5 py-0.5 rounded-full font-bold
-                ${active ? 'bg-white/20 text-white' : 'bg-muted text-muted-foreground'}`}>
-                {count}
-              </span>
-            </button>
-          );
-        })}
-
-        {/* Mini stats */}
-        <div className="pt-4 mt-2 border-t border-border space-y-2">
-          {[
-            { label: lang === 'en' ? 'Total' : 'ทั้งหมด', value: DOCS.length },
-            { label: lang === 'en' ? 'Featured' : 'เด่น', value: DOCS.filter(d => d.featured).length },
-          ].map(s => (
-            <div key={s.label} className="flex items-center justify-between text-[11px]">
-              <span className="text-muted-foreground">{s.label}</span>
-              <span className="font-bold text-foreground">{s.value}</span>
-            </div>
-          ))}
-        </div>
-      </aside>
-
-      {/* ── Main content ── */}
-      <div className="flex-1 pl-5 flex flex-col gap-4 min-w-0">
-
-        {/* Search bar */}
-        <div className="relative">
+      {/* ── Top bar: search + filter toggle ── */}
+      <div className="flex items-center gap-3">
+        {/* Search */}
+        <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
           <input
             type="text" value={search} onChange={e => changeSearch(e.target.value)}
             placeholder={t('kc.docs.search')}
             className="w-full pl-9 pr-8 py-2.5 rounded-xl bg-muted border border-border text-sm
-              focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-400/50"
+              focus:outline-none focus:ring-2 focus:ring-green-500/30"
           />
           {search && (
             <button onClick={() => changeSearch('')}
@@ -285,72 +286,115 @@ function ForumZone() {
           )}
         </div>
 
-        {/* Result info row */}
-        <div className="flex items-center justify-between text-[11px] text-muted-foreground -mt-1">
-          <span>
-            {t('docs.showing')}{' '}
-            <strong className="text-foreground">{(currentPage-1)*PER_PAGE+1}–{Math.min(currentPage*PER_PAGE, filtered.length)}</strong>
-            {' '}{lang==='en'?'of':'/'}
-            {' '}<strong className="text-foreground">{filtered.length}</strong>
-            {' '}{t('docs.items')}
-            {search && <> · {t('docs.for')} "<span className="text-green-600">{search}</span>"</>}
-          </span>
-          {(search || activeCat !== 'ทั้งหมด') && (
-            <button onClick={() => { changeSearch(''); changeCat('ทั้งหมด'); }}
-              className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors">
-              <X className="w-3 h-3" /> {t('docs.reset')}
-            </button>
+        {/* Filter toggle button */}
+        <button
+          onClick={() => setSideOpen(o => !o)}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border
+            transition-all flex-shrink-0 ${sideOpen
+              ? 'bg-green-500 text-white border-green-500'
+              : 'bg-muted border-border text-muted-foreground hover:text-foreground hover:border-green-400'
+            }`}
+        >
+          <Filter className="w-4 h-4" />
+          <span className="hidden sm:inline">{lang === 'en' ? 'Filter' : 'กรอง'}</span>
+          {activeCat !== 'ทั้งหมด' && (
+            <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold
+              ${sideOpen ? 'bg-white/20 text-white' : 'bg-green-500/20 text-green-600'}`}>
+              1
+            </span>
           )}
-        </div>
+        </button>
+      </div>
 
-        {/* Document list — keyed to page so items re-enter cleanly on page change */}
-        <div className="flex flex-col gap-2 flex-1">
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div key={`page-${currentPage}-${activeCat}-${search}`}
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              transition={{ duration: 0.15 }}
-              className="flex flex-col gap-2">
-              {pageDocs.length > 0 ? (
-                pageDocs.map((doc, i) => (
-                  <CatalogRow key={doc.id} doc={doc} index={i} lang={lang} t={t} />
-                ))
-              ) : (
-              <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                className="flex flex-col items-center justify-center py-16 text-muted-foreground gap-3">
-                <BookOpen className="w-10 h-10 opacity-25" />
-                <p className="font-medium text-sm">{t('docs.notfound')}</p>
-                <p className="text-xs">{t('docs.notfound.hint')}</p>
-              </motion.div>
-            )}
-            </motion.div>
-          </AnimatePresence>
-        </div>
+      {/* ── Main area: slide-out filter + list ── */}
+      <div className="flex gap-0 flex-1 overflow-hidden">
 
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="flex items-center justify-between pt-3 border-t border-border mt-auto">
-            <button
-              onClick={() => goToPage(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold
-                border border-border bg-muted hover:bg-green-500/10 hover:border-green-400 hover:text-green-600
-                disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+        {/* Slide-out filter panel */}
+        <AnimatePresence initial={false}>
+          {sideOpen && (
+            <motion.aside
+              key="filter-panel"
+              initial={{ width: 0, opacity: 0 }}
+              animate={{ width: 176, opacity: 1 }}
+              exit={{ width: 0, opacity: 0 }}
+              transition={{ duration: 0.22, ease: 'easeInOut' }}
+              className="flex-shrink-0 overflow-hidden"
             >
-              <ChevronLeft className="w-3.5 h-3.5" />
-              {lang === 'en' ? 'Prev' : 'ก่อนหน้า'}
-            </button>
+              <div className="w-44 pr-4 border-r border-border h-full pt-1">
+                {SidebarContent}
+              </div>
+            </motion.aside>
+          )}
+        </AnimatePresence>
 
-            <div className="flex items-center gap-1">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
-                <button key={p} onClick={() => goToPage(p)}
-                  className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${
-                    p === currentPage
-                      ? 'bg-green-500 text-white shadow-sm shadow-green-500/30'
-                      : 'bg-muted border border-border text-muted-foreground hover:border-green-400 hover:text-foreground'
-                  }`}>
-                  {p}
-                </button>
-              ))}
+        {/* Content column */}
+        <div className={`flex-1 flex flex-col gap-3 min-w-0 ${sideOpen ? 'pl-4' : ''}`}>
+
+          {/* Result info */}
+          <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+            <span>
+              {t('docs.showing')}{' '}
+              <strong className="text-foreground">{Math.min((currentPage-1)*PER_PAGE+1, filtered.length)}–{Math.min(currentPage*PER_PAGE, filtered.length)}</strong>
+              {' '}{lang==='en'?'of':'/'}
+              {' '}<strong className="text-foreground">{filtered.length}</strong>
+              {' '}{t('docs.items')}
+              {search && <> · "<span className="text-green-600">{search}</span>"</>}
+            </span>
+            {(search || activeCat !== 'ทั้งหมด') && (
+              <button onClick={() => { changeSearch(''); changeCat('ทั้งหมด'); }}
+                className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors">
+                <X className="w-3 h-3" /> {t('docs.reset')}
+              </button>
+            )}
+          </div>
+
+          {/* Document list */}
+          <div className="flex flex-col gap-2 flex-1">
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div key={`page-${currentPage}-${activeCat}-${search}`}
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                className="flex flex-col gap-2">
+                {pageDocs.length > 0 ? (
+                  pageDocs.map((doc, i) => (
+                    <CatalogRow key={doc.id} doc={doc} index={i} lang={lang} t={t} />
+                  ))
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-16 text-muted-foreground gap-3">
+                    <BookOpen className="w-10 h-10 opacity-25" />
+                    <p className="font-medium text-sm">{t('docs.notfound')}</p>
+                    <p className="text-xs">{t('docs.notfound.hint')}</p>
+                  </div>
+                )}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between pt-3 border-t border-border mt-auto">
+              <button
+                onClick={() => goToPage(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold
+                  border border-border bg-muted hover:bg-green-500/10 hover:border-green-400 hover:text-green-600
+                  disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">{lang === 'en' ? 'Prev' : 'ก่อนหน้า'}</span>
+              </button>
+
+              <div className="flex items-center gap-1">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                  <button key={p} onClick={() => goToPage(p)}
+                    className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${
+                      p === currentPage
+                        ? 'bg-green-500 text-white shadow-sm shadow-green-500/30'
+                        : 'bg-muted border border-border text-muted-foreground hover:border-green-400 hover:text-foreground'
+                    }`}>
+                    {p}
+                  </button>
+                ))}
             </div>
 
             <button
@@ -367,6 +411,7 @@ function ForumZone() {
         )}
       </div>
     </div>
+  </div>
   );
 }
 
