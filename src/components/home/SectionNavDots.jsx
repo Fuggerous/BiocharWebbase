@@ -1,18 +1,20 @@
 // @ts-nocheck
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLang } from '../../lib/LanguageContext';
 
 const SECTIONS = [
-  { id: 'section-hero',         label: 'Database Highlight' },
-  { id: 'section-intro',        label: 'About the Platform' },
-  { id: 'section-chemical',     label: 'Database Chemical Space' },
-  { id: 'section-knowledge',    label: 'Knowledge Center' },
-  { id: 'section-society',      label: 'Biochar Society' },
-  { id: 'section-triplephase',  label: 'Triple-Phase Framework' },
-  { id: 'section-heatmap',      label: 'CO₂ Hotspots' },
+  { id: 'section-hero',         labelKey: 'navdots.hero' },
+  { id: 'section-intro',        labelKey: 'navdots.intro' },
+  { id: 'section-chemical',     labelKey: 'navdots.chemical' },
+  { id: 'section-knowledge',    labelKey: 'navdots.knowledge' },
+  { id: 'section-society',      labelKey: 'navdots.society' },
+  { id: 'section-triplephase',  labelKey: 'navdots.triple' },
+  { id: 'section-heatmap',      labelKey: 'navdots.heatmap' },
 ];
 
 export default function SectionNavDots() {
+  const { t } = useLang();
   const [activeId, setActiveId] = useState(SECTIONS[0].id);
   const [hoveredId, setHoveredId] = useState(null);
 
@@ -44,7 +46,8 @@ export default function SectionNavDots() {
 
   return (
     <div className="fixed right-6 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-4 hidden lg:flex">
-      {SECTIONS.map(({ id, label }) => {
+      {SECTIONS.map(({ id, labelKey }) => {
+        const label = t(labelKey);
         const isActive = activeId === id;
         const isHovered = hoveredId === id;
 

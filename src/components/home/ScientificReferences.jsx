@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { BookOpen, ExternalLink } from 'lucide-react';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export const REFS = [
   {
@@ -54,7 +55,7 @@ export const REFS = [
     title: 'Hierarchical pore structure of activated carbon derived from corn stalks.',
     journal: 'Journal of Materials Science',
     detail: '46, 464–469.',
-    doi: 'https://doi.org/10.1007/s10853-010-4839-9',
+    doi: 'https://doi.org/10.1016/j.electacta.2016.07.069',
   },
   {
     id: 7,
@@ -76,12 +77,12 @@ export const REFS = [
   },
   {
     id: 9,
-    authors: 'Zhang, Z., Luo, D., Liu, S., Hu, X., et al.',
-    year: '2021',
-    title: 'High-surface-area activated biochar derived from coffee ground waste for efficient CO₂ adsorption.',
-    journal: 'ACS Applied Materials & Interfaces',
-    detail: '13(12), 14195–14206.',
-    doi: 'https://doi.org/10.1021/acsami.0c22135',
+    authors: 'Min-jeong, K., Seung, C., Hyunwook, K., et al.',
+    year: '2020',
+    title: 'Simple synthesis of spent coffee ground-based microporous carbons using K2CO3 as an activation agent and their application to CO2 capture.',
+    journal: 'Chemical Engineering Journal',
+    detail: '397 (2020) 125404.',
+    doi: 'https://doi.org/10.1016/j.cej.2020.125404',
   },
   {
     id: 10,
@@ -151,39 +152,41 @@ export default function ScientificReferences() {
           </div>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {REFS.map((ref, i) => (
-            <motion.div
-              key={ref.id}
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.04 }}
-              className="flex gap-3 p-4 rounded-xl bg-white/4 border border-white/8 hover:border-green-500/20 transition-colors group"
-            >
-              <span className="font-space font-bold text-green-500 text-xs w-6 flex-shrink-0 mt-0.5">[{ref.id}]</span>
-              <div className="min-w-0">
-                <p className="text-slate-300 text-xs leading-relaxed">
-                  <span className="text-slate-400">{ref.authors} ({ref.year}). </span>
-                  <span className="font-medium text-white">{ref.title} </span>
-                  <span className="text-slate-400 italic">{ref.journal}, </span>
-                  <span className="text-slate-500">{ref.detail}</span>
-                </p>
-                {ref.doi && (
-                  <a
-                    href={ref.doi}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 mt-1.5 text-[10px] text-green-500/70 hover:text-green-400 transition-colors"
-                  >
-                    <ExternalLink className="w-2.5 h-2.5" />
-                    {ref.doi.replace('https://', '')}
-                  </a>
-                )}
-              </div>
-            </motion.div>
-          ))}
-        </div>
+        <ScrollArea className="h-[22rem] pr-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {REFS.map((ref, i) => (
+              <motion.div
+                key={ref.id}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.04 }}
+                className="flex gap-3 p-4 rounded-xl bg-white/4 border border-white/8 hover:border-green-500/20 transition-colors group"
+              >
+                <span className="font-space font-bold text-green-500 text-xs w-6 flex-shrink-0 mt-0.5">[{ref.id}]</span>
+                <div className="min-w-0">
+                  <p className="text-slate-300 text-xs leading-relaxed">
+                    <span className="text-slate-400">{ref.authors} ({ref.year}). </span>
+                    <span className="font-medium text-white">{ref.title} </span>
+                    <span className="text-slate-400 italic">{ref.journal}, </span>
+                    <span className="text-slate-500">{ref.detail}</span>
+                  </p>
+                  {ref.doi && (
+                    <a
+                      href={ref.doi}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 mt-1.5 text-[10px] text-green-500/70 hover:text-green-400 transition-colors"
+                    >
+                      <ExternalLink className="w-2.5 h-2.5" />
+                      {ref.doi.replace('https://', '')}
+                    </a>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </ScrollArea>
 
         <motion.p
           initial={{ opacity: 0 }}

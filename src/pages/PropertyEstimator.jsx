@@ -57,7 +57,7 @@ export default function PropertyEstimator() {
               <div className="flex items-center gap-2 p-3 rounded-xl bg-amber-50 border border-amber-200 mb-6">
                 <Database className="w-4 h-4 text-amber-600 shrink-0" />
                 <p className="text-xs text-amber-700">
-                  <span className="font-semibold">Phase 1 Inputs:</span> Pyrolysis conditions matched against 44Database records
+                  <span className="font-semibold">Inputs:</span> Pyrolysis conditions matched against 44Database records
                 </p>
               </div>
 
@@ -152,14 +152,14 @@ export default function PropertyEstimator() {
               <div className="glass-card rounded-3xl p-8 border border-dashed border-border flex flex-col items-center justify-center text-center h-full min-h-64">
                 <Layers className="w-12 h-12 text-muted-foreground/40 mb-3" />
                 <p className="text-muted-foreground font-medium">Configure parameters and run estimation</p>
-                <p className="text-sm text-muted-foreground/60 mt-1">Phase 2 structural properties will appear here</p>
+                <p className="text-sm text-muted-foreground/60 mt-1">Structural property estimates will appear here</p>
               </div>
             ) : (
               <div className="space-y-5">
                 {/* Confidence header */}
                 <div className="glass-card rounded-2xl p-5 border border-border">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-space font-semibold text-base">Phase 2 Property Estimate</h3>
+                    <h3 className="font-space font-semibold text-base">Property Estimate</h3>
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${confidenceColors[result.confidence]}`}>
                       <ShieldCheck className="inline w-3 h-3 mr-1" />
                       {result.confidence} · {result.dataPointsUsed} records
@@ -268,7 +268,7 @@ export default function PropertyEstimator() {
                 <a href="/predictor"
                   className="flex items-center justify-between w-full px-5 py-4 rounded-2xl gradient-green text-white font-semibold glow-green hover:scale-[1.02] transition-transform group">
                   <div>
-                    <p className="font-space font-bold text-sm">Proceed to Phase 3: CO₂ Estimator</p>
+                    <p className="font-space font-bold text-sm">Go to CO₂ Estimator</p>
                     <p className="text-green-100/70 text-xs mt-0.5">Use these structural properties to predict CO₂ uptake</p>
                   </div>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />

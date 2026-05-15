@@ -2,8 +2,9 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, Zap, Database, TrendingUp } from 'lucide-react';
+import { Zap, Database } from 'lucide-react';
 import { PEAK_RECORDS, TOTAL_DATA_POINTS, TOTAL_EXPERIMENTS } from '../../lib/biocharKnowledgeBase';
+import { useLang } from '../../lib/LanguageContext';
 
 const ACTIVATOR_LABELS = {
   Non: 'None', CO2: 'CO₂', LiCl: 'LiCl',
@@ -11,6 +12,8 @@ const ACTIVATOR_LABELS = {
 };
 
 export default function HeroSection() {
+  const { t } = useLang();
+
   const topRecords = useMemo(() => {
     const sorted = [...PEAK_RECORDS].sort((a, b) => b.co2Uptake - a.co2Uptake);
     return sorted.slice(0, 12);
@@ -57,17 +60,17 @@ export default function HeroSection() {
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 mb-6">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-              <span className="text-green-400 text-sm font-medium">BioPredict AI v1.7 · Triple-Phase Hub · ML Predictor</span>
+              <span className="text-green-400 text-sm font-medium">{t('hero.badge')}</span>
             </div>
 
             <h1 className="font-space font-bold text-white leading-tight">
-              <span className="text-4xl lg:text-5xl block">The Global</span>
-              <span className="text-4xl lg:text-5xl block text-green-400">Biochar</span>
-              <span className="text-4xl lg:text-5xl block">Intelligence Platform</span>
+              <span className="text-4xl lg:text-5xl block">{t('hero.heading1')}</span>
+              <span className="text-4xl lg:text-5xl block text-green-400">{t('hero.heading2')}</span>
+              <span className="text-4xl lg:text-5xl block">{t('hero.heading3')}</span>
             </h1>
 
             <p className="mt-4 text-blue-100/70 text-base leading-relaxed max-w-lg">
-              Data-driven insights from {TOTAL_DATA_POINTS.toLocaleString()} experimental records. Predict biochar performance instantly.
+              {t('hero.desc').replace('{count}', TOTAL_DATA_POINTS.toLocaleString())}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 mt-8 mb-8">
@@ -76,14 +79,14 @@ export default function HeroSection() {
                 className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg gradient-green text-white font-semibold text-sm glow-green hover:scale-105 transition-all"
               >
                 <Database className="w-4 h-4" />
-                Explore Data
+                {t('hero.exploreData')}
               </Link>
               <Link
                 to="/predictor"
                 className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg gradient-blue text-white font-semibold text-sm glow-blue hover:scale-105 transition-all"
               >
                 <Zap className="w-4 h-4" />
-                CO₂ Estimator
+                {t('hero.co2Estimator')}
               </Link>
             </div>
 
@@ -91,15 +94,15 @@ export default function HeroSection() {
             <div className="grid grid-cols-3 gap-3 max-w-sm">
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="p-3 rounded-lg bg-green-500/10 border border-green-500/30 text-center">
                 <p className="text-green-400 text-lg font-bold font-space">{TOTAL_DATA_POINTS.toLocaleString()}</p>
-                <p className="text-xs text-green-400/70 mt-0.5">Records</p>
+                <p className="text-xs text-green-400/70 mt-0.5">{t('hero.records')}</p>
               </motion.div>
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/30 text-center">
                 <p className="text-blue-300 text-lg font-bold font-space">{TOTAL_EXPERIMENTS.toLocaleString()}</p>
-                <p className="text-xs text-blue-300/70 mt-0.5">Experiments</p>
+                <p className="text-xs text-blue-300/70 mt-0.5">{t('hero.experiments')}</p>
               </motion.div>
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }} className="p-3 rounded-lg bg-purple-500/10 border border-purple-500/30 text-center">
                 <p className="text-purple-300 text-lg font-bold font-space">{avgCO2}</p>
-                <p className="text-xs text-purple-300/70 mt-0.5">Avg CO₂</p>
+                <p className="text-xs text-purple-300/70 mt-0.5">{t('hero.avgCO2')}</p>
               </motion.div>
             </div>
           </motion.div>
@@ -113,10 +116,10 @@ export default function HeroSection() {
           >
             <div className="glass-dark rounded-3xl p-6 border border-white/10">
               <div className="flex items-center justify-between mb-4">
-                <span className="text-white/60 text-sm font-medium">Top Performers · Live</span>
+                <span className="text-white/60 text-sm font-medium">{t('hero.topPerformers')}</span>
                 <span className="flex items-center gap-1.5 text-green-400 text-xs">
                   <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
-                  DB-Driven · {PEAK_RECORDS.length} records
+                  {t('hero.dbDriven')} · {PEAK_RECORDS.length} {t('hero.records')}
                 </span>
               </div>
               <motion.div
@@ -138,13 +141,16 @@ export default function HeroSection() {
                   </div>
                 ))}
                 <div className="mt-4 p-4 rounded-xl bg-green-500/10 border border-green-500/20 text-center">
-                  <p className="text-green-400/70 text-xs mb-1">Peak CO₂ Adsorption (recorded)</p>
+                  <p className="text-green-400/70 text-xs mb-1">{t('hero.peakAdsorption')}</p>
                   <p className="text-green-300 text-3xl font-bold font-space">{rec.co2Uptake.toFixed(2)}</p>
                   <p className="text-green-400/60 text-xs mt-1">mmol/g · at {rec.adsorpTemp}°C adsorption</p>
                 </div>
               </motion.div>
               <p className="text-[10px] text-slate-600 mt-3 text-center">
-                Cycling top-{topRecords.length} records · {idx + 1}/{topRecords.length}
+                {t('hero.cycling')
+                  .replace('{count}', topRecords.length)
+                  .replace('{index}', idx + 1)
+                  .replace('{total}', topRecords.length)}
               </p>
             </div>
           </motion.div>

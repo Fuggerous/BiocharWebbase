@@ -1,60 +1,10 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Flame, Layers, BarChart3, ChevronRight, ArrowRight, X, Zap, FlaskConical, Activity } from 'lucide-react';
+import { Layers, BarChart3, ChevronRight, ArrowRight, X, Zap, FlaskConical, Activity } from 'lucide-react';
+import { useLang } from '../../lib/LanguageContext';
 
-const PHASES = [
-  {
-    id: 1,
-    phase: 'Phase 1',
-    label: 'Feedstock Selection & Pyrolysis',
-    subtitle: 'Thermochemical Conversion',
-    icon: Flame,
-    color: '#f59e0b',
-    glow: 'rgba(245,158,11,0.3)',
-    bg: 'from-amber-500/15 to-amber-600/5',
-    border: 'border-amber-500/30',
-    description: 'Optimizing temperature and residence time for specific biomass feedstocks.',
-    inputs: ['Biomass Species', 'Pyrolysis Temp (°C)', 'Residence Time (min)', 'Heating Rate (°C/min)'],
-    outputs: ['Biochar Yield (%)', 'Fixed Carbon (%)', 'Volatile Matter (%)'],
-    tool: { label: 'Property Estimator →', path: '/property-estimator' },
-    detail: 'Select your biomass feedstock and thermochemical conditions. Temperature (300–900°C), residence time, and heating rate collectively determine the structure of the resulting biochar. Higher temperatures increase aromaticity and surface area, while slower heating rates improve carbon yield.',
-  },
-  {
-    id: 2,
-    phase: 'Phase 2',
-    label: 'Biochar Structural Design',
-    subtitle: 'Structural Engineering',
-    icon: Layers,
-    color: '#8b5cf6',
-    glow: 'rgba(139,92,246,0.3)',
-    bg: 'from-purple-500/15 to-purple-600/5',
-    border: 'border-purple-500/30',
-    description: 'Designing pore networks and elemental ratios (CHNS-O) for maximum CO₂ affinity.',
-    inputs: ['BET Surface Area (m²/g)', 'Pore Volume (cm³/g)', 'Activation Method'],
-    outputs: ['C / H / O / N / S (%)', 'Micropore Distribution', 'Functional Group Profile'],
-    tool: { label: 'Property Advisor →', path: '/advisor' },
-    detail: 'Activation with KOH, K₂CO₃, or CO₂ expands pore networks from ~5 m²/g to over 3,000 m²/g. Elemental composition (CHNS-O) governs surface chemistry: high C content ensures stability, while N/O functional groups enhance CO₂ chemisorption affinity.',
-  },
-  {
-    id: 3,
-    phase: 'Phase 3',
-    label: 'Adsorption Performance',
-    subtitle: 'Performance Validation',
-    icon: BarChart3,
-    color: '#22c55e',
-    glow: 'rgba(34,197,94,0.3)',
-    bg: 'from-green-500/15 to-green-600/5',
-    border: 'border-green-500/30',
-    description: 'Statistical validation of CO₂ uptake capacity under various pressure and temperature conditions.',
-    inputs: ['Adsorption Temp (°C)', 'Pressure (atm)', 'Biochar Properties'],
-    outputs: ['CO₂ Uptake (mmol/g)', 'Min–Mean–Max Range', 'Confidence Level'],
-    tool: { label: 'CO₂ Estimator →', path: '/predictor' },
-    detail: 'CO₂ adsorption estimated using 3 parallel methods: statistical DB lookup (1,263 records), Ridge approximation, and a trained sklearn ML pipeline (KNN → SVR). Results shown side-by-side with agreement indicator — divergence flags limited data or model uncertainty.',
-  },
-];
-
-function PhaseModal({ phase, onClose }) {
+function PhaseModal({ phase, onClose, t }) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -92,13 +42,13 @@ function PhaseModal({ phase, onClose }) {
 
         <div className="grid grid-cols-2 gap-3 mb-5">
           <div className="rounded-xl p-3 border border-white/10 bg-white/5">
-            <p className="text-[10px] font-bold uppercase tracking-wider mb-2" style={{ color: phase.color }}>Inputs</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider mb-2" style={{ color: phase.color }}>{t('tp.inputs')}</p>
             {phase.inputs.map(i => (
               <p key={i} className="text-slate-300 text-xs leading-relaxed">· {i}</p>
             ))}
           </div>
           <div className="rounded-xl p-3 border border-white/10 bg-white/5">
-            <p className="text-[10px] font-bold uppercase tracking-wider mb-2 text-slate-400">Outputs</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider mb-2 text-slate-400">{t('tp.outputs')}</p>
             {phase.outputs.map(o => (
               <p key={o} className="text-slate-300 text-xs leading-relaxed">· {o}</p>
             ))}
@@ -120,7 +70,60 @@ function PhaseModal({ phase, onClose }) {
 }
 
 export default function TriplePhaseFlow() {
+  const { t } = useLang();
   const [active, setActive] = useState(null);
+
+  // Reordered as tools (Property Estimator, CO₂ Estimator, Materials Advisor)
+  const PHASES = [
+    {
+      id: 1,
+      phase: 'Tool 1',
+      label: t('tp.tool1.label'),
+      subtitle: t('tp.tool1.desc'),
+      icon: FlaskConical,
+      color: '#f59e0b',
+      glow: 'rgba(245,158,11,0.3)',
+      bg: 'from-amber-500/15 to-amber-600/5',
+      border: 'border-amber-500/30',
+      description: t('tp.step1.detail'),
+      inputs: ['Biomass Species', 'Pyrolysis Temp (°C)'],
+      outputs: ['BET, Pore Volume'],
+      tool: { label: t('tp.tool1.label'), path: '/property-estimator' },
+      detail: t('tp.step1.detail'),
+    },
+    {
+      id: 2,
+      phase: 'Tool 2',
+      label: t('tp.tool3.label'),
+      subtitle: t('tp.tool3.desc'),
+      icon: BarChart3,
+      color: '#22c55e',
+      glow: 'rgba(34,197,94,0.3)',
+      bg: 'from-green-500/15 to-green-600/5',
+      border: 'border-green-500/30',
+      description: t('tp.step3.detail'),
+      inputs: ['Pyrolysis Params', 'Biochar Properties'],
+      outputs: ['CO₂ Uptake'],
+      tool: { label: t('tp.tool3.label'), path: '/predictor' },
+      detail: t('tp.step3.detail'),
+    },
+    {
+      id: 3,
+      phase: 'Tool 3',
+      label: t('tp.tool2.label'),
+      subtitle: t('tp.tool2.desc'),
+      icon: Layers,
+      color: '#8b5cf6',
+      glow: 'rgba(139,92,246,0.3)',
+      bg: 'from-purple-500/15 to-purple-600/5',
+      border: 'border-purple-500/30',
+      description: t('tp.step2.detail'),
+      inputs: ['Target Properties'],
+      outputs: ['Recommended Conditions'],
+      tool: { label: t('tp.tool2.label'), path: '/advisor' },
+      detail: t('tp.step2.detail'),
+    },
+  ];
 
   return (
     <section className="py-20 bg-slate-950 relative overflow-hidden">
@@ -136,14 +139,14 @@ export default function TriplePhaseFlow() {
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 mb-4">
             <Activity className="w-4 h-4 text-purple-400" />
-            <span className="text-purple-400 text-sm font-medium">Carbon Optimization Pathway</span>
+            <span className="text-purple-400 text-sm font-medium">{t('tp.badge')}</span>
           </div>
           <h2 className="font-space font-bold text-3xl lg:text-4xl text-white mb-3">
-            The Triple-Phase<br />
-            <span className="text-gradient-green">Intelligence Framework</span>
+            {t('tp.heading1')}<br />
+            <span className="text-gradient-green">{t('tp.heading2')}</span>
           </h2>
           <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-            Three interconnected phases — from raw biomass to validated CO₂ capture performance. Click any phase to explore tools and data.
+            {t('tp.desc')}
           </p>
         </motion.div>
 
@@ -165,10 +168,10 @@ export default function TriplePhaseFlow() {
                 onMouseEnter={e => e.currentTarget.style.boxShadow = `0 0 40px ${phase.glow}`}
                 onMouseLeave={e => e.currentTarget.style.boxShadow = '0 0 0 0 transparent'}
               >
-                {/* Phase badge */}
+                {/* Tool badge (use tool label to avoid implying sequence) */}
                 <div className="absolute -top-3 left-6 px-3 py-0.5 rounded-full text-[10px] font-bold border"
                   style={{ background: `${phase.color}20`, borderColor: `${phase.color}50`, color: phase.color }}>
-                  {phase.phase}
+                  {phase.label}
                 </div>
 
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 border"
@@ -182,7 +185,7 @@ export default function TriplePhaseFlow() {
 
                 {/* IO pills */}
                 <div className="space-y-1.5">
-                  <p className="text-[9px] font-bold uppercase tracking-widest text-slate-500">Key Parameters</p>
+                  <p className="text-[9px] font-bold uppercase tracking-widest text-slate-500">{t('tp.keyParameters')}</p>
                   {phase.inputs.slice(0, 2).map(inp => (
                     <div key={inp} className="flex items-center gap-1.5 text-[10px] text-slate-400">
                       <FlaskConical className="w-2.5 h-2.5 flex-shrink-0" style={{ color: phase.color }} />
@@ -192,7 +195,7 @@ export default function TriplePhaseFlow() {
                 </div>
 
                 <div className="mt-5 flex items-center gap-1 text-[11px] font-bold" style={{ color: phase.color }}>
-                  Explore phase <ChevronRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                  {t('tp.explorePhase')} <ChevronRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                 </div>
               </motion.button>
 
@@ -233,9 +236,9 @@ export default function TriplePhaseFlow() {
           className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4"
         >
           {[
-            { label: 'Property Estimator', desc: 'Phase 1 → 2 · Predict BET, Pore Volume from pyrolysis conditions', path: '/property-estimator', color: '#f59e0b', icon: FlaskConical },
-            { label: 'Materials Advisor', desc: 'Phase 2 → Target · Reverse-lookup optimal conditions', path: '/advisor', color: '#8b5cf6', icon: Layers },
-            { label: 'CO₂ Estimator', desc: 'Phase 3 · Statistical CO₂ uptake from synthesis params', path: '/predictor', color: '#22c55e', icon: BarChart3 },
+            { label: t('tp.tool1.label'), desc: t('tp.tool1.desc'), path: '/property-estimator', color: '#f59e0b', icon: FlaskConical },
+            { label: t('tp.tool3.label'), desc: t('tp.tool3.desc'), path: '/predictor', color: '#22c55e', icon: BarChart3 },
+            { label: t('tp.tool2.label'), desc: t('tp.tool2.desc'), path: '/advisor', color: '#8b5cf6', icon: Layers },
           ].map(tool => (
             <Link
               key={tool.label}
@@ -258,7 +261,7 @@ export default function TriplePhaseFlow() {
       </div>
 
       <AnimatePresence>
-        {active && <PhaseModal phase={active} onClose={() => setActive(null)} />}
+        {active && <PhaseModal phase={active} t={t} onClose={() => setActive(null)} />}
       </AnimatePresence>
     </section>
   );

@@ -1,14 +1,11 @@
 // @ts-nocheck
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Leaf, MapPin, GitBranch, Search, Zap, Flame, Droplets, Wind } from 'lucide-react';
+import { Leaf, MapPin, GitBranch, Flame, Droplets, Wind } from 'lucide-react';
 import BiocharFlow from './BiocharFlow';
 import ThailandContext from './ThailandContext';
 import { ForumZone } from './DocumentsSection';
 import { useLang } from '../../lib/LanguageContext';
-
-// ─── Forum Zone Data ──────────────────────────────────────────────────────────
-const FORUM_CATEGORIES = ['ทั้งหมด', 'มาตรฐาน', 'เอกสาร', 'วีดีโอ', 'สาระน่ารู้'];
 
 // ─── What is Biochar — fact card metadata (static icons/colors only) ──────────
 const BIOCHAR_FACT_META = [
@@ -112,10 +109,10 @@ export default function KnowledgeCenterSection() {
                 {/* Quick Stats Banner */}
                 <div className="md:col-span-2 rounded-2xl bg-gradient-to-r from-green-500/10 via-emerald-500/5 to-green-500/10 border border-green-500/20 p-5 flex flex-wrap gap-6 items-center justify-around">
                   {[
-                    { label: 'Recalcitrance', value: '100–1000+ yrs', sub: 'Carbon stability in soil' },
-                    { label: 'Max BET Surface', value: '3,157 m²/g', sub: 'Per gram of activated biochar' },
-                    { label: 'Peak CO₂ Uptake', value: '14.5 mmol/g', sub: 'Recorded in this database' },
-                    { label: 'GHG Reduction', value: 'Up to 54%', sub: 'N₂O emissions from soil' },
+                    { label: t('kc.stat.recalcitrance'), value: '100–1000+ yrs', sub: t('kc.stat.recalcitranceSub') },
+                    { label: t('kc.stat.bet'), value: '3,157 m²/g', sub: t('kc.stat.betSub') },
+                    { label: t('kc.stat.uptake'), value: '14.5 mmol/g', sub: t('kc.stat.uptakeSub') },
+                    { label: t('kc.stat.ghg'), value: 'Up to 54%', sub: t('kc.stat.ghgSub') },
                   ].map(s => (
                     <div key={s.label} className="text-center">
                       <div className="font-space font-bold text-xl text-green-500">{s.value}</div>

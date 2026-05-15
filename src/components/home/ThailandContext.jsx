@@ -4,6 +4,7 @@ import { MapPin, Leaf, TrendingUp, Zap } from 'lucide-react';
 import { Cite } from './ScientificReferences';
 import { BIOMASS_STATS, TOTAL_DATA_POINTS, TOTAL_EXPERIMENTS, DB_OVERALL_MAX } from '../../lib/biocharKnowledgeBase';
 import { DB44_RECORDS } from '../../lib/database44';
+import { useLang } from '../../lib/LanguageContext';
 
 function betRange(biomassKey) {
   const vals = DB44_RECORDS.filter(r => r.biomass === biomassKey && r.surfaceArea > 0).map(r => r.surfaceArea);
@@ -65,6 +66,8 @@ const FEEDSTOCKS = [
 ];
 
 export default function ThailandContext() {
+  const { t } = useLang();
+
   return (
     <section className="py-20 bg-background relative overflow-hidden">
       <div className="absolute inset-0 bg-dots-pattern opacity-40" />
@@ -79,14 +82,14 @@ export default function ThailandContext() {
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 mb-4">
             <MapPin className="w-4 h-4 text-amber-400" />
-            <span className="text-amber-400 text-sm font-medium">Regional Feedstock Intelligence</span>
+            <span className="text-amber-400 text-sm font-medium">{t('th.badge')}</span>
           </div>
           <h2 className="font-space font-bold text-3xl lg:text-4xl text-foreground mb-3">
-            Harnessing Thailand's{' '}
-            <span className="text-gradient-green">Agricultural Potential</span>
+            {t('th.heading1')}{' '}
+            <span className="text-gradient-green">{t('th.heading2')}</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Thailand produces over 60 million tonnes of agricultural residue annually.<Cite ids={[8]} /> BiocharHub maps the highest-potential feedstocks to their known biochar performance characteristics.
+            {t('th.desc')}<Cite ids={[8]} />
           </p>
         </motion.div>
 
@@ -127,9 +130,9 @@ export default function ThailandContext() {
               {/* Stats row */}
               <div className="grid grid-cols-3 divide-x divide-border border-b border-border">
                 {[
-                  { label: 'Carbon Content', value: f.carbonContent, icon: Leaf },
-                  { label: 'BET Potential', value: f.betPotential, icon: TrendingUp },
-                  { label: 'Abundance', value: f.abundance, icon: Zap },
+                  { label: t('th.stat.carbon'), value: f.carbonContent, icon: Leaf },
+                  { label: t('th.stat.bet'), value: f.betPotential, icon: TrendingUp },
+                  { label: t('th.stat.abundance'), value: f.abundance, icon: Zap },
                 ].map(stat => (
                   <div key={stat.label} className="px-4 py-3 text-center">
                     <p className="font-space font-bold text-sm text-foreground">{stat.value}</p>
@@ -141,7 +144,7 @@ export default function ThailandContext() {
               {/* Note */}
               <div className="p-4">
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  <span className="font-semibold" style={{ color: f.color }}>Key insight: </span>
+                  <span className="font-semibold" style={{ color: f.color }}>{t('th.keyInsight')} </span>
                   {f.note}<Cite ids={f.refs} />
                 </p>
               </div>
@@ -161,13 +164,16 @@ export default function ThailandContext() {
             <TrendingUp className="w-7 h-7 text-green-500" />
           </div>
           <div className="flex-1">
-            <h4 className="font-space font-bold text-lg text-foreground mb-1">Key feedstocks represented in the 44Database</h4>
+            <h4 className="font-space font-bold text-lg text-foreground mb-1">{t('th.bottomHeading')}</h4>
             <p className="text-sm text-muted-foreground">
-              {TOTAL_DATA_POINTS.toLocaleString()} experimental data points across {Object.keys(BIOMASS_STATS).length} biomass species, 6 activation methods, and {TOTAL_EXPERIMENTS} unique isotherm experiments — available for AI-driven prediction.<Cite ids={[12]} />
+              {t('th.bottomDesc')
+                .replace('{points}', TOTAL_DATA_POINTS.toLocaleString())
+                .replace('{species}', Object.keys(BIOMASS_STATS).length)
+                .replace('{experiments}', TOTAL_EXPERIMENTS)}<Cite ids={[12]} />
             </p>
           </div>
           <a href="/database" className="px-5 py-2.5 rounded-xl gradient-green text-white text-sm font-semibold glow-green hover:scale-105 transition-transform whitespace-nowrap flex-shrink-0">
-            Explore Database →
+            {t('th.explore')}
           </a>
         </motion.div>
       </div>

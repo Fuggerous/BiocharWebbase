@@ -3,6 +3,7 @@ import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Flame, Info } from 'lucide-react';
 import { computeHeatmapMatrix, TOTAL_DATA_POINTS } from '../../lib/biocharKnowledgeBase';
+import { useLang } from '../../lib/LanguageContext';
 
 const ACTIVATOR_LABELS = {
   Non: 'None', CO2: 'CO₂', LiCl: 'LiCl',
@@ -27,6 +28,7 @@ function heatColor(t) {
 }
 
 export default function HeatmapSection() {
+  const { t } = useLang();
   const [hovered, setHovered] = useState(null);
 
   const { matrix, activators, temps, globalMin, globalMax } = useMemo(() => {
@@ -57,16 +59,14 @@ export default function HeatmapSection() {
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 mb-4">
             <Flame className="w-4 h-4 text-amber-400" />
-            <span className="text-amber-400 text-sm font-medium">Interactive Heatmap · Database Insights</span>
+            <span className="text-amber-400 text-sm font-medium">{t('heatmap.badge')}</span>
           </div>
           <h2 className="font-space font-bold text-3xl lg:text-4xl text-white mb-3">
-            CO₂ Adsorption Hotspots<br />
-            <span className="text-gradient-green">Temperature × Activator Matrix</span>
+            {t('heatmap.heading1')}<br />
+            <span className="text-gradient-green">{t('heatmap.heading2')}</span>
           </h2>
           <p className="text-slate-400 text-base max-w-2xl mx-auto">
-            Mean peak CO₂ uptake (mmol/g) across pyrolysis temperatures and activation methods.
-            Computed from{' '}
-            <span className="text-green-400 font-semibold">{TOTAL_DATA_POINTS.toLocaleString()} real experimental records</span>.
+            {t('heatmap.desc').replace('{count}', TOTAL_DATA_POINTS.toLocaleString())}
           </p>
         </motion.div>
 
@@ -95,14 +95,14 @@ export default function HeatmapSection() {
                   <span className="text-slate-300 font-normal">{ACTIVATOR_LABELS[hovered.activator] ?? hovered.activator} · {hovered.temp}°C</span>
                   {'  →  '}
                   <span className="font-bold" style={{ color: heatColor(norm(hovered.value)) }}>{hovered.value.toFixed(2)} mmol/g</span>
-                  {norm(hovered.value) >= 0.85 && <span className="ml-2 px-2 py-0.5 rounded-full bg-red-500/20 text-red-300 text-xs">🔥 Peak Zone</span>}
-                  {norm(hovered.value) >= 0.55 && norm(hovered.value) < 0.85 && <span className="ml-2 px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-xs">High Performance</span>}
-                  {norm(hovered.value) < 0.25 && <span className="ml-2 px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 text-xs">Low Activity</span>}
+                  {norm(hovered.value) >= 0.85 && <span className="ml-2 px-2 py-0.5 rounded-full bg-red-500/20 text-red-300 text-xs">🔥 {t('heatmap.peakZone')}</span>}
+                  {norm(hovered.value) >= 0.55 && norm(hovered.value) < 0.85 && <span className="ml-2 px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-xs">{t('heatmap.highPerformance')}</span>}
+                  {norm(hovered.value) < 0.25 && <span className="ml-2 px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 text-xs">{t('heatmap.lowActivity')}</span>}
                 </span>
               </motion.div>
             ) : (
               <p className="text-slate-500 text-sm flex items-center gap-1.5">
-                <Info className="w-3.5 h-3.5" /> Hover over a cell to see details
+                <Info className="w-3.5 h-3.5" /> {t('heatmap.hoverHint')}
               </p>
             )}
           </div>
@@ -164,18 +164,18 @@ export default function HeatmapSection() {
               {/* Legend */}
               <div className="mt-6 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-2 flex-1">
-                  <span className="text-[10px] text-slate-500 shrink-0">Low ({globalMin.toFixed(1)})</span>
+                  <span className="text-[10px] text-slate-500 shrink-0">{t('heatmap.low')} ({globalMin.toFixed(1)})</span>
                   <div className="flex-1 h-2.5 rounded-full overflow-hidden" style={{
                     background: 'linear-gradient(to right, rgb(59,130,246), rgb(34,197,94), rgb(245,158,11), rgb(239,68,68))'
                   }} />
-                  <span className="text-[10px] text-slate-500 shrink-0">Peak ({globalMax.toFixed(1)}) mmol/g</span>
+                  <span className="text-[10px] text-slate-500 shrink-0">{t('heatmap.peak')} ({globalMax.toFixed(1)}) mmol/g</span>
                 </div>
               </div>
             </div>
           </div>
 
           <p className="text-[10px] text-slate-600 mt-4 text-center">
-            Mean peak CO₂ uptake (mmol/g) per activator × pyrolysis temperature from 44Database. Cells with "—" have no matching records.
+            {t('heatmap.footer')}
           </p>
         </motion.div>
       </div>

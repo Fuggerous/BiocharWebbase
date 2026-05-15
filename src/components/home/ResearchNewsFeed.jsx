@@ -10,6 +10,7 @@ import {
   BIOMASS_STATS, ACTIVATOR_STATS, TEMPERATURE_STATS,
   DB_OVERALL_AVG, DB_OVERALL_MAX, TOTAL_DATA_POINTS, TOTAL_EXPERIMENTS,
 } from '../../lib/biocharKnowledgeBase';
+import { useLang } from '../../lib/LanguageContext';
 
 // Compute real insights from database at module load
 const topBiomass = Object.entries(BIOMASS_STATS)
@@ -26,7 +27,7 @@ const INSIGHTS = [
   {
     icon: TrendingUp,
     color: '#22c55e',
-    label: 'Top Performing Biomass',
+    labelKey: 'research.topBiomass',
     value: topBiomass[0].replace(' ground-based','').replace(' powders',''),
     detail: `Mean CO₂ uptake ${topBiomass[1].mean.toFixed(2)} mmol/g across ${topBiomass[1].count} records`,
     sub: `Best recorded: ${topBiomass[1].max.toFixed(2)} mmol/g`,
@@ -34,7 +35,7 @@ const INSIGHTS = [
   {
     icon: FlaskConical,
     color: '#3b82f6',
-    label: 'Most Effective Activator',
+    labelKey: 'research.mostActivator',
     value: topActivator[0],
     detail: `${topActivator[1].label} — DB mean ${topActivator[1].mean.toFixed(2)} mmol/g`,
     sub: `Across ${topActivator[1].count} experimental records`,
@@ -42,7 +43,7 @@ const INSIGHTS = [
   {
     icon: Flame,
     color: '#f59e0b',
-    label: 'Optimal Pyrolysis Bracket',
+    labelKey: 'research.optimalBracket',
     value: `${topTemp[0]}°C`,
     detail: `Highest average CO₂ uptake: ${topTemp[1].mean.toFixed(2)} mmol/g`,
     sub: `${topTemp[1].count} records in this temperature range`,
@@ -50,7 +51,7 @@ const INSIGHTS = [
   {
     icon: Database,
     color: '#a855f7',
-    label: 'Database Coverage',
+    labelKey: 'research.databaseCoverage',
     value: `${TOTAL_EXPERIMENTS} Experiments`,
     detail: `${TOTAL_DATA_POINTS.toLocaleString()} data points · 8 biomass species · 6 activators`,
     sub: `Peak CO₂ recorded: ${DB_OVERALL_MAX.toFixed(2)} mmol/g`,
@@ -58,6 +59,8 @@ const INSIGHTS = [
 ];
 
 export default function ResearchNewsFeed() {
+  const { t } = useLang();
+
   return (
     <section className="py-20 bg-slate-950 relative overflow-hidden">
       <div className="absolute inset-0 bg-grid-pattern opacity-10" />
@@ -72,14 +75,13 @@ export default function ResearchNewsFeed() {
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 mb-4">
             <Zap className="w-4 h-4 text-green-400" />
-            <span className="text-green-400 text-sm font-medium">Real Data · Computed from 44Database</span>
+            <span className="text-green-400 text-sm font-medium">{t('research.badge')}</span>
           </div>
           <h2 className="font-space font-bold text-3xl lg:text-4xl text-white mb-3">
-            Database <span className="text-gradient-green">Chemical Space</span>
+            {t('research.heading1')} <span className="text-gradient-green">{t('research.heading2')}</span>
           </h2>
           <p className="text-slate-400 text-base max-w-2xl mx-auto">
-            Key findings computed directly from {TOTAL_DATA_POINTS.toLocaleString()} peer-reviewed experimental records —
-            biomass types, activators, temperatures, and their effect on CO₂ uptake.
+            {t('research.desc').replace('{count}', TOTAL_DATA_POINTS.toLocaleString())}
           </p>
         </motion.div>
 
@@ -99,7 +101,7 @@ export default function ResearchNewsFeed() {
                   style={{ background: `${item.color}20`, border: `1px solid ${item.color}40` }}>
                   <Icon className="w-5 h-5" style={{ color: item.color }} />
                 </div>
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1">{item.label}</p>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1">{t(item.labelKey)}</p>
                 <p className="font-space font-bold text-xl text-white mb-2" style={{ color: item.color }}>
                   {item.value}
                 </p>
@@ -119,10 +121,10 @@ export default function ResearchNewsFeed() {
         >
           <div className="flex flex-wrap justify-center sm:justify-start gap-8">
             {[
-              { label: 'DB Overall Mean', value: `${DB_OVERALL_AVG.toFixed(2)} mmol/g` },
-              { label: 'Peak CO₂ Recorded', value: `${DB_OVERALL_MAX.toFixed(2)} mmol/g` },
-              { label: 'Total Experiments', value: TOTAL_EXPERIMENTS },
-              { label: 'Data Points', value: TOTAL_DATA_POINTS.toLocaleString() },
+              { label: t('research.dbMean'), value: `${DB_OVERALL_AVG.toFixed(2)} mmol/g` },
+              { label: t('research.peakRecorded'), value: `${DB_OVERALL_MAX.toFixed(2)} mmol/g` },
+              { label: t('research.totalExperiments'), value: TOTAL_EXPERIMENTS },
+              { label: t('research.dataPoints'), value: TOTAL_DATA_POINTS.toLocaleString() },
             ].map(s => (
               <div key={s.label} className="text-center">
                 <p className="font-space font-bold text-lg text-green-400">{s.value}</p>
@@ -134,7 +136,7 @@ export default function ResearchNewsFeed() {
             to="/database"
             className="flex items-center gap-2 px-5 py-2.5 rounded-xl gradient-green text-white text-sm font-semibold glow-green hover:scale-105 transition-transform whitespace-nowrap flex-shrink-0"
           >
-            Explore Database <ArrowRight className="w-4 h-4" />
+            {t('research.explore')} <ArrowRight className="w-4 h-4" />
           </Link>
         </motion.div>
       </div>

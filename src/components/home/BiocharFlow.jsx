@@ -1,94 +1,8 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Leaf, Flame, Sparkles, Globe, ChevronRight, X, Thermometer, Wind, Droplets, BarChart3 } from 'lucide-react';
+import { Leaf, Flame, Sparkles, Globe, ChevronRight, X } from 'lucide-react';
 import { Cite } from './ScientificReferences';
-
-const STEPS = [
-  {
-    id: 1,
-    icon: Leaf,
-    color: '#22c55e',
-    bg: 'from-green-500/20 to-green-600/5',
-    border: 'border-green-500/30',
-    label: 'Sustainable Feedstock',
-    subtitle: 'Agricultural Waste',
-    short: 'Agri-waste such as rice husk, corn straw, and coffee grounds are collected — materials that would otherwise be burned or landfilled.',
-    shortRefs: [8],
-    detail: {
-      heading: 'Step 1 — Sustainable Feedstock Collection',
-      body: 'Thailand generates over 60 million tons of agricultural residue annually. Instead of open-field burning — a major source of PM2.5 — these lignocellulosic biomasses are collected as the raw input for biochar production. Typical feedstocks include rice husk (high silica, 40% C), corn straw (cellulose-rich), cassava rhizome, and coffee grounds (high N content).',
-      refs: [8, 10],
-      stats: [
-        { label: 'C Content', value: '35–55%', color: '#22c55e' },
-        { label: 'Moisture Target', value: '< 15%', color: '#3b82f6' },
-        { label: 'Feedstock Yield', value: '60 Mt/yr', color: '#a855f7' },
-      ],
-    },
-  },
-  {
-    id: 2,
-    icon: Flame,
-    color: '#f59e0b',
-    bg: 'from-amber-500/20 to-amber-600/5',
-    border: 'border-amber-500/30',
-    label: 'Thermochemical Conversion',
-    subtitle: 'Pyrolysis (300–900°C)',
-    short: 'Biomass is heated to 300–900°C in an oxygen-limited environment, preserving carbon in a stable, porous solid matrix.',
-    shortRefs: [1, 10],
-    detail: {
-      heading: 'Step 2 — Pyrolysis & Thermochemical Conversion',
-      body: 'Pyrolysis is the thermal decomposition of biomass at elevated temperatures (300–900°C) under inert or oxygen-limited conditions. It produces three co-products: solid biochar (26–35% yield), bio-oil (vapors that condense), and syngas (non-condensable gases used for process energy). Higher pyrolysis temperatures generally increase surface area and aromaticity while reducing volatile matter. Heating rate and residence time are critical kinetic parameters captured in the 44Database.',
-      refs: [1, 6, 10, 12],
-      stats: [
-        { label: 'Temp Range', value: '300–900°C', color: '#f59e0b' },
-        { label: 'Biochar Yield', value: '26–35%', color: '#ef4444' },
-        { label: 'Fixed Carbon', value: '60–90%', color: '#22c55e' },
-      ],
-    },
-  },
-  {
-    id: 3,
-    icon: Sparkles,
-    color: '#8b5cf6',
-    bg: 'from-purple-500/20 to-purple-600/5',
-    border: 'border-purple-500/30',
-    label: 'Biochar Enrichment',
-    subtitle: 'Chemical / Physical Activation',
-    short: 'Activation with KOH, K₂CO₃, or CO₂ gas dramatically expands internal pore networks, yielding BET surface areas up to 3,157 m²/g.',
-    shortRefs: [7, 12],
-    detail: {
-      heading: 'Step 3 — Activation & Pore Engineering',
-      body: 'Raw biochar has limited surface area (~5–200 m²/g). Activation dramatically expands the internal micropore network. Chemical activation (KOH, K2CO3) involves impregnating biochar with an activating agent followed by high-temperature treatment. Physical activation uses CO₂ or steam to selectively gasify carbon atoms, creating new micropores. Combined KOH-CO₂ methods achieve the highest BET surface areas in the 44Database, exceeding 3,000 m²/g.',
-      refs: [7, 10, 12],
-      stats: [
-        { label: 'Max BET Area', value: '3,157 m²/g', color: '#8b5cf6' },
-        { label: 'Top Activator', value: 'KOH', color: '#06b6d4' },
-        { label: 'Pore Vol Max', value: '1.554 cm³/g', color: '#f59e0b' },
-      ],
-    },
-  },
-  {
-    id: 4,
-    icon: Globe,
-    color: '#06b6d4',
-    bg: 'from-cyan-500/20 to-cyan-600/5',
-    border: 'border-cyan-500/30',
-    label: 'Permanent Carbon Sink',
-    subtitle: 'CO₂ Adsorption & Sequestration',
-    short: 'The engineered biochar captures CO₂ from flue gas or air at capacities up to 7.5 mmol/g — locking carbon away for centuries.',
-    shortRefs: [3, 12],
-    detail: {
-      heading: 'Step 4 — CO₂ Capture & Permanent Sequestration',
-      body: 'The activated biochar acts as a highly porous CO₂ adsorbent. At 25°C and 0.15 atm (representative of flue gas), top-performing samples achieve up to 7.5 mmol/g CO₂ uptake. The micropores provide physical adsorption sites while surface functional groups enable chemisorption. Once applied to soil, biochar sequesters carbon for 100–1,000+ years, making it a true negative emission technology. 1 tonne of biochar can permanently remove up to 2.5 tonnes of CO₂eq.',
-      refs: [1, 2, 3, 4, 11, 12],
-      stats: [
-        { label: 'Max CO₂ Uptake', value: '7.5 mmol/g', color: '#06b6d4' },
-        { label: 'Sequestration', value: '2.5 t CO₂/t', color: '#22c55e' },
-        { label: 'Carbon Stability', value: '100–1000 yr', color: '#a855f7' },
-      ],
-    },
-  },
-];
+import { useLang } from '../../lib/LanguageContext';
 
 function StepModal({ step, onClose }) {
   return (
@@ -142,7 +56,95 @@ function StepModal({ step, onClose }) {
 }
 
 export default function BiocharFlow() {
+  const { t } = useLang();
   const [active, setActive] = useState(null);
+
+  const STEPS = [
+    {
+      id: 1,
+      icon: Leaf,
+      color: '#22c55e',
+      bg: 'from-green-500/20 to-green-600/5',
+      border: 'border-green-500/30',
+      label: t('flow.step1.label'),
+      subtitle: t('flow.step1.subtitle'),
+      short: t('flow.step1.short'),
+      shortRefs: [8],
+      detail: {
+        heading: t('flow.step1.heading'),
+        body: t('flow.step1.body'),
+        refs: [8, 10],
+        stats: [
+          { label: t('flow.step1.c1'), value: '35–55%', color: '#22c55e' },
+          { label: t('flow.step1.c2'), value: '< 15%', color: '#3b82f6' },
+          { label: t('flow.step1.c3'), value: '60 Mt/yr', color: '#a855f7' },
+        ],
+      },
+    },
+    {
+      id: 2,
+      icon: Flame,
+      color: '#f59e0b',
+      bg: 'from-amber-500/20 to-amber-600/5',
+      border: 'border-amber-500/30',
+      label: t('flow.step2.label'),
+      subtitle: t('flow.step2.subtitle'),
+      short: t('flow.step2.short'),
+      shortRefs: [1, 10],
+      detail: {
+        heading: t('flow.step2.heading'),
+        body: t('flow.step2.body'),
+        refs: [1, 6, 10, 12],
+        stats: [
+          { label: t('flow.step2.c1'), value: '300–900°C', color: '#f59e0b' },
+          { label: t('flow.step2.c2'), value: '26–35%', color: '#ef4444' },
+          { label: t('flow.step2.c3'), value: '60–90%', color: '#22c55e' },
+        ],
+      },
+    },
+    {
+      id: 3,
+      icon: Sparkles,
+      color: '#8b5cf6',
+      bg: 'from-purple-500/20 to-purple-600/5',
+      border: 'border-purple-500/30',
+      label: t('flow.step3.label'),
+      subtitle: t('flow.step3.subtitle'),
+      short: t('flow.step3.short'),
+      shortRefs: [7, 12],
+      detail: {
+        heading: t('flow.step3.heading'),
+        body: t('flow.step3.body'),
+        refs: [7, 10, 12],
+        stats: [
+          { label: t('flow.step3.c1'), value: '3,157 m²/g', color: '#8b5cf6' },
+          { label: t('flow.step3.c2'), value: 'KOH', color: '#06b6d4' },
+          { label: t('flow.step3.c3'), value: '1.554 cm³/g', color: '#f59e0b' },
+        ],
+      },
+    },
+    {
+      id: 4,
+      icon: Globe,
+      color: '#06b6d4',
+      bg: 'from-cyan-500/20 to-cyan-600/5',
+      border: 'border-cyan-500/30',
+      label: t('flow.step4.label'),
+      subtitle: t('flow.step4.subtitle'),
+      short: t('flow.step4.short'),
+      shortRefs: [3, 12],
+      detail: {
+        heading: t('flow.step4.heading'),
+        body: t('flow.step4.body'),
+        refs: [1, 2, 3, 4, 11, 12],
+        stats: [
+          { label: t('flow.step4.c1'), value: '7.5 mmol/g', color: '#06b6d4' },
+          { label: t('flow.step4.c2'), value: '2.5 t CO₂/t', color: '#22c55e' },
+          { label: t('flow.step4.c3'), value: '100–1000 yr', color: '#a855f7' },
+        ],
+      },
+    },
+  ];
 
   return (
     <section className="py-20 bg-slate-950 relative overflow-hidden">
@@ -160,14 +162,14 @@ export default function BiocharFlow() {
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 mb-4">
             <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-            <span className="text-green-400 text-sm font-medium">Interactive Process Map</span>
+            <span className="text-green-400 text-sm font-medium">{t('flow.badge')}</span>
           </div>
           <h2 className="font-space font-bold text-3xl lg:text-4xl text-white mb-3">
-            From Waste to Wealth:<br />
-            <span className="text-gradient-green">The Biochar Journey</span>
+            {t('flow.step1.label')}<br />
+            <span className="text-gradient-green">{t('flow.step2.label')}</span>
           </h2>
           <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-            Click each stage to explore the science behind the transformation from agricultural residue to high-performance carbon capture material.
+            {t('tp.desc')}
           </p>
         </motion.div>
 
@@ -202,7 +204,7 @@ export default function BiocharFlow() {
                 <p className="text-slate-400 text-xs leading-relaxed">{step.short}{step.shortRefs && <Cite ids={step.shortRefs} />}</p>
 
                 <div className="mt-4 flex items-center gap-1 text-[11px] font-semibold" style={{ color: step.color }}>
-                  Explore details <ChevronRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                  {t('flow.stepExplore')} <ChevronRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                 </div>
               </motion.button>
 
