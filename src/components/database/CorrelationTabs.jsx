@@ -7,7 +7,7 @@ import {
   BarChart, Bar, Cell, LabelList,
 } from 'recharts';
 import CorrelationHeatmap from './CorrelationHeatmap';
-import ScatterPlot3D from './ScatterPlot3D';
+import ScatterPlot3D from './ScatterPlot3D.jsx';
 
 const TABS = ['Isotherm Plots', 'Multidimensional', 'Feature Effects', 'Correlation Heatmap'];
 
