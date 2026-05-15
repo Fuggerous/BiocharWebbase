@@ -438,18 +438,19 @@ export default function MaterialsAdvisor() {
                     <h3 className="font-space font-semibold text-sm mb-1">Mean CO₂ by Result</h3>
                     <p className="text-xs text-muted-foreground mb-3">Ranked matches vs your target</p>
                     <ResponsiveContainer width="100%" height={220}>
-                      <BarChart data={result.results.map((r, i) => ({ name: `#${i + 1} ${r.activator}`, co2: r.meanCO2, temp: r.pyroTemp }))}
-                        margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
+                      <BarChart layout="vertical" data={result.results.map((r, i) => ({ name: `#${i + 1} ${r.activator}`, co2: r.meanCO2, temp: r.pyroTemp }))}
+                        margin={{ top: 5, right: 10, left: -50, bottom: 10 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
-                        <XAxis dataKey="name" tick={{ fontSize: 8 }} />
-                        <YAxis tick={{ fontSize: 10 }} unit=" mmol/g" />
+                        <XAxis type="number" tick={{ fontSize: 10 }} 
+                        label={{ value: 'Mean CO₂ (mmol/g)', position: 'bottom', }} />
+                        <YAxis type="category" dataKey="name" tick={{ fontSize: 10 }} width={120} />
                         <Tooltip formatter={(v, n) => [`${v} mmol/g`, n]} />
                         {/* Target reference line rendered as bar annotation */}
-                        <Bar dataKey="co2" name="Mean CO₂" radius={[4, 4, 0, 0]}>
+                        <Bar dataKey="co2" name="Mean CO₂" radius={[4, 4, 0, 0]} barSize={16}>
                           {result.results.map((r, i) => (
                             <Cell key={i} fill={ACTIVATION_COLORS[r.activator] || '#94a3b8'} />
                           ))}
-                          <LabelList dataKey="co2" position="top" style={{ fontSize: 9, fontWeight: 700 }} />
+                          <LabelList dataKey="co2" position="right" style={{ fontSize: 9, fontWeight: 700 }} />
                         </Bar>
                       </BarChart>
                     </ResponsiveContainer>
