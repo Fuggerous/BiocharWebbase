@@ -3,8 +3,6 @@ import Footer from '../components/layout/Footer';
 import PredictorForm from '../components/predictor/PredictorForm';
 import { motion } from 'framer-motion';
 import { Zap, Shield, BarChart3, Brain } from 'lucide-react';
-import { useEffect, useRef } from 'react';
-import { useLang } from '../lib/LanguageContext';
 
 const features = [
   { icon: Brain, label: '3-Method Prediction', desc: 'Statistical lookup + Ridge approximation + Sklearn ML pipeline (KNN → SVR)' },
@@ -13,14 +11,6 @@ const features = [
 ];
 
 export default function Predictor() {
-  const { lang } = useLang();
-  const warnedRef = useRef(false);
-  useEffect(() => {
-    if (lang === 'th' && !warnedRef.current) {
-      warnedRef.current = true;
-      window.alert('🇹🇭 Thai version is not available at this moment 🙏');
-    }
-  }, [lang]);
   return (
     <div className="min-h-screen bg-background">
       <Navbar />

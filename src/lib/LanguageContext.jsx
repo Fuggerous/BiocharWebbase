@@ -13,12 +13,15 @@ export function LanguageProvider({ children }) {
     () => localStorage.getItem('biochar_lang') || 'en'
   );
 
-  function toggleLang() {
-    const next = lang === 'en' ? 'th' : 'en';
+  function setLanguage(next) {
     setLang(next);
     localStorage.setItem('biochar_lang', next);
-    // Update html lang attribute
     document.documentElement.lang = next === 'th' ? 'th-TH' : 'en';
+  }
+
+  function toggleLang() {
+    const next = lang === 'en' ? 'th' : 'en';
+    setLanguage(next);
   }
 
   // t(key) — looks up key in translations[lang], falls back to 'en', then the key itself
@@ -31,7 +34,7 @@ export function LanguageProvider({ children }) {
   }
 
   return (
-    <LanguageContext.Provider value={{ lang, toggleLang, t }}>
+    <LanguageContext.Provider value={{ lang, toggleLang, setLanguage, t }}>
       {children}
     </LanguageContext.Provider>
   );

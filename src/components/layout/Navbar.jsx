@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Leaf, Menu, X, ShieldCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -20,7 +20,10 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const location  = useLocation();
   const { isAdmin } = useRole();
-  const { lang, toggleLang, t } = useLang();
+  const { lang, toggleLang, setLanguage, t } = useLang();
+  const warnedRef = useRef(false);
+  const restrictedThaiPages = ['/database', '/property-estimator', '/predictor', '/advisor'];
+  const isRestrictedThaiPage = restrictedThaiPages.includes(location.pathname);
 
   // Show Share Data link only to admins
   const navLinks = isAdmin
@@ -34,6 +37,27 @@ export default function Navbar() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (isRestrictedThaiPage && lang === 'th') {
+      if (!warnedRef.current) {
+        window.alert('🇹🇭 Thai version is not available at this moment 🙏');
+        warnedRef.current = true;
+      }
+      setLanguage('en');
+    }
+    if (!isRestrictedThaiPage) {
+      warnedRef.current = false;
+    }
+  }, [isRestrictedThaiPage, lang, setLanguage]);
+
+  const handleLangToggle = () => {
+    if (isRestrictedThaiPage && lang === 'en') {
+      window.alert('🇹🇭 Thai version is not available at this moment 🙏');
+      return;
+    }
+    toggleLang();
+  };
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
@@ -81,7 +105,7 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-3">
             {/* Language Toggle */}
             <button
-              onClick={toggleLang}
+              onClick={handleLangToggle}
               className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-border bg-muted hover:border-green-400 hover:bg-green-500/10 transition-all text-sm font-semibold"
               title={lang === 'en' ? 'Switch to Thai' : 'Switch to English'}
             >
@@ -97,7 +121,7 @@ export default function Navbar() {
           <div className="md:hidden flex items-center gap-2">
             {/* Mobile language toggle */}
             <button
-              onClick={toggleLang}
+              onClick={handleLangToggle}
               className="flex items-center gap-1 px-2.5 py-1 rounded-full border border-border bg-muted text-xs font-semibold"
             >
               <span className={lang === 'en' ? 'text-green-600' : 'text-muted-foreground'}>EN</span>
