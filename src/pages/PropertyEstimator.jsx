@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useLang } from '../lib/LanguageContext';
 import { motion } from 'framer-motion';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
@@ -19,6 +20,14 @@ const confidenceColors = {
 
 export default function PropertyEstimator() {
   const [params, setParams] = useState({ biomass: 'Corn straw', pyroTemp: 600, residenceTime: 60, activator: 'KOH' });
+  const { lang } = useLang();
+  const warnedRef = useRef(false);
+  useEffect(() => {
+    if (lang === 'th' && !warnedRef.current) {
+      warnedRef.current = true;
+      window.alert('🇹🇭 Thai version is not available at this moment 🙏');
+    }
+  }, [lang]);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
 

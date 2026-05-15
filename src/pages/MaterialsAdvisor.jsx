@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useLang } from '../lib/LanguageContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
@@ -120,6 +121,15 @@ export default function MaterialsAdvisor() {
   const coverageData = getCoverageMatrix();
 
   const [mlValidations, setMlValidations] = useState({});
+
+  const { lang } = useLang();
+  const warnedRef = useRef(false);
+  useEffect(() => {
+    if (lang === 'th' && !warnedRef.current) {
+      warnedRef.current = true;
+      window.alert('🇹🇭 Thai version is not available at this moment 🙏');
+    }
+  }, [lang]);
 
   const handleAnalyze = async () => {
     setLoading(true);
