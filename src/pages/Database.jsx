@@ -1,5 +1,6 @@
 // @ts-nocheck
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
+import { useLang } from '../lib/LanguageContext';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import DatabaseCharts from '../components/database/DatabaseCharts';
@@ -52,6 +53,15 @@ const ANOMALY_MAP = new Map(DB44_RECORDS.map(r => {
 
 export default function Database() {
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
+
+  const { lang } = useLang();
+  const warnedRef = useRef(false);
+  useEffect(() => {
+    if (lang === 'th' && !warnedRef.current) {
+      warnedRef.current = true;
+      window.alert('🇹🇭 Thai version is not available at this moment 🙏');
+    }
+  }, [lang]);
 
   const filtered = useMemo(() => {
     return DB44_RECORDS.filter(r => {
