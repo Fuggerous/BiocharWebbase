@@ -1,7 +1,14 @@
 import { Link } from 'react-router-dom';
 import { Leaf, Twitter, Linkedin, Github, Mail, Globe } from 'lucide-react';
+import { useState } from 'react';
+import MarkdownModal from '../../components/ui/MarkdownModal';
+import PRIVACY from '../../../PRIVACY_POLICY_v1.0.md?raw';
+import TERMS from '../../../TERMS_OF_SERVICE_v1.0.md?raw';
+import LICENSE from '../../../DATA_LICENSE_v1.0.md?raw';
 
 export default function Footer() {
+  const [open, setOpen] = useState(null);
+
   return (
     <footer className="bg-slate-900 text-slate-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
@@ -79,12 +86,21 @@ export default function Footer() {
         <div className="mt-10 pt-6 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-3">
           <p className="text-xs text-slate-500">© 2026 BiocharHub. All rights reserved. Advancing carbon capture science.</p>
           <div className="flex items-center gap-4 text-xs text-slate-500">
-            <a href="https://github.com/Fuggerous/BiocharWebbase/blob/main/PRIVACY_POLICY_v1.0.md" target="_blank" rel="noopener noreferrer" className="hover:text-slate-300">Privacy Policy</a>
-            <a href="https://github.com/Fuggerous/BiocharWebbase/blob/main/TERMS_OF_SERVICE_v1.0.md" target="_blank" rel="noopener noreferrer" className="hover:text-slate-300">Terms of Service</a>
-            <a href="https://github.com/Fuggerous/BiocharWebbase/blob/main/DATA_LICENSE_v1.0.md" target="_blank" rel="noopener noreferrer" className="hover:text-slate-300">Data License</a>
+            <button onClick={() => setOpen('privacy')} className="hover:text-slate-300">Privacy Policy</button>
+            <button onClick={() => setOpen('terms')} className="hover:text-slate-300">Terms of Service</button>
+            <button onClick={() => setOpen('license')} className="hover:text-slate-300">Data License</button>
           </div>
         </div>
       </div>
+      {open === 'privacy' && (
+        <MarkdownModal open={true} title="Privacy Policy (v1.0)" content={PRIVACY} onClose={() => setOpen(null)} />
+      )}
+      {open === 'terms' && (
+        <MarkdownModal open={true} title="Terms of Service (v1.0)" content={TERMS} onClose={() => setOpen(null)} />
+      )}
+      {open === 'license' && (
+        <MarkdownModal open={true} title="Data License (v1.0)" content={LICENSE} onClose={() => setOpen(null)} />
+      )}
     </footer>
   );
 }
