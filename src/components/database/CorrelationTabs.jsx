@@ -3,12 +3,13 @@ import { useState, useMemo } from 'react';
 import { BIOMASS_COLORS } from '../../lib/database44';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+  ScatterChart, Scatter, ZAxis,
   BarChart, Bar, Cell, LabelList,
 } from 'recharts';
 import CorrelationHeatmap from './CorrelationHeatmap';
 import ScatterPlot3D from './ScatterPlot3D';
 
-const TABS = ['Isotherm Plots', '3D Scatter', 'Feature Effects', 'Correlation Heatmap'];
+const TABS = ['Isotherm Plots', 'Multidimensional', 'Feature Effects', 'Correlation Heatmap'];
 
 // ── Tab A: Isotherm Plot ──────────────────────────────────────────────────────
 function IsothermTab({ records }) {
@@ -82,7 +83,7 @@ function IsothermTab({ records }) {
   );
 }
 
-// ── Tab B: 3D Scatter Plot ────────────────────────────────────────────────────
+// ── Tab B: Multidimensional (2D bubble or 3D scatter) ─────────────────────────
 const AXIS_OPTIONS = [
   { key: 'pyroTemp',    label: 'Pyrolysis Temp (°C)' },
   { key: 'surfaceArea', label: 'Surface Area (m²/g)'  },
@@ -97,16 +98,29 @@ function MultiDimTab({ records }) {
   const [xAxis, setXAxis] = useState('surfaceArea');
   const [yAxis, setYAxis] = useState('co2Uptake');
   const [zAxis, setZAxis] = useState('pyroTemp');
+  const [view,  setView]  = useState('2d');   // '2d' | '3d'
 
-  // Build flat point array for ScatterPlot3D
+  const biomassInRecords = useMemo(() =>
+    [...new Set(records.map(r => r.biomass))], [records]);
+
+  // 2D: series grouped by biomass
+  const seriesByBiomass = useMemo(() => {
+    const out = {};
+    biomassInRecords.forEach(b => {
+      out[b] = records
+        .filter(r => r.biomass === b && r[xAxis] != null && r[yAxis] != null)
+        .map(r => ({ x: r[xAxis], y: r[yAxis], z: r[zAxis] ?? 1 }));
+    });
+    return out;
+  }, [records, xAxis, yAxis, zAxis, biomassInRecords]);
+
+  // 3D: flat point array
   const points3d = useMemo(() =>
     records
       .filter(r => r[xAxis] != null && r[yAxis] != null && r[zAxis] != null
-                && Number.isFinite(r[xAxis]) && Number.isFinite(r[yAxis]) && Number.isFinite(r[zAxis]))
+               && Number.isFinite(r[xAxis]) && Number.isFinite(r[yAxis]) && Number.isFinite(r[zAxis]))
       .map(r => ({
-        x:       r[xAxis],
-        y:       r[yAxis],
-        z:       r[zAxis],
+        x: r[xAxis], y: r[yAxis], z: r[zAxis],
         biomass: r.biomass,
         color:   BIOMASS_COLORS[r.biomass] ?? '#94a3b8',
       })),
@@ -119,13 +133,21 @@ function MultiDimTab({ records }) {
 
   return (
     <div className="space-y-4">
-      {/* Axis selectors */}
-      <div className="flex flex-wrap gap-4">
-        {[
-          { label: 'X-Axis (Red)',   val: xAxis,  set: setXAxis  },
-          { label: 'Y-Axis (Green)', val: yAxis,  set: setYAxis  },
-          { label: 'Z-Axis (Blue)',  val: zAxis,  set: setZAxis  },
-        ].map(({ label, val, set }) => (
+      {/* ── Controls row ── */}
+      <div className="flex flex-wrap items-end gap-4">
+        {/* Axis selectors */}
+        {(view === '3d'
+          ? [
+              { label: 'X-Axis (Red)',   val: xAxis, set: setXAxis },
+              { label: 'Y-Axis (Green)', val: yAxis, set: setYAxis },
+              { label: 'Z-Axis (Blue)',  val: zAxis, set: setZAxis },
+            ]
+          : [
+              { label: 'X-Axis',          val: xAxis, set: setXAxis },
+              { label: 'Y-Axis',          val: yAxis, set: setYAxis },
+              { label: 'Bubble Size (Z)', val: zAxis, set: setZAxis },
+            ]
+        ).map(({ label, val, set }) => (
           <div key={label} className="space-y-1">
             <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{label}</label>
             <select value={val} onChange={e => set(e.target.value)}
@@ -134,34 +156,76 @@ function MultiDimTab({ records }) {
             </select>
           </div>
         ))}
+
+        {/* View toggle — pushed to end */}
+        <div className="ml-auto flex items-center gap-1 p-1 bg-muted rounded-xl border border-border">
+          {[
+            { key: '2d', label: '2D Bubble' },
+            { key: '3d', label: '3D Scatter' },
+          ].map(v => (
+            <button key={v.key} onClick={() => setView(v.key)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                view === v.key
+                  ? 'bg-card shadow-sm text-foreground'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}>
+              {v.label}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Stats row */}
-      <p className="text-xs text-muted-foreground">
-        <span className="font-semibold text-foreground">{points3d.length}</span> records plotted
-        · Color = Biomass species · Drag to rotate · Scroll to zoom
-      </p>
+      {/* ── 2D Bubble chart ── */}
+      {view === '2d' && (
+        <>
+          <p className="text-xs text-muted-foreground">
+            Color = Biomass · Bubble size ∝ {zLabel} · {records.length} records
+          </p>
+          <ResponsiveContainer width="100%" height={340}>
+            <ScatterChart margin={{ top: 10, right: 20, left: 0, bottom: 20 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
+              <XAxis dataKey="x" type="number" name={xLabel} tick={{ fontSize: 11 }}
+                label={{ value: xLabel, position: 'insideBottom', offset: -10, fontSize: 11 }} />
+              <YAxis dataKey="y" type="number" name={yLabel} tick={{ fontSize: 11 }}
+                label={{ value: yLabel, angle: -90, position: 'insideLeft', fontSize: 11 }} />
+              <ZAxis dataKey="z" range={[40, 400]} />
+              <Tooltip cursor={{ strokeDasharray: '3 3' }}
+                formatter={(v, n) => [typeof v === 'number' ? v.toFixed(3) : v, n]} />
+              <Legend wrapperStyle={{ fontSize: 10, paddingTop: 4 }} />
+              {biomassInRecords.map(b => (
+                <Scatter key={b} name={b.replace(' ground-based','').replace(' powders','')}
+                  data={seriesByBiomass[b]}
+                  fill={BIOMASS_COLORS[b] ?? '#94a3b8'} fillOpacity={0.75} />
+              ))}
+            </ScatterChart>
+          </ResponsiveContainer>
+        </>
+      )}
 
-      {/* 3D Plot */}
-      <ScatterPlot3D
-        key={`${xAxis}-${yAxis}-${zAxis}`}
-        points={points3d}
-        xLabel={xLabel}
-        yLabel={yLabel}
-        zLabel={zLabel}
-        height={440}
-      />
-
-      {/* Biomass legend */}
-      <div className="flex flex-wrap gap-3 pt-1">
-        {[...new Set(records.map(r => r.biomass))].map(b => (
-          <div key={b} className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-            <span className="w-3 h-3 rounded-full flex-shrink-0"
-              style={{ background: BIOMASS_COLORS[b] ?? '#94a3b8' }} />
-            {b.replace(' ground-based','').replace(' powders','')}
+      {/* ── 3D WebGL scatter ── */}
+      {view === '3d' && (
+        <>
+          <p className="text-xs text-muted-foreground">
+            <span className="font-semibold text-foreground">{points3d.length}</span> records · Color = Biomass · Drag to rotate · Scroll to zoom
+          </p>
+          <ScatterPlot3D
+            key={`3d-${xAxis}-${yAxis}-${zAxis}`}
+            points={points3d}
+            xLabel={xLabel} yLabel={yLabel} zLabel={zLabel}
+            height={440}
+          />
+          {/* Biomass legend */}
+          <div className="flex flex-wrap gap-3">
+            {biomassInRecords.map(b => (
+              <div key={b} className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                <span className="w-3 h-3 rounded-full flex-shrink-0"
+                  style={{ background: BIOMASS_COLORS[b] ?? '#94a3b8' }} />
+                {b.replace(' ground-based','').replace(' powders','')}
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </>
+      )}
     </div>
   );
 }
