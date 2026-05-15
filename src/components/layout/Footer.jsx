@@ -70,8 +70,8 @@ export default function Footer() {
               <li className="flex items-center gap-2"><Globe className="w-4 h-4 text-green-400" /> www.biocharhub.ai</li>
             </ul>
             <div className="mt-5 p-3 rounded-xl bg-green-500/10 border border-green-500/20">
-              <p className="text-xs text-green-400 font-medium">Open Science Initiative</p>
-              <p className="text-xs text-slate-400 mt-1">Contributing to IPCC carbon capture research goals</p>
+              <p className="text-xs text-green-400 font-medium">The Petroleum and Petrochemical College, CU</p>
+              <p className="text-xs text-slate-400 mt-1">Contributing to carbon capture research goals</p>
             </div>
           </div>
         </div>
@@ -79,9 +79,9 @@ export default function Footer() {
         <div className="mt-10 pt-6 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-3">
           <p className="text-xs text-slate-500">© 2026 BiocharHub. All rights reserved. Advancing carbon capture science.</p>
           <div className="flex items-center gap-4 text-xs text-slate-500">
-            <a href="#" className="hover:text-slate-300">Privacy Policy</a>
-            <a href="#" className="hover:text-slate-300">Terms of Service</a>
-            <a href="#" className="hover:text-slate-300">Data License</a>
+            <a href="https://github.com/Fuggerous/BiocharWebbase/blob/main/PRIVACY_POLICY_v1.0.md" target="_blank" rel="noopener noreferrer" className="hover:text-slate-300">Privacy Policy</a>
+            <a href="https://github.com/Fuggerous/BiocharWebbase/blob/main/TERMS_OF_SERVICE_v1.0.md" target="_blank" rel="noopener noreferrer" className="hover:text-slate-300">Terms of Service</a>
+            <a href="https://github.com/Fuggerous/BiocharWebbase/blob/main/DATA_LICENSE_v1.0.md" target="_blank" rel="noopener noreferrer" className="hover:text-slate-300">Data License</a>
           </div>
         </div>
       </div>

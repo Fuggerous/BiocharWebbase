@@ -1,0 +1,26 @@
+BiocharHub Website Version History
+
+Version format: A.B.C.D
+
+A = major change / new big website function
+B = model improvement
+C = UX/UI improvement
+D = minor fix
+
+Current release: 2.0.1.0
+
+1.0.0.0 - Initial website foundation and core pages
+1.0.1.0 - Docs Library slide-out drawer and mobile responsive layout
+1.0.1.1 - Home page content refinements and translation updates
+1.0.1.2 - Predictor label/name cleanup
+
+2.0.0.0 - Database page upgrade with real WebGL 3D scatter plot
+2.0.0.1 - 3D scatter plot JSX structure fix
+2.0.0.2 - 3D scatter plot import resolution fix for Netlify build
+
+2.0.1.0 - TH/EN home page adjustment and Knowledge Center copy updates
+
+Notes:
+- Add a new line for every release.
+- Keep the version number aligned to the type of change.
+- Use the next available patch number if multiple small fixes happen in the same release cycle.
