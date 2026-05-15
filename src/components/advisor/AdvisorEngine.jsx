@@ -4,7 +4,7 @@
  * from the 44Database records.
  */
 
-import { DB44_RECORDS } from '../../lib/database44';
+import { DB44_RECORDS, BIOMASS_SPECIES_MAP } from '../../lib/database44';
 
 function distScore(record, target) {
   return Math.abs(record.co2Uptake - target);
@@ -63,9 +63,17 @@ function objectiveScore(g, targetCO2, secondaryObjective, tertiaryObjective) {
 }
 
 export function reverseQuery({ targetCO2, biomass = 'All', tolerance = 0.5, secondaryObjective = 'none', tertiaryObjective = 'none' }) {
-  const records = biomass === 'All'
-    ? DB44_RECORDS
-    : DB44_RECORDS.filter(r => r.biomass === biomass);
+  let records;
+  if (biomass === 'All') {
+    records = DB44_RECORDS;
+  } else if (BIOMASS_SPECIES_MAP[biomass]) {
+    // biomass is a species name: include all parts under that species
+    const parts = BIOMASS_SPECIES_MAP[biomass];
+    records = DB44_RECORDS.filter(r => parts.includes(r.biomass));
+  } else {
+    // exact biomass match
+    records = DB44_RECORDS.filter(r => r.biomass === biomass);
+  }
 
   const inBand = records.filter(r => Math.abs(r.co2Uptake - targetCO2) <= tolerance);
 

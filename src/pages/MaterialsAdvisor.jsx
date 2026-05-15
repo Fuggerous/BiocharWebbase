@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import { reverseQuery, getCoverageMatrix } from '../components/advisor/AdvisorEngine';
-import { BIOMASS_LIST, BIOMASS_COLORS } from '../lib/database44';
+import { BIOMASS_LIST, BIOMASS_COLORS, BIOMASS_SPECIES_MAP } from '../lib/database44';
 import { DB_OVERALL_MIN, DB_OVERALL_MAX } from '../lib/biocharKnowledgeBase';
 import { mlPipelineLookup } from '../lib/mlPredictor';
 import { Brain } from 'lucide-react';
@@ -275,14 +275,14 @@ export default function MaterialsAdvisor() {
                 <div className="space-y-2 mb-8">
                   <label className="text-sm font-semibold">Biomass Preference (optional)</label>
                   <div className="flex flex-wrap gap-2">
-                    {['All', ...BIOMASS_LIST].map(b => (
-                      <button key={b} onClick={() => setBiomass(b)}
+                    {['All', ...Object.keys(BIOMASS_SPECIES_MAP)].map(s => (
+                      <button key={s} onClick={() => setBiomass(s)}
                         className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
-                          biomass === b
+                          biomass === s
                             ? 'border-indigo-400 bg-indigo-500/10 text-indigo-300'
                             : 'border-border bg-muted text-muted-foreground hover:text-foreground'
                         }`}>
-                        {b === 'All' ? 'Any Species' : b.split(' ')[0] + (b.includes('Coffee') ? ' (Coffee)' : b.includes('Pine') ? ' (Pine)' : '')}
+                        {s === 'All' ? 'Any Species' : s}
                       </button>
                     ))}
                   </div>
