@@ -3,12 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
-import { Flame, Layers, ChevronDown, Thermometer, Clock, TrendingUp, FlaskConical, Database, ShieldCheck, ArrowRight } from 'lucide-react';
+import { Flame, Layers, ChevronDown, Thermometer, Clock, TrendingUp, FlaskConical, Database, ShieldCheck, ArrowRight, Brain } from 'lucide-react';
 import { estimateProperties } from '../lib/properyEstimatorLogic';
 import { BIOMASS_LIST, ACTIVATOR_LIST } from '../lib/database44';
-import { mlPipelineLookup } from '../lib/mlPredictor';
+import { mlPipelineLookup, elasticnetSaLookup, mlpSaLookup } from '../lib/mlPredictor';
+import { PROP_MODELS, SA_COMPARISON, PV_NOTE } from '../lib/modelRegistry';
+import ModelSelector from '../components/shared/ModelSelector';
+import ModelAccuracyChart from '../components/shared/ModelAccuracyChart';
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Brain } from 'lucide-react';
 
 const ELEM_COLORS = { C: '#22c55e', H: '#3b82f6', O: '#f59e0b', N: '#a855f7', S: '#ef4444' };
 
@@ -22,23 +24,37 @@ export default function PropertyEstimator() {
   const [params, setParams] = useState({ biomass: 'Corn straw', pyroTemp: 600, residenceTime: 60, activator: 'KOH' });
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [selectedModel, setSelectedModel] = useState('knn');
 
   const set = (k, v) => setParams(p => ({ ...p, [k]: v }));
 
   const [mlResult, setMlResult] = useState(null);
+  const [extraResult, setExtraResult] = useState(null); // elasticnet or mlp
 
   const handleRun = async () => {
     setLoading(true);
     await new Promise(r => setTimeout(r, 900));
     const res = estimateProperties(params);
     setResult(res);
-    setMlResult(mlPipelineLookup({
+    const knnPred = mlPipelineLookup({
       biomass:       params.biomass,
       temperature:   params.pyroTemp,
       activator:     params.activator,
       residenceTime: params.residenceTime,
       heatingRate:   10,
-    }));
+    });
+    setMlResult(knnPred);
+
+    // Run selected extra model if applicable
+    const lookupArgs = { biomass: params.biomass, temperature: params.pyroTemp,
+      activator: params.activator, residenceTime: params.residenceTime, heatingRate: 10 };
+    if (selectedModel === 'elasticnet') {
+      setExtraResult(elasticnetSaLookup(lookupArgs));
+    } else if (selectedModel === 'mlp') {
+      setExtraResult(mlpSaLookup(lookupArgs));
+    } else {
+      setExtraResult(null);
+    }
     setLoading(false);
   };
 
@@ -131,6 +147,20 @@ export default function PropertyEstimator() {
                   </div>
                 </div>
 
+                {/* Model selector */}
+                <div className="space-y-2 pt-1">
+                  <label className="text-sm font-medium flex items-center gap-1.5">
+                    <Brain className="w-4 h-4 text-indigo-500" /> ML Model
+                    <span className="text-xs font-normal text-muted-foreground ml-1">— DB Lookup always shown</span>
+                  </label>
+                  <ModelSelector
+                    models={PROP_MODELS}
+                    selected={selectedModel}
+                    onChange={setSelectedModel}
+                    context="prop"
+                  />
+                </div>
+
                 <button
                   onClick={handleRun}
                   disabled={loading}
@@ -206,28 +236,31 @@ export default function PropertyEstimator() {
 
                 {/* ML Model comparison */}
                 {mlResult && (
-                  <div className="glass-card rounded-2xl p-5 border border-purple-500/25">
-                    <div className="flex items-center gap-2 mb-3">
+                  <div className={`glass-card rounded-2xl p-5 border ${selectedModel === 'knn' ? 'border-purple-500/60 ring-1 ring-purple-500/30' : 'border-purple-500/25'}`}>
+                    <div className="flex items-center gap-2 mb-3 flex-wrap">
                       <Brain className="w-4 h-4 text-purple-500" />
-                      <h3 className="font-space font-semibold text-sm">ML Pipeline Estimate (KNN Model)</h3>
+                      <h3 className="font-space font-semibold text-sm">KNN Property Estimator</h3>
                       <span className="ml-auto text-[10px] px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-600 font-semibold border border-purple-500/20">
                         R²={mlResult.r2_prop}
                       </span>
+                      {selectedModel === 'knn' && (
+                        <span className="text-[9px] px-2 py-0.5 rounded-full bg-purple-500 text-white font-bold">★ Selected</span>
+                      )}
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       {[
-                        { label: 'BET Surface Area', db: result.surfaceArea.mean, ml: mlResult.sa, unit: 'm²/g', max: 3200, color: '#f59e0b' },
-                        { label: 'Pore Volume', db: result.poreVolume.mean, ml: +(mlResult.pv * 1e6).toFixed(3), unit: 'cm³/kg×10⁶', max: 1.6, color: '#a855f7' },
+                        { label: 'BET Surface Area', db: result.surfaceArea.mean, ml: mlResult.sa, unit: 'm²/g', color: '#f59e0b' },
+                        { label: 'Pore Volume', db: result.poreVolume.mean, ml: +(mlResult.pv * 1e6).toFixed(3), unit: 'cm³/kg×10⁶', color: '#a855f7' },
                       ].map(item => (
                         <div key={item.label} className="p-3 rounded-xl bg-muted/40 border border-border space-y-1">
                           <p className="text-[10px] font-semibold text-muted-foreground">{item.label}</p>
                           <div className="flex items-center justify-between text-xs">
                             <span className="text-muted-foreground">DB lookup</span>
-                            <span className="font-bold text-amber-600">{item.db.toLocaleString()}</span>
+                            <span className={`font-bold ${selectedModel === 'db_lookup' ? 'text-amber-600 underline underline-offset-2' : 'text-amber-600'}`}>{item.db.toLocaleString()}</span>
                           </div>
                           <div className="flex items-center justify-between text-xs">
-                            <span className="text-muted-foreground">ML model</span>
-                            <span className="font-bold" style={{ color: item.color }}>{item.ml.toLocaleString()}</span>
+                            <span className="text-muted-foreground">KNN model</span>
+                            <span className={`font-bold ${selectedModel === 'knn' ? 'underline underline-offset-2' : ''}`} style={{ color: item.color }}>{item.ml.toLocaleString()}</span>
                           </div>
                           <div className="text-[10px] text-muted-foreground">
                             Δ = {Math.abs(item.db - item.ml).toFixed(1)} {item.unit}
@@ -236,10 +269,56 @@ export default function PropertyEstimator() {
                       ))}
                     </div>
                     <p className="text-[10px] text-muted-foreground mt-2">
-                      ML: KNN trained on 58 experiments (R²_BET={mlResult.r2_prop}). Agreement with DB lookup = higher reliability.
+                      Agreement with DB lookup = higher reliability. Underlined value = your selected model's output.
                     </p>
                   </div>
                 )}
+
+                {/* ElasticNet / MLP result (shown when selected + export script run) */}
+                {(selectedModel === 'elasticnet' || selectedModel === 'mlp') && (
+                  <div className={`glass-card rounded-2xl p-4 border ${
+                    selectedModel === 'elasticnet' ? 'border-cyan-500/40' : 'border-green-500/40'
+                  }`}>
+                    <div className="flex items-center gap-2 mb-2 flex-wrap">
+                      <Brain className="w-4 h-4" style={{ color: selectedModel === 'elasticnet' ? '#06b6d4' : '#22c55e' }} />
+                      <span className="font-space font-semibold text-sm">
+                        {selectedModel === 'elasticnet' ? 'ElasticNet' : 'MLP'} BET Estimate
+                      </span>
+                      <span className="ml-auto text-[10px] px-2 py-0.5 rounded-full font-semibold border"
+                        style={{ color: selectedModel === 'elasticnet' ? '#0e7490' : '#15803d',
+                                 background: selectedModel === 'elasticnet' ? '#06b6d408' : '#22c55e08',
+                                 borderColor: selectedModel === 'elasticnet' ? '#06b6d430' : '#22c55e30' }}>
+                        ★ Your Selected ML Model
+                      </span>
+                    </div>
+                    {extraResult ? (
+                      <div className="p-3 rounded-xl bg-muted/40 border border-border">
+                        <p className="text-xs font-semibold text-muted-foreground mb-1">BET Surface Area</p>
+                        <p className="text-lg font-space font-bold"
+                          style={{ color: selectedModel === 'elasticnet' ? '#06b6d4' : '#22c55e' }}>
+                          {extraResult.sa?.toLocaleString() ?? '—'} <span className="text-sm font-normal text-muted-foreground">m²/g</span>
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="p-3 rounded-xl bg-amber-50 border border-amber-200">
+                        <p className="text-[11px] text-amber-700">
+                          <strong>Export required.</strong> Run{' '}
+                          <code className="bg-amber-100 px-1 rounded font-mono">python ML/ml_export_additional_models.py</code>{' '}
+                          to generate prediction data for this model.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Model Accuracy Chart — full training comparison */}
+                <ModelAccuracyChart
+                  data={SA_COMPARISON}
+                  title="BET Surface Area — Model Training Comparison"
+                  subtitle="All trained models · KNN deployed on platform · others trained in Python"
+                  note={PV_NOTE}
+                  xLabel="R² Score (cross-validated test set)"
+                />
 
                 {/* CHNS-O Elemental Composition */}
                 <div className="glass-card rounded-2xl p-5 border border-border">

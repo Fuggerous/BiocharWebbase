@@ -11,12 +11,14 @@ import {
   ResponsiveContainer, LabelList, ReferenceLine
 } from 'recharts';
 import { queryExpertGuidance, TOTAL_DATA_POINTS, DB_OVERALL_AVG } from '../lib/biocharKnowledgeBase';
-import { mlPredict, mlPipelineLookup, mlBlendPredict } from '../lib/mlPredictor';
+import { mlPredict, mlPipelineLookup, mlBlendPredict, trainedRidgePredict, stackingCo2Lookup } from '../lib/mlPredictor';
+import { CO2_MODELS, CO2_COMPARISON } from '../lib/modelRegistry';
 import BLEND_EFFECTS from '../lib/blend_effects.json';
 import WhyThisPrediction from '../components/results/WhyThisPrediction';
 import DataDensityGauge from '../components/results/DataDensityGauge';
 import SensitivityAnalysis from '../components/results/SensitivityAnalysis';
 import ReportExporter from '../components/results/ReportExporter';
+import ModelAccuracyChart from '../components/shared/ModelAccuracyChart';
 import { Brain } from 'lucide-react';
 
 const insightColors = {
@@ -271,6 +273,8 @@ export default function Results() {
     return null;
   }
 
+  const selectedModel = params.selectedModel ?? 'db_stat';
+
   const result = queryExpertGuidance({
     biomass:       params.biomass,
     temperature:   params.temperature,
@@ -278,6 +282,25 @@ export default function Results() {
     residenceTime: params.residenceTime,
   });
 
+  // Stacking CO₂ lookup (null until ml_export_additional_models.py runs)
+  const stackResult = stackingCo2Lookup({
+    biomass:       params.biomass,
+    temperature:   params.temperature,
+    activator:     params.activator,
+    residenceTime: params.residenceTime,
+    heatingRate:   params.heatingRate,
+  });
+
+  // Trained Ridge (from model_weights.json — actual sklearn coefficients)
+  const ridgeResult = trainedRidgePredict({
+    biomass:       params.biomass,
+    temperature:   params.temperature,
+    activator:     params.activator,
+    residenceTime: params.residenceTime,
+    heatingRate:   params.heatingRate,
+  });
+
+  // Legacy hand-fitted ridge kept for BenchmarkChart only
   const mlResult = mlPredict({
     biomass:       params.biomass,
     temperature:   params.temperature,
@@ -489,82 +512,137 @@ export default function Results() {
             </motion.div>
 
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.22 }}>
-              <div className="glass-card rounded-2xl p-5 border border-blue-500/25">
-                <div className="flex items-center gap-2 mb-1">
-                  <Brain className="w-4 h-4 text-blue-500" />
-                  <h3 className="font-space font-semibold text-base">3-Method Prediction Comparison</h3>
-                </div>
-                <p className="text-xs text-muted-foreground mb-4">
-                  Statistical DB lookup · Ridge approximation · Sklearn pipeline (KNN→SVR)
-                </p>
+              {(() => {
+                // All available ML rows (built once, then filtered for display)
+                const DB_ROW = {
+                  id: 'db_stat',
+                  label: 'DB Statistical Lookup',
+                  lo: result.min, hi: result.max, mean: result.mean,
+                  color: '#22c55e',
+                  badge: `n=${result.dataPointsUsed} records`, badgeBg: 'bg-green-500/10 text-green-600',
+                  note: `${result.confidence} confidence · always shown`,
+                  alwaysShown: true,
+                };
+                const ML_ROWS = {
+                  ridge: {
+                    id: 'ridge', label: 'Ridge Regression',
+                    lo: ridgeResult.co2Low, hi: ridgeResult.co2High, mean: ridgeResult.co2,
+                    color: '#3b82f6',
+                    badge: `LOO-CV R²=${ridgeResult.r2}`, badgeBg: 'bg-blue-500/10 text-blue-600',
+                    note: ridgeResult.modelNote,
+                  },
+                  knn_svr: mlPipeline ? {
+                    id: 'knn_svr', label: 'KNN → SVR Pipeline',
+                    lo: mlPipeline.co2Low, hi: mlPipeline.co2High, mean: mlPipeline.co2,
+                    color: '#a855f7',
+                    badge: `CV R²=${mlPipeline.r2_co2}`, badgeBg: 'bg-purple-500/10 text-purple-600',
+                    note: mlPipeline.modelNote,
+                    extra: `BET: ${mlPipeline.sa.toLocaleString()} m²/g`,
+                  } : null,
+                  stacking: stackResult ? {
+                    id: 'stacking', label: 'Stacking Ensemble',
+                    lo: stackResult.co2Low, hi: stackResult.co2High, mean: stackResult.co2,
+                    color: '#f97316',
+                    badge: `R²=${stackResult.r2}`, badgeBg: 'bg-orange-500/10 text-orange-600',
+                    note: stackResult.modelNote,
+                  } : null,
+                };
+                const mlRow = ML_ROWS[selectedModel] ?? null;
+                // Display: DB always + selected ML only
+                const rows = [DB_ROW, ...(mlRow ? [mlRow] : [])];
 
-                <div className="space-y-3">
-                  {[
-                    {
-                      label: 'Statistical (DB-Derived)',
-                      lo: result.min, hi: result.max, mean: result.mean,
-                      color: '#22c55e',
-                      badge: 'Primary', badgeBg: 'bg-green-500/10 text-green-600',
-                      note: `n=${result.dataPointsUsed} matched records · ${result.confidence} confidence`,
-                    },
-                    {
-                      label: 'Ridge Approximation',
-                      lo: mlResult.mlLow, hi: mlResult.mlHigh, mean: mlResult.mlMean,
-                      color: '#3b82f6',
-                      badge: `LOO-CV R²=${mlResult.r2}`, badgeBg: 'bg-blue-500/10 text-blue-600',
-                      note: mlResult.modelNote,
-                    },
-                    ...(mlPipeline ? [{
-                      label: 'Sklearn Pipeline (KNN→SVR)',
-                      lo: mlPipeline.co2Low, hi: mlPipeline.co2High, mean: mlPipeline.co2,
-                      color: '#a855f7',
-                      badge: `R²_prop=${mlPipeline.r2_prop}`, badgeBg: 'bg-purple-500/10 text-purple-600',
-                      note: mlPipeline.modelNote,
-                      extra: `Predicted BET: ${mlPipeline.sa.toLocaleString()} m²/g · PV: ${(mlPipeline.pv * 1e6).toFixed(0)} cm³/kg`,
-                    }] : []),
-                  ].map(row => {
-                    const domain = Math.max(8, row.hi * 1.2);
-                    const loPct  = (row.lo   / domain) * 100;
-                    const hiPct  = (row.hi   / domain) * 100;
-                    const midPct = (row.mean / domain) * 100;
-                    return (
-                      <div key={row.label} className="space-y-1">
-                        <div className="flex items-center justify-between text-xs flex-wrap gap-1">
-                          <div className="flex items-center gap-1.5">
-                            <span className="font-medium text-foreground">{row.label}</span>
-                            <span className={`px-1.5 py-0.5 rounded-full text-[9px] font-bold ${row.badgeBg}`}>{row.badge}</span>
-                          </div>
-                          <span className="font-bold" style={{ color: row.color }}>{row.lo.toFixed(1)} – {row.hi.toFixed(1)} mmol/g</span>
-                        </div>
-                        <div className="relative h-6 bg-slate-100 rounded-full overflow-hidden">
-                          <div className="absolute top-0 h-full rounded-full"
-                            style={{ left: `${loPct}%`, width: `${hiPct - loPct}%`, backgroundColor: `${row.color}35` }} />
-                          <div className="absolute top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full border-2 border-white shadow-md"
-                            style={{ left: `calc(${midPct}% - 7px)`, backgroundColor: row.color }} />
-                          <span className="absolute top-1/2 -translate-y-1/2 text-[9px] font-bold"
-                            style={{ left: `calc(${midPct}% + 10px)`, color: row.color }}>
-                            {row.mean.toFixed(2)}
-                          </span>
-                        </div>
-                        <p className="text-[10px] text-muted-foreground">{row.note}</p>
-                        {row.extra && <p className="text-[10px] text-purple-600">{row.extra}</p>}
+                // Agreement score between DB and selected ML
+                const means = rows.map(r => r.mean);
+                const avgMean = means.reduce((s, v) => s + v, 0) / means.length;
+                const spread = Math.max(...means) - Math.min(...means);
+                const agreementPct = Math.max(0, Math.round(100 - (spread / Math.max(avgMean, 0.1)) * 50));
+
+                return (
+                  <div className="glass-card rounded-2xl p-5 border border-blue-500/25">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      <Brain className="w-4 h-4 text-blue-500" />
+                      <h3 className="font-space font-semibold text-base">DB Lookup + ML Prediction</h3>
+                      {/* Agreement score */}
+                      <div className="ml-auto flex items-center gap-1.5">
+                        <span className="text-[10px] text-muted-foreground">Agreement:</span>
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
+                          agreementPct >= 75 ? 'bg-green-500/10 text-green-700 border-green-500/20'
+                          : agreementPct >= 50 ? 'bg-amber-500/10 text-amber-700 border-amber-500/20'
+                          : 'bg-red-500/10 text-red-700 border-red-500/20'
+                        }`}>
+                          {agreementPct}% {agreementPct >= 75 ? '✓ High' : agreementPct >= 50 ? '~ Moderate' : '✗ Low'}
+                        </span>
                       </div>
-                    );
-                  })}
-                </div>
+                    </div>
+                    <p className="text-xs text-muted-foreground mb-4">
+                      DB Lookup always shown · <span className="font-semibold text-foreground">★ = your selected ML model</span>
+                    </p>
 
-                {!mlPipeline && (
-                  <p className="text-[10px] text-amber-600 mt-2">
-                    Sklearn pipeline: biomass or activator not in lookup table.
-                  </p>
-                )}
-                <div className="mt-3 p-2.5 rounded-lg bg-slate-50 border border-slate-200">
-                  <p className="text-[10px] text-slate-500">
-                    Agreement between all 3 methods = higher confidence. Divergence suggests
-                    limited data for this specific condition.
-                  </p>
-                </div>
-              </div>
+                    <div className="space-y-3">
+                      {rows.map(row => {
+                        const isSelected = row.id === selectedModel;
+                        const domain = Math.max(8, row.hi * 1.2);
+                        const loPct  = (row.lo   / domain) * 100;
+                        const hiPct  = (row.hi   / domain) * 100;
+                        const midPct = (row.mean / domain) * 100;
+                        return (
+                          <div key={row.label}
+                            className={`rounded-xl p-3 space-y-1.5 border transition-all ${isSelected ? 'border-current ring-1 ring-current shadow-sm' : 'border-border/40 bg-muted/20'}`}
+                            style={isSelected ? { borderColor: row.color, '--tw-ring-color': row.color + '40' } : {}}
+                          >
+                            <div className="flex items-center justify-between text-xs flex-wrap gap-1">
+                              <div className="flex items-center gap-1.5">
+                                <span className="font-medium text-foreground">{row.label}</span>
+                                <span className={`px-1.5 py-0.5 rounded-full text-[9px] font-bold ${row.badgeBg}`}>{row.badge}</span>
+                                {row.alwaysShown && (
+                                  <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-green-500/10 text-green-700 border border-green-500/20">
+                                    Always Shown
+                                  </span>
+                                )}
+                                {isSelected && !row.alwaysShown && (
+                                  <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold border"
+                                    style={{ background: row.color + '15', color: row.color, borderColor: row.color + '40' }}>
+                                    ★ Your ML Model
+                                  </span>
+                                )}
+                              </div>
+                              <span className="font-bold" style={{ color: row.color }}>{row.lo.toFixed(1)} – {row.hi.toFixed(1)} mmol/g</span>
+                            </div>
+                            <div className="relative h-6 bg-slate-100 rounded-full overflow-hidden">
+                              <div className="absolute top-0 h-full rounded-full"
+                                style={{ left: `${loPct}%`, width: `${hiPct - loPct}%`, backgroundColor: `${row.color}35` }} />
+                              <div className="absolute top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full border-2 border-white shadow-md"
+                                style={{ left: `calc(${midPct}% - 7px)`, backgroundColor: row.color }} />
+                              <span className="absolute top-1/2 -translate-y-1/2 text-[9px] font-bold"
+                                style={{ left: `calc(${midPct}% + 10px)`, color: row.color }}>
+                                {row.mean.toFixed(2)}
+                              </span>
+                            </div>
+                            <p className="text-[10px] text-muted-foreground">{row.note}</p>
+                            {row.extra && <p className="text-[10px] text-purple-600">{row.extra}</p>}
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {!mlRow && selectedModel !== 'db_stat' && (
+                      <p className="text-[10px] text-amber-600 mt-2">
+                        {selectedModel === 'knn_svr'
+                          ? 'KNN→SVR: biomass or activator not in lookup table for these conditions.'
+                          : selectedModel === 'stacking'
+                          ? 'Stacking: restart dev server after running ml_export_stacking_co2.py to activate.'
+                          : 'Selected model prediction unavailable for these conditions.'}
+                      </p>
+                    )}
+                    <div className="mt-3 p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                      <p className="text-[10px] text-slate-500">
+                        High agreement between DB lookup and your ML model = higher prediction confidence.
+                        Divergence flags limited data or model uncertainty for this specific condition.
+                      </p>
+                    </div>
+                  </div>
+                );
+              })()}
             </motion.div>
 
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25 }}>
@@ -650,6 +728,16 @@ export default function Results() {
                 </div>
               </motion.div>
             )}
+
+            {/* Model Accuracy Comparison — full training comparison */}
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.48 }}>
+              <ModelAccuracyChart
+                data={CO2_COMPARISON}
+                title="CO₂ Model Training Comparison"
+                subtitle="Strategy B: direct pyrolysis conditions → CO₂ uptake · all trained models shown"
+                xLabel="R² Score (cross-validated test set)"
+              />
+            </motion.div>
 
             {/* Action buttons */}
             <div className="flex flex-wrap gap-3">

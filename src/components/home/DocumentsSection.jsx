@@ -109,8 +109,8 @@ function CatalogRow({ doc, index, lang, t }) {
   const typeCfg  = TYPE_CFG[doc.type] ?? TYPE_CFG.pdf;
   const catCfg   = getCat(doc.category);
   const TypeIcon = typeCfg.icon;
-  const title    = i18n.language === 'en' ? doc.titleEn : doc.title;
-  const desc     = i18n.language === 'en' ? (doc.descEn ?? doc.desc) : doc.desc;
+  const title    = lang === 'en' ? doc.titleEn : doc.title;
+  const desc     = lang === 'en' ? (doc.descEn ?? doc.desc) : doc.desc;
   const catLabel = t(doc.catKey) ?? doc.category;
 
   return (

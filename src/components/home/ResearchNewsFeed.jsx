@@ -23,43 +23,46 @@ const topActivator = Object.entries(ACTIVATOR_STATS)
 const topTemp = Object.entries(TEMPERATURE_STATS)
   .sort((a, b) => b[1].mean - a[1].mean)[0];
 
-const INSIGHTS = [
-  {
-    icon: TrendingUp,
-    color: '#22c55e',
-    labelKey: 'research.topBiomass',
-    value: topBiomass[0].replace(' ground-based','').replace(' powders',''),
-    detail: `Mean CO₂ uptake ${topBiomass[1].mean.toFixed(2)} mmol/g across ${topBiomass[1].count} records`,
-    sub: `Best recorded: ${topBiomass[1].max.toFixed(2)} mmol/g`,
-  },
-  {
-    icon: FlaskConical,
-    color: '#3b82f6',
-    labelKey: 'research.mostActivator',
-    value: topActivator[0],
-    detail: `${topActivator[1].label} — DB mean ${topActivator[1].mean.toFixed(2)} mmol/g`,
-    sub: `Across ${topActivator[1].count} experimental records`,
-  },
-  {
-    icon: Flame,
-    color: '#f59e0b',
-    labelKey: 'research.optimalBracket',
-    value: `${topTemp[0]}°C`,
-    detail: `Highest average CO₂ uptake: ${topTemp[1].mean.toFixed(2)} mmol/g`,
-    sub: `${topTemp[1].count} records in this temperature range`,
-  },
-  {
-    icon: Database,
-    color: '#a855f7',
-    labelKey: 'research.databaseCoverage',
-    value: `${TOTAL_EXPERIMENTS} Experiments`,
-    detail: `${TOTAL_DATA_POINTS.toLocaleString()} data points · 8 biomass species · 6 activators`,
-    sub: `Peak CO₂ recorded: ${DB_OVERALL_MAX.toFixed(2)} mmol/g`,
-  },
-];
-
 export default function ResearchNewsFeed() {
   const { t } = useTranslation();
+  const insights = [
+    {
+      icon: TrendingUp,
+      color: '#22c55e',
+      labelKey: 'research.topBiomass',
+      value: topBiomass[0].replace(' ground-based', '').replace(' powders', ''),
+      detail: t('research.topBiomassDetail', { mean: topBiomass[1].mean.toFixed(2), count: topBiomass[1].count }),
+      sub: t('research.topBiomassSub', { max: topBiomass[1].max.toFixed(2) }),
+    },
+    {
+      icon: FlaskConical,
+      color: '#3b82f6',
+      labelKey: 'research.mostActivator',
+      value: topActivator[0],
+      detail: t('research.mostActivatorDetail', { label: topActivator[1].label, mean: topActivator[1].mean.toFixed(2) }),
+      sub: t('research.mostActivatorSub', { count: topActivator[1].count }),
+    },
+    {
+      icon: Flame,
+      color: '#f59e0b',
+      labelKey: 'research.optimalBracket',
+      value: `${topTemp[0]}°C`,
+      detail: t('research.optimalBracketDetail', { mean: topTemp[1].mean.toFixed(2) }),
+      sub: t('research.optimalBracketSub', { count: topTemp[1].count }),
+    },
+    {
+      icon: Database,
+      color: '#a855f7',
+      labelKey: 'research.databaseCoverage',
+      value: t('research.experimentsCount', { count: TOTAL_EXPERIMENTS }),
+      detail: t('research.databaseCoverageDetail', {
+        points: TOTAL_DATA_POINTS.toLocaleString(),
+        species: 8,
+        activators: 6,
+      }),
+      sub: t('research.peakRecorded', { max: DB_OVERALL_MAX.toFixed(2) }),
+    },
+  ];
 
   return (
     <section className="py-20 bg-slate-950 relative overflow-hidden">
@@ -86,7 +89,7 @@ export default function ResearchNewsFeed() {
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
-          {INSIGHTS.map((item, i) => {
+          {insights.map((item, i) => {
             const Icon = item.icon;
             return (
               <motion.div

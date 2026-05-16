@@ -1,18 +1,20 @@
 // @ts-nocheck
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Leaf, MapPin, GitBranch, Flame, Droplets, Wind } from 'lucide-react';
+import { Leaf, MapPin, GitBranch, BookOpen, Flame, Droplets, Wind } from 'lucide-react';
 import BiocharFlow from './BiocharFlow';
 import ThailandContext from './ThailandContext';
+import GlossarySection from './GlossarySection';
 import { ForumZone } from './DocumentsSection';
+import { Cite } from './ScientificReferences';
 import { useTranslation } from 'react-i18next';
 
 // ─── What is Biochar — fact card metadata (static icons/colors only) ──────────
 const BIOCHAR_FACT_META = [
-  { icon: Flame,   color: '#f59e0b', bg: 'bg-amber-500/10 border-amber-500/20', titleKey: 'kc.fact1.title', bodyKey: 'kc.fact1.body' },
-  { icon: Droplets,color: '#3b82f6', bg: 'bg-blue-500/10 border-blue-500/20',   titleKey: 'kc.fact2.title', bodyKey: 'kc.fact2.body' },
-  { icon: Leaf,    color: '#22c55e', bg: 'bg-green-500/10 border-green-500/20', titleKey: 'kc.fact3.title', bodyKey: 'kc.fact3.body' },
-  { icon: Wind,    color: '#a855f7', bg: 'bg-purple-500/10 border-purple-500/20',titleKey: 'kc.fact4.title', bodyKey: 'kc.fact4.body' },
+  { icon: Flame,   color: '#f59e0b', bg: 'bg-amber-500/10 border-amber-500/20', titleKey: 'kc.fact1.title', bodyKey: 'kc.fact1.body', refs: [13,15] },
+  { icon: Droplets,color: '#3b82f6', bg: 'bg-blue-500/10 border-blue-500/20',   titleKey: 'kc.fact2.title', bodyKey: 'kc.fact2.body', refs: [1,2] },
+  { icon: Leaf,    color: '#22c55e', bg: 'bg-green-500/10 border-green-500/20', titleKey: 'kc.fact3.title', bodyKey: 'kc.fact3.body', refs: [1,11,8] },
+  { icon: Wind,    color: '#a855f7', bg: 'bg-purple-500/10 border-purple-500/20',titleKey: 'kc.fact4.title', bodyKey: 'kc.fact4.body', refs: [1,11,15] },
 ];
 
 // ─── Tab definitions ──────────────────────────────────────────────────────────
@@ -20,15 +22,18 @@ const TABS = [
   { id: 'what',     icon: Leaf,      labelKey: 'kc.tab.what' },
   { id: 'thailand', icon: MapPin,    labelKey: 'kc.tab.thailand' },
   { id: 'process',  icon: GitBranch, labelKey: 'kc.tab.process' },
+  { id: 'glossary', icon: BookOpen,  labelKey: 'kc.tab.glossary' },
 ];
 
 // ─── Main Section ─────────────────────────────────────────────────────────────
 export default function KnowledgeCenterSection() {
   const [activeTab, setActiveTab] = useState('what');
+  const [autoRotate, setAutoRotate] = useState(true);
   const { t } = useTranslation();
 
   useEffect(() => {
     const autoTabs = ['what', 'thailand', 'process'];
+    if (!autoRotate) return;
     const timer = window.setInterval(() => {
       setActiveTab(current => {
         const index = autoTabs.indexOf(current);
@@ -38,7 +43,7 @@ export default function KnowledgeCenterSection() {
     }, 20000);
 
     return () => window.clearInterval(timer);
-  }, []);
+  }, [autoRotate]);
 
   return (
     <section id="knowledge" className="py-20 bg-muted/30">
@@ -48,11 +53,23 @@ export default function KnowledgeCenterSection() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-10"
+          className="relative text-center mb-10"
         >
-          <span className="inline-block px-4 py-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-600 text-sm font-medium mb-4">
-            {t('kc.badge')}
-          </span>
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-600 text-sm font-medium">
+              {t('kc.badge')}
+            </span>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setAutoRotate(v => !v)}
+            aria-pressed={autoRotate}
+            className={`absolute right-0 top-0 sm:top-3 inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium transition-colors border ${autoRotate ? 'bg-green-500/10 border-green-500/20 text-green-600' : 'bg-background border-border text-muted-foreground'}`}
+            style={{ transform: 'translateY(6px)' }}
+          >
+            {autoRotate ? t('kc.autorotate.on') : t('kc.autorotate.off')}
+          </button>
           <h2 className="font-space font-bold text-3xl lg:text-4xl mb-3">
             {t('kc.heading')} <span className="text-gradient-green">{t('kc.headingHighlight')}</span>
           </h2>
@@ -103,7 +120,7 @@ export default function KnowledgeCenterSection() {
                       <fact.icon className="w-5 h-5" style={{ color: fact.color }} />
                     </div>
                     <h3 className="font-space font-bold text-base mb-2">{t(fact.titleKey)}</h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">{t(fact.bodyKey)}</p>
+                    <p className="text-muted-foreground text-sm leading-relaxed">{t(fact.bodyKey)} {fact.refs && <Cite ids={fact.refs} />}</p>
                   </motion.div>
                 ))}
                 {/* Quick Stats Banner */}
@@ -142,6 +159,20 @@ export default function KnowledgeCenterSection() {
             {activeTab === 'docs' && (
               <div className="bg-background rounded-2xl border border-border p-6">
                 <ForumZone />
+              </div>
+            )}
+
+            {/* ── Glossary ── */}
+            {activeTab === 'glossary' && (
+              <div className="bg-background rounded-2xl border border-border p-6">
+                <div className="mb-5">
+                  <h3 className="font-space font-bold text-lg flex items-center gap-2">
+                    <BookOpen className="w-5 h-5 text-green-500" />
+                    {t('kc.glossary.heading')}
+                  </h3>
+                  <p className="text-sm text-muted-foreground mt-1">{t('kc.glossary.desc')}</p>
+                </div>
+                <GlossarySection />
               </div>
             )}
           </motion.div>

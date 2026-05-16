@@ -111,6 +111,33 @@ export const REFS = [
     detail: '1,263 records across 8 biomass species, 6 activators, 92 unique isotherm experiments.',
     doi: null,
   },
+  {
+    id: 13,
+    authors: 'IUPAC (International Union of Pure and Applied Chemistry)',
+    year: '1997',
+    title: 'Compendium of Chemical Terminology (Gold Book).',
+    journal: 'IUPAC',
+    detail: 'Terminology and nomenclature standards for chemistry.',
+    doi: 'https://goldbook.iupac.org/',
+  },
+  {
+    id: 14,
+    authors: 'ASTM International',
+    year: '2016',
+    title: 'ASTM D7544 — Standard Specification for Biochar.',
+    journal: 'ASTM International',
+    detail: 'Standard specification and definitions for biochar materials.',
+    doi: 'https://www.astm.org/standards/d7544.htm',
+  },
+  {
+    id: 15,
+    authors: 'Lehmann, J., & Joseph, S. (eds.)',
+    year: '2015',
+    title: 'Biochar for Environmental Management: Science, Technology and Implementation.',
+    journal: 'Routledge / Earthscan',
+    detail: 'Comprehensive reference on biochar science and applications.',
+    doi: null,
+  },
 ];
 
 /** Inline superscript citation: <Cite ids={[1,3]} /> */

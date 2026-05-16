@@ -23,7 +23,7 @@ const FEEDSTOCKS = [
     carbonContent: '35–40%',
     betPotential: '200–500 m²/g',
     color: '#f59e0b',
-    note: 'High silica content; co-pyrolysis yields Si-doped biochar with enhanced CO₂ affinity.',
+    noteKey: 'feedstock.riceHusk.note',
     refs: [8, 10],
     image: 'https://images.unsplash.com/photo-1536054454-cf14a6cc0854?w=400&q=80',
   },
@@ -35,7 +35,7 @@ const FEEDSTOCKS = [
     carbonContent: '42–48%',
     betPotential: CORN_BET,
     color: '#22c55e',
-    note: `Cellulose-rich; KOH activation achieves the highest CO₂ uptake in the 44Database (${DB_OVERALL_MAX.toFixed(2)} mmol/g).`,
+    noteKey: 'feedstock.cornStraw.note',
     refs: [6, 12],
     image: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=400&q=80',
   },
@@ -47,7 +47,7 @@ const FEEDSTOCKS = [
     carbonContent: '40–45%',
     betPotential: '150–600 m²/g',
     color: '#a855f7',
-    note: 'Starchy biomass with low ash; produces high-yield biochar ideal for soil amendment and carbon storage.',
+    noteKey: 'feedstock.cassava.note',
     refs: [8, 1],
     image: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=400&q=80',
   },
@@ -59,7 +59,7 @@ const FEEDSTOCKS = [
     carbonContent: '47–55%',
     betPotential: COFFEE_BET,
     color: '#06b6d4',
-    note: 'Nitrogen-rich; K₂CO₃ activation yields exceptional micropore volumes for selective CO₂/N₂ separation.',
+    noteKey: 'feedstock.coffee.note',
     refs: [9, 12],
     image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&q=80',
   },
@@ -145,7 +145,7 @@ export default function ThailandContext() {
               <div className="p-4">
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   <span className="font-semibold" style={{ color: f.color }}>{t('th.keyInsight')} </span>
-                  {f.note}<Cite ids={f.refs} />
+                  {f.noteKey ? t(f.noteKey) : f.note}<Cite ids={f.refs} />
                 </p>
               </div>
             </motion.div>

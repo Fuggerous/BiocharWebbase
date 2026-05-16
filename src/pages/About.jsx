@@ -126,6 +126,7 @@ const COPY = {
 export default function About() {
   const { isAdmin, logout } = useRole();
   const { i18n } = useTranslation();
+  const lang = i18n?.language && i18n.language.startsWith('th') ? 'th' : 'en';
   const copy = COPY[lang] ?? COPY.en;
 
   const team = [

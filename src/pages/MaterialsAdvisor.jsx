@@ -254,7 +254,7 @@ export default function MaterialsAdvisor() {
                       {[
                         { value: 'none',          label: 'None', color: 'border-border bg-muted text-muted-foreground' },
                         { value: 'energy',        label: '⚡ Minimize Pyrolysis Temperature (Energy Saving)', color: 'border-amber-400/40 bg-amber-500/5 text-amber-700' },
-                        { value: 'cost',          label: '💰 Minimize Chemical Activator (Cost Saving)', color: 'border-blue-400/40 bg-blue-500/5 text-blue-700' },
+                        { value: 'Material',          label: '💰 Minimize Chemical Activator (Material Cost Saving)', color: 'border-blue-400/40 bg-blue-500/5 text-blue-700' },
                         { value: 'residenceTime', label: '⏱ Minimize Residence Time (Process Speed)', color: 'border-cyan-400/40 bg-cyan-500/5 text-cyan-700' },
                         { value: 'poreVolume',    label: '🔬 Maximize Pore Volume (Adsorption Capacity)', color: 'border-purple-400/40 bg-purple-500/5 text-purple-700' },
                       ].filter(opt => opt.value === 'none' || opt.value !== exclude).map(opt => (

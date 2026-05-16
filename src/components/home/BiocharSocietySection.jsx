@@ -7,8 +7,8 @@ const ORGS = [
   {
     name: 'MTEC-NZE Biochar',
     nameTh: 'ศูนย์วิจัยโลหะและวัสดุ (MTEC)',
-    desc: 'National Metal and Materials Technology Center — leads the NZE Biochar Programme, developing biochar standards and carbon-credit frameworks for Thailand.',
-    tag: 'Research Institute',
+    descKey: 'soc.org.mtec.desc',
+    tagKey: 'soc.org.mtec.tag',
     color: 'border-blue-500/30 hover:border-blue-500/60',
     tagColor: 'bg-blue-500/10 text-blue-600',
     emoji: '🔬',
@@ -17,8 +17,8 @@ const ORGS = [
   {
     name: 'NSTDA Thailand',
     nameTh: 'สวทช. — สำนักงานพัฒนาวิทยาศาสตร์และเทคโนโลยีแห่งชาติ',
-    desc: 'National Science and Technology Development Agency — umbrella organisation for MTEC, BIOTEC, NANOTEC, ENTEC; funds and coordinates biochar research nationwide.',
-    tag: 'Government Agency',
+    descKey: 'soc.org.nstda.desc',
+    tagKey: 'soc.org.nstda.tag',
     color: 'border-green-500/30 hover:border-green-500/60',
     tagColor: 'bg-green-500/10 text-green-600',
     emoji: '🏛️',
@@ -27,8 +27,8 @@ const ORGS = [
   {
     name: 'Biochar Consortium Thailand',
     nameTh: 'สมาคมไบโอชาร์ไทย',
-    desc: 'Multi-stakeholder consortium connecting researchers, farmers, and policymakers to accelerate biochar adoption in Thai agriculture and carbon markets.',
-    tag: 'Consortium',
+    descKey: 'soc.org.biochar.desc',
+    tagKey: 'soc.org.biochar.tag',
     color: 'border-emerald-500/30 hover:border-emerald-500/60',
     tagColor: 'bg-emerald-500/10 text-emerald-600',
     emoji: '🌱',
@@ -37,8 +37,8 @@ const ORGS = [
   {
     name: 'Kasetsart University',
     nameTh: 'มหาวิทยาลัยเกษตรศาสตร์',
-    desc: 'Thailand\'s leading agricultural university — active biochar field trials across rice, sugarcane, and cassava systems; key partner in soil carbon research.',
-    tag: 'University',
+    descKey: 'soc.org.kasetsart.desc',
+    tagKey: 'soc.org.kasetsart.tag',
     color: 'border-amber-500/30 hover:border-amber-500/60',
     tagColor: 'bg-amber-500/10 text-amber-600',
     emoji: '🎓',
@@ -47,8 +47,8 @@ const ORGS = [
   {
     name: 'Thailand Greenhouse Gas Management Organization',
     nameTh: 'องค์การบริหารจัดการก๊าซเรือนกระจก (อบก.)',
-    desc: 'TGO manages Thailand\'s carbon credit registry (T-VER) and voluntary emission reduction programmes, including soil carbon and biochar-based credits.',
-    tag: 'Carbon Markets',
+    descKey: 'soc.org.tgo.desc',
+    tagKey: 'soc.org.tgo.tag',
     color: 'border-purple-500/30 hover:border-purple-500/60',
     tagColor: 'bg-purple-500/10 text-purple-600',
     emoji: '🌍',
@@ -57,8 +57,8 @@ const ORGS = [
   {
     name: 'Department of Agriculture',
     nameTh: 'กรมวิชาการเกษตร',
-    desc: 'Thailand\'s Department of Agriculture oversees soil amendment standards and approves biochar products for agricultural use under national guidelines.',
-    tag: 'Government',
+    descKey: 'soc.org.doa.desc',
+    tagKey: 'soc.org.doa.tag',
     color: 'border-rose-500/30 hover:border-rose-500/60',
     tagColor: 'bg-rose-500/10 text-rose-600',
     emoji: '🌾',
@@ -67,7 +67,8 @@ const ORGS = [
 ];
 
 export default function BiocharSocietySection() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isThai = i18n.language.startsWith('th');
 
   return (
     <section className="py-20 bg-background">
@@ -107,8 +108,8 @@ export default function BiocharSocietySection() {
                 <div className="flex items-center gap-3">
                   <div className="text-2xl">{org.emoji}</div>
                   <div>
-                    <h3 className="font-space font-bold text-sm leading-snug">{org.name}</h3>
-                    <p className="text-xs text-muted-foreground leading-snug mt-0.5">{org.nameTh}</p>
+                    <h3 className="font-space font-bold text-sm leading-snug">{isThai ? org.nameTh : org.name}</h3>
+                    <p className="text-xs text-muted-foreground leading-snug mt-0.5">{isThai ? org.name : org.nameTh}</p>
                   </div>
                 </div>
                 <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-foreground shrink-0 mt-0.5 transition-colors" />
@@ -116,11 +117,11 @@ export default function BiocharSocietySection() {
 
               {/* Tag */}
               <span className={`self-start px-2.5 py-0.5 rounded-full text-xs font-semibold ${org.tagColor}`}>
-                {org.tag}
+                {t(org.tagKey)}
               </span>
 
               {/* Description */}
-              <p className="text-muted-foreground text-xs leading-relaxed flex-1">{org.desc}</p>
+              <p className="text-muted-foreground text-xs leading-relaxed flex-1">{t(org.descKey)}</p>
 
               {/* Footer link */}
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground group-hover:text-foreground transition-colors pt-1 border-t border-border">

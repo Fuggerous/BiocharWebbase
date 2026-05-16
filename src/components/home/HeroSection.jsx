@@ -7,7 +7,7 @@ import { PEAK_RECORDS, TOTAL_DATA_POINTS, TOTAL_EXPERIMENTS } from '../../lib/bi
 import { useTranslation } from 'react-i18next';
 
 const ACTIVATOR_LABELS = {
-  Non: 'None', CO2: 'CO₂', LiCl: 'LiCl',
+  Non: 'activation.none', CO2: 'CO₂', LiCl: 'LiCl',
   K2CO3: 'K₂CO₃', 'KOH-CO2': 'KOH+CO₂', KOH: 'KOH',
 };
 
@@ -130,10 +130,10 @@ export default function HeroSection() {
                 className="space-y-3"
               >
                 {[
-                  { label: 'Feedstock', value: rec.biomass, color: 'text-green-300' },
-                  { label: 'Pyrolysis Temp', value: `${rec.pyroTemp}°C`, color: 'text-blue-300' },
-                  { label: 'Activator', value: ACTIVATOR_LABELS[rec.activator] ?? rec.activator, color: 'text-amber-300' },
-                  { label: 'BET Surface Area', value: rec.surfaceArea ? `${rec.surfaceArea.toLocaleString(undefined, { maximumFractionDigits: 0 })} m²/g` : '—', color: 'text-purple-300' },
+                  { label: t('hero.feedstock'), value: rec.biomass, color: 'text-green-300' },
+                  { label: t('hero.pyrolysisTemp'), value: `${rec.pyroTemp}°C`, color: 'text-blue-300' },
+                  { label: t('hero.activator'), value: t(ACTIVATOR_LABELS[rec.activator] ?? rec.activator), color: 'text-amber-300' },
+                  { label: t('hero.betSurfaceArea'), value: rec.surfaceArea ? `${rec.surfaceArea.toLocaleString(undefined, { maximumFractionDigits: 0 })} m²/g` : '—', color: 'text-purple-300' },
                 ].map(item => (
                   <div key={item.label} className="flex items-center justify-between p-3 rounded-xl bg-white/5">
                     <span className="text-white/50 text-sm">{item.label}</span>
@@ -143,14 +143,11 @@ export default function HeroSection() {
                 <div className="mt-4 p-4 rounded-xl bg-green-500/10 border border-green-500/20 text-center">
                   <p className="text-green-400/70 text-xs mb-1">{t('hero.peakAdsorption')}</p>
                   <p className="text-green-300 text-3xl font-bold font-space">{rec.co2Uptake.toFixed(2)}</p>
-                  <p className="text-green-400/60 text-xs mt-1">mmol/g · at {rec.adsorpTemp}°C adsorption</p>
+                  <p className="text-green-400/60 text-xs mt-1">{t('hero.peakAdsorptionMeta', { temp: rec.adsorpTemp })}</p>
                 </div>
               </motion.div>
               <p className="text-[10px] text-slate-600 mt-3 text-center">
-                {t('hero.cycling')
-                  .replace('{count}', topRecords.length)
-                  .replace('{index}', idx + 1)
-                  .replace('{total}', topRecords.length)}
+                {t('hero.cycling', { count: topRecords.length, index: idx + 1, total: topRecords.length })}
               </p>
             </div>
           </motion.div>

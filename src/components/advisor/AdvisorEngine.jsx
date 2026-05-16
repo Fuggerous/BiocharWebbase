@@ -35,7 +35,7 @@ function objectiveScore(g, targetCO2, secondaryObjective, tertiaryObjective) {
   if (secondaryObjective === 'energy') {
     // Minimize pyroTemp — normalize 400–900°C → 0–1
     secondary = (g.pyroTemp - 400) / 500;
-  } else if (secondaryObjective === 'cost') {
+  } else if (secondaryObjective === 'Material') {
     // Prefer physical/no activation
     const costPenalty = { KOH: 0.8, K2CO3: 0.6, 'KOH-CO2': 1.0, CO2: 0.1, LiCl: 1.2, None: 0.0, Non: 0.0 };
     secondary = (costPenalty[g.activator] ?? 0.5);
@@ -49,7 +49,7 @@ function objectiveScore(g, targetCO2, secondaryObjective, tertiaryObjective) {
 
   if (tertiaryObjective === 'energy') {
     tertiary = (g.pyroTemp - 400) / 500;
-  } else if (tertiaryObjective === 'cost') {
+  } else if (tertiaryObjective === 'Material') {
     const costPenalty = { KOH: 0.8, K2CO3: 0.6, 'KOH-CO2': 1.0, CO2: 0.1, LiCl: 1.2, None: 0.0, Non: 0.0 };
     tertiary = (costPenalty[g.activator] ?? 0.5);
   } else if (tertiaryObjective === 'residenceTime') {

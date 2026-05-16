@@ -1,10 +1,12 @@
 // @ts-nocheck
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Zap, ChevronDown, Thermometer, Clock, TrendingUp, FlaskConical, Database, Layers } from 'lucide-react';
+import { Zap, ChevronDown, Thermometer, Clock, TrendingUp, FlaskConical, Database, Layers, Brain } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { TOTAL_DATA_POINTS } from '../../lib/biocharKnowledgeBase';
 import { BIOMASS_LIST } from '../../lib/database44';
+import { CO2_MODELS } from '../../lib/modelRegistry';
+import ModelSelector from '../shared/ModelSelector';
 import OutOfRangeAlert from './OutOfRangeAlert';
 
 const biomassOptions = BIOMASS_LIST;
@@ -77,6 +79,7 @@ function SelectField({ label, value, options, onChange, isObject = false }) {
 export default function PredictorForm() {
   const navigate  = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [selectedModel, setSelectedModel] = useState('ridge');
   const [params, setParams] = useState({
     biomass:       'Corn straw',
     temperature:   600,
@@ -98,7 +101,7 @@ export default function PredictorForm() {
     setLoading(true);
     await new Promise(r => setTimeout(r, 1400));
     setLoading(false);
-    navigate('/results', { state: { params } });
+    navigate('/results', { state: { params: { ...params, selectedModel } } });
   };
 
   const knownChem = KNOWN_CHEMS.find(c => c.key === params.chemBlend.chemical);
@@ -293,6 +296,26 @@ export default function PredictorForm() {
               </p>
             </motion.div>
           )}
+        </div>
+
+        <div className="border-t border-border" />
+
+        {/* ── Step 5: Model Selection ── */}
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <div className="w-7 h-7 rounded-lg bg-indigo-500 text-white text-xs font-bold flex items-center justify-center">5</div>
+            <h3 className="font-space font-semibold text-base">ML Model</h3>
+            <span className="text-xs text-muted-foreground font-normal ml-1">— choose your ML predictor</span>
+          </div>
+          <p className="text-xs text-muted-foreground mb-4 ml-9">
+            DB Statistical Lookup always shows. Select which <span className="font-semibold text-foreground">ML model</span> to highlight as your primary prediction alongside it.
+          </p>
+          <ModelSelector
+            models={CO2_MODELS}
+            selected={selectedModel}
+            onChange={setSelectedModel}
+            context="co2"
+          />
         </div>
 
         <OutOfRangeAlert params={params} />
