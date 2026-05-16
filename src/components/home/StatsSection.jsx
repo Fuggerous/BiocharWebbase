@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Database, Brain, Beaker, TrendingUp, Award, FlaskConical } from 'lucide-react';
 import { DB44_RECORDS, BIOMASS_LIST, ACTIVATOR_LIST } from '../../lib/database44';
 import { DB_OVERALL_MAX, TOTAL_EXPERIMENTS } from '../../lib/biocharKnowledgeBase';
-import { useLang } from '../../lib/LanguageContext';
+import { useTranslation } from 'react-i18next';
 
 const maxCO2 = DB_OVERALL_MAX.toFixed(2);
 const recordCount = DB44_RECORDS.length.toLocaleString();
@@ -20,7 +20,7 @@ const stats = [
 ];
 
 export default function StatsSection() {
-  const { t } = useLang();
+  const { t } = useTranslation();
 
   return (
     <section className="py-20 bg-background relative overflow-hidden">

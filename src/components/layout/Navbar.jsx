@@ -4,7 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Leaf, Menu, X, ShieldCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRole } from '../../lib/RoleContext';
-import { useLang } from '../../lib/LanguageContext';
+import { useTranslation } from 'react-i18next';
 
 const PUBLIC_LINKS = [
   { labelKey: 'nav.home',              path: '/' },
@@ -20,7 +20,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const location  = useLocation();
   const { isAdmin } = useRole();
-  const { lang, toggleLang, setLanguage, t } = useLang();
+  const { t, i18n } = useTranslation();
   const warnedRef = useRef(false);
   const restrictedThaiPages = ['/database', '/property-estimator', '/predictor', '/advisor'];
   const isRestrictedThaiPage = restrictedThaiPages.includes(location.pathname);
@@ -39,24 +39,24 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    if (isRestrictedThaiPage && lang === 'th') {
+    if (isRestrictedThaiPage && i18n.language === 'th') {
       if (!warnedRef.current) {
         window.alert('🇹🇭 Thai version is not available at this moment 🙏');
         warnedRef.current = true;
       }
-      setLanguage('en');
+      i18n.changeLanguage('en');
     }
     if (!isRestrictedThaiPage) {
       warnedRef.current = false;
     }
-  }, [isRestrictedThaiPage, lang, setLanguage]);
+  }, [isRestrictedThaiPage, i18n.language]);
 
   const handleLangToggle = () => {
-    if (isRestrictedThaiPage && lang === 'en') {
+    if (isRestrictedThaiPage && i18n.language === 'en') {
       window.alert('🇹🇭 Thai version is not available at this moment 🙏');
       return;
     }
-    toggleLang();
+    i18n.changeLanguage(i18n.language === 'en' ? 'th' : 'en');
   };
 
   return (
@@ -107,11 +107,11 @@ export default function Navbar() {
             <button
               onClick={handleLangToggle}
               className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-border bg-muted hover:border-green-400 hover:bg-green-500/10 transition-all text-sm font-semibold"
-              title={lang === 'en' ? 'Switch to Thai' : 'Switch to English'}
+              title={i18n.language === 'en' ? 'Switch to Thai' : 'Switch to English'}
             >
-              <span className={lang === 'en' ? 'text-green-600' : 'text-muted-foreground'}>EN</span>
+              <span className={i18n.language === 'en' ? 'text-green-600' : 'text-muted-foreground'}>EN</span>
               <span className="text-muted-foreground/40 mx-0.5">|</span>
-              <span className={lang === 'th' ? 'text-green-600' : 'text-muted-foreground'}>TH</span>
+              <span className={i18n.language === 'th' ? 'text-green-600' : 'text-muted-foreground'}>TH</span>
             </button>
 
             
@@ -124,9 +124,9 @@ export default function Navbar() {
               onClick={handleLangToggle}
               className="flex items-center gap-1 px-2.5 py-1 rounded-full border border-border bg-muted text-xs font-semibold"
             >
-              <span className={lang === 'en' ? 'text-green-600' : 'text-muted-foreground'}>EN</span>
+              <span className={i18n.language === 'en' ? 'text-green-600' : 'text-muted-foreground'}>EN</span>
               <span className="text-muted-foreground/40">|</span>
-              <span className={lang === 'th' ? 'text-green-600' : 'text-muted-foreground'}>TH</span>
+              <span className={i18n.language === 'th' ? 'text-green-600' : 'text-muted-foreground'}>TH</span>
             </button>
             <button
               className="p-2 rounded-lg hover:bg-muted transition-colors"

@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { motion } from 'framer-motion';
 import { ExternalLink, Globe } from 'lucide-react';
-import { useLang } from '../../lib/LanguageContext';
+import { useTranslation } from 'react-i18next';
 
 const ORGS = [
   {
@@ -67,7 +67,7 @@ const ORGS = [
 ];
 
 export default function BiocharSocietySection() {
-  const { t } = useLang();
+  const { t } = useTranslation();
 
   return (
     <section className="py-20 bg-background">

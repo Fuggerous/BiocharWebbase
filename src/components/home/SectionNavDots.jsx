@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useLang } from '../../lib/LanguageContext';
+import { useTranslation } from 'react-i18next';
 
 const SECTIONS = [
   { id: 'section-hero',         labelKey: 'navdots.hero' },
@@ -14,7 +14,7 @@ const SECTIONS = [
 ];
 
 export default function SectionNavDots() {
-  const { t } = useLang();
+  const { t } = useTranslation();
   const [activeId, setActiveId] = useState(SECTIONS[0].id);
   const [hoveredId, setHoveredId] = useState(null);
 

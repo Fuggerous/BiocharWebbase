@@ -77,7 +77,7 @@ export default function Footer() {
               <li className="flex items-center gap-2"><Globe className="w-4 h-4 text-green-400" /> www.biocharhub.ai</li>
             </ul>
             <div className="mt-5 p-3 rounded-xl bg-green-500/10 border border-green-500/20">
-              <p className="text-xs text-green-400 font-medium">The Petroleum and Petrochemical College, CU</p>
+              <p className="text-xs text-green-400 font-medium">The Petroleum and Petrochemical College, Chulalongkorn University</p>
               <p className="text-xs text-slate-400 mt-1">Contributing to carbon capture research goals</p>
             </div>
           </div>

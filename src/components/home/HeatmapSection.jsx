@@ -3,7 +3,7 @@ import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Flame, Info } from 'lucide-react';
 import { computeHeatmapMatrix, TOTAL_DATA_POINTS } from '../../lib/biocharKnowledgeBase';
-import { useLang } from '../../lib/LanguageContext';
+import { useTranslation } from 'react-i18next';
 
 const ACTIVATOR_LABELS = {
   Non: 'None', CO2: 'CO₂', LiCl: 'LiCl',
@@ -28,7 +28,7 @@ function heatColor(t) {
 }
 
 export default function HeatmapSection() {
-  const { t } = useLang();
+  const { t } = useTranslation();
   const [hovered, setHovered] = useState(null);
 
   const { matrix, activators, temps, globalMin, globalMax } = useMemo(() => {

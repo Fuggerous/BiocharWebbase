@@ -15,10 +15,10 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Leaf } from 'lucide-react';
 import { TOTAL_DATA_POINTS } from '../lib/biocharKnowledgeBase';
-import { useLang } from '../lib/LanguageContext';
+import { useTranslation } from 'react-i18next';
 
 export default function Home() {
-  const { t } = useLang();
+  const { t } = useTranslation();
 
   return (
     <div className="min-h-screen bg-background">

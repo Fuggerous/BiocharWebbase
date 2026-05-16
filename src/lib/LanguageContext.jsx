@@ -20,7 +20,7 @@ export function LanguageProvider({ children }) {
   }
 
   function toggleLang() {
-    const next = lang === 'en' ? 'th' : 'en';
+    const next = i18n.language === 'en' ? 'th' : 'en';
     setLanguage(next);
   }
 

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Leaf, Flame, Sparkles, Globe, ChevronRight, X } from 'lucide-react';
 import { Cite } from './ScientificReferences';
-import { useLang } from '../../lib/LanguageContext';
+import { useTranslation } from 'react-i18next';
 
 function StepModal({ step, onClose }) {
   return (
@@ -56,7 +56,7 @@ function StepModal({ step, onClose }) {
 }
 
 export default function BiocharFlow() {
-  const { t } = useLang();
+  const { t } = useTranslation();
   const [active, setActive] = useState(null);
 
   const STEPS = [

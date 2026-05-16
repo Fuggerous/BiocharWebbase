@@ -5,7 +5,7 @@ import { Leaf, MapPin, GitBranch, Flame, Droplets, Wind } from 'lucide-react';
 import BiocharFlow from './BiocharFlow';
 import ThailandContext from './ThailandContext';
 import { ForumZone } from './DocumentsSection';
-import { useLang } from '../../lib/LanguageContext';
+import { useTranslation } from 'react-i18next';
 
 // ─── What is Biochar — fact card metadata (static icons/colors only) ──────────
 const BIOCHAR_FACT_META = [
@@ -25,7 +25,7 @@ const TABS = [
 // ─── Main Section ─────────────────────────────────────────────────────────────
 export default function KnowledgeCenterSection() {
   const [activeTab, setActiveTab] = useState('what');
-  const { t } = useLang();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const autoTabs = ['what', 'thailand', 'process'];

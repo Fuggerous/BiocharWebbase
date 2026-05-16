@@ -11,7 +11,7 @@ import {
   Download, ExternalLink, Search, Star, ChevronRight,
   ChevronLeft, X, Filter,
 } from 'lucide-react';
-import { useLang } from '../../lib/LanguageContext';
+import { useTranslation } from 'react-i18next';
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 const DOCS = [
@@ -109,8 +109,8 @@ function CatalogRow({ doc, index, lang, t }) {
   const typeCfg  = TYPE_CFG[doc.type] ?? TYPE_CFG.pdf;
   const catCfg   = getCat(doc.category);
   const TypeIcon = typeCfg.icon;
-  const title    = lang === 'en' ? doc.titleEn : doc.title;
-  const desc     = lang === 'en' ? (doc.descEn ?? doc.desc) : doc.desc;
+  const title    = i18n.language === 'en' ? doc.titleEn : doc.title;
+  const desc     = i18n.language === 'en' ? (doc.descEn ?? doc.desc) : doc.desc;
   const catLabel = t(doc.catKey) ?? doc.category;
 
   return (
@@ -194,7 +194,7 @@ function CatalogRow({ doc, index, lang, t }) {
 
 // ── ForumZone ─────────────────────────────────────────────────────────────────
 function ForumZone() {
-  const { t, lang }     = useLang();
+  const { t, i18n }     = useTranslation();
   const [activeCat, setActiveCat] = useState('ทั้งหมด');
   const [search,    setSearch]    = useState('');
   const [page,      setPage]      = useState(1);
@@ -229,7 +229,7 @@ function ForumZone() {
   const SidebarContent = (
     <div className="space-y-1">
       <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-1.5">
-        <Filter className="w-3 h-3" /> {lang === 'en' ? 'Categories' : 'หมวดหมู่'}
+        <Filter className="w-3 h-3" /> {i18n.language === 'en' ? 'Categories' : 'หมวดหมู่'}
       </p>
       {CATS.map(cat => {
         const active = activeCat === cat.thKey;
@@ -252,8 +252,8 @@ function ForumZone() {
       })}
       <div className="pt-3 mt-2 border-t border-border space-y-2">
         {[
-          { label: lang === 'en' ? 'Total' : 'รวมทั้งหมด', value: DOCS.length },
-          { label: lang === 'en' ? 'Featured' : 'แนะนำ',    value: DOCS.filter(d => d.featured).length },
+          { label: i18n.language === 'en' ? 'Total' : 'รวมทั้งหมด', value: DOCS.length },
+          { label: i18n.language === 'en' ? 'Featured' : 'แนะนำ',    value: DOCS.filter(d => d.featured).length },
         ].map(s => (
           <div key={s.label} className="flex items-center justify-between text-[11px]">
             <span className="text-muted-foreground">{s.label}</span>
@@ -296,7 +296,7 @@ function ForumZone() {
             }`}
         >
           <Filter className="w-4 h-4" />
-          <span className="hidden sm:inline">{lang === 'en' ? 'Filter' : 'กรอง'}</span>
+          <span className="hidden sm:inline">{i18n.language === 'en' ? 'Filter' : 'กรอง'}</span>
           {activeCat !== 'ทั้งหมด' && (
             <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold
               ${sideOpen ? 'bg-white/20 text-white' : 'bg-green-500/20 text-green-600'}`}>
@@ -335,7 +335,7 @@ function ForumZone() {
             <span>
               {t('docs.showing')}{' '}
               <strong className="text-foreground">{Math.min((currentPage-1)*PER_PAGE+1, filtered.length)}–{Math.min(currentPage*PER_PAGE, filtered.length)}</strong>
-              {' '}{lang==='en'?'of':'/'}
+              {' '}{i18n.language==='en'?'of':'/'}
               {' '}<strong className="text-foreground">{filtered.length}</strong>
               {' '}{t('docs.items')}
               {search && <> · "<span className="text-green-600">{search}</span>"</>}
@@ -357,7 +357,7 @@ function ForumZone() {
                 className="flex flex-col gap-2">
                 {pageDocs.length > 0 ? (
                   pageDocs.map((doc, i) => (
-                    <CatalogRow key={doc.id} doc={doc} index={i} lang={lang} t={t} />
+                    <CatalogRow key={doc.id} doc={doc} index={i} lang={i18n.language} t={t} />
                   ))
                 ) : (
                   <div className="flex flex-col items-center justify-center py-16 text-muted-foreground gap-3">
@@ -381,7 +381,7 @@ function ForumZone() {
                   disabled:opacity-40 disabled:cursor-not-allowed transition-all"
               >
                 <ChevronLeft className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">{lang === 'en' ? 'Prev' : 'ก่อนหน้า'}</span>
+                <span className="hidden sm:inline">{i18n.language === 'en' ? 'Prev' : 'ก่อนหน้า'}</span>
               </button>
 
               <div className="flex items-center gap-1">
@@ -404,7 +404,7 @@ function ForumZone() {
                 border border-border bg-muted hover:bg-green-500/10 hover:border-green-400 hover:text-green-600
                 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
             >
-              {lang === 'en' ? 'Next' : 'ถัดไป'}
+              {i18n.language === 'en' ? 'Next' : 'ถัดไป'}
               <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -417,7 +417,7 @@ function ForumZone() {
 
 // ── Standalone section ─────────────────────────────────────────────────────────
 export default function DocumentsSection() {
-  const { t } = useLang();
+  const { t } = useTranslation();
   return (
     <section className="py-20 bg-background">
       <div className="max-w-7xl mx-auto px-4">

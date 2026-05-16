@@ -10,7 +10,7 @@ import {
   BIOMASS_STATS, ACTIVATOR_STATS, TEMPERATURE_STATS,
   DB_OVERALL_AVG, DB_OVERALL_MAX, TOTAL_DATA_POINTS, TOTAL_EXPERIMENTS,
 } from '../../lib/biocharKnowledgeBase';
-import { useLang } from '../../lib/LanguageContext';
+import { useTranslation } from 'react-i18next';
 
 // Compute real insights from database at module load
 const topBiomass = Object.entries(BIOMASS_STATS)
@@ -59,7 +59,7 @@ const INSIGHTS = [
 ];
 
 export default function ResearchNewsFeed() {
-  const { t } = useLang();
+  const { t } = useTranslation();
 
   return (
     <section className="py-20 bg-slate-950 relative overflow-hidden">

@@ -4,7 +4,7 @@ import { MapPin, Leaf, TrendingUp, Zap } from 'lucide-react';
 import { Cite } from './ScientificReferences';
 import { BIOMASS_STATS, TOTAL_DATA_POINTS, TOTAL_EXPERIMENTS, DB_OVERALL_MAX } from '../../lib/biocharKnowledgeBase';
 import { DB44_RECORDS } from '../../lib/database44';
-import { useLang } from '../../lib/LanguageContext';
+import { useTranslation } from 'react-i18next';
 
 function betRange(biomassKey) {
   const vals = DB44_RECORDS.filter(r => r.biomass === biomassKey && r.surfaceArea > 0).map(r => r.surfaceArea);
@@ -66,7 +66,7 @@ const FEEDSTOCKS = [
 ];
 
 export default function ThailandContext() {
-  const { t } = useLang();
+  const { t } = useTranslation();
 
   return (
     <section className="py-20 bg-background relative overflow-hidden">

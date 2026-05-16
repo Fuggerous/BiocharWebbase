@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { useState, useMemo, useCallback } from 'react';
-import { useLang } from '../lib/LanguageContext';
+import { useTranslation } from 'react-i18next';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import DatabaseCharts from '../components/database/DatabaseCharts';

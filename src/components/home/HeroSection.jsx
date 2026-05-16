@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Zap, Database } from 'lucide-react';
 import { PEAK_RECORDS, TOTAL_DATA_POINTS, TOTAL_EXPERIMENTS } from '../../lib/biocharKnowledgeBase';
-import { useLang } from '../../lib/LanguageContext';
+import { useTranslation } from 'react-i18next';
 
 const ACTIVATOR_LABELS = {
   Non: 'None', CO2: 'CO₂', LiCl: 'LiCl',
@@ -12,7 +12,7 @@ const ACTIVATOR_LABELS = {
 };
 
 export default function HeroSection() {
-  const { t } = useLang();
+  const { t } = useTranslation();
 
   const topRecords = useMemo(() => {
     const sorted = [...PEAK_RECORDS].sort((a, b) => b.co2Uptake - a.co2Uptake);

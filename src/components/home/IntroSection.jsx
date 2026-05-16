@@ -2,7 +2,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Database, Zap, BookOpen, ArrowRight } from 'lucide-react';
-import { useLang } from '../../lib/LanguageContext';
+import { useTranslation } from 'react-i18next';
 
 const CARD_META = [
   {
@@ -35,7 +35,7 @@ const CARD_META = [
 ];
 
 export default function IntroSection() {
-  const { t } = useLang();
+  const { t } = useTranslation();
 
   return (
     <section className="py-20 bg-background">

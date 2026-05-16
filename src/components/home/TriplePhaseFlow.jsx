@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Layers, BarChart3, ChevronRight, ArrowRight, X, Zap, FlaskConical, Activity } from 'lucide-react';
-import { useLang } from '../../lib/LanguageContext';
+import { useTranslation } from 'react-i18next';
 
 function PhaseModal({ phase, onClose, t }) {
   return (
@@ -70,7 +70,7 @@ function PhaseModal({ phase, onClose, t }) {
 }
 
 export default function TriplePhaseFlow() {
-  const { t } = useLang();
+  const { t } = useTranslation();
   const [active, setActive] = useState(null);
 
   // Reordered as tools (Property Estimator, CO₂ Estimator, Materials Advisor)
