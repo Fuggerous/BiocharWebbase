@@ -2,14 +2,14 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Leaf, Flame, Sparkles, Globe, X, ChevronRight,
-  Thermometer, Clock, Layers, Wind, ArrowRight,
+  Leaf, Flame, Sparkles, Wind, X, ChevronRight,
+  Thermometer, Clock, Layers, Globe, ArrowRight,
 } from 'lucide-react';
 import { Cite } from './ScientificReferences';
 import { useTranslation } from 'react-i18next';
 
-// ── Step modal (detail view) ──────────────────────────────────
-function StepModal({ step, onClose }) {
+// ── Step modal ────────────────────────────────────────────────
+function StepModal({ step, onClose, t }) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -28,7 +28,6 @@ function StepModal({ step, onClose }) {
         style={{ borderColor: `${step.color}50` }}
         onClick={e => e.stopPropagation()}
       >
-        {/* Glow accent */}
         <div className="absolute top-0 left-0 right-0 h-px rounded-t-3xl"
           style={{ background: `linear-gradient(90deg, transparent, ${step.color}80, transparent)` }} />
 
@@ -44,7 +43,7 @@ function StepModal({ step, onClose }) {
           </div>
           <div>
             <p className="text-[10px] font-bold uppercase tracking-widest mb-0.5" style={{ color: step.color }}>
-              Step {step.id} of 4
+              {t('flow.stepBadge', { id: step.id })}
             </p>
             <h3 className="font-space font-bold text-xl text-white">{step.label}</h3>
             <p className="text-slate-400 text-sm">{step.subtitle}</p>
@@ -69,22 +68,6 @@ function StepModal({ step, onClose }) {
   );
 }
 
-// ── Connector arrow ───────────────────────────────────────────
-function FlowArrow({ label, color }) {
-  return (
-    <div className="flex-shrink-0 flex flex-col items-center gap-1 px-1 lg:px-0">
-      <p className="text-[9px] font-bold uppercase tracking-widest hidden lg:block"
-        style={{ color: color + 'aa' }}>{label}</p>
-      <div className="flex items-center gap-0 lg:flex-row flex-col">
-        <div className="h-px lg:h-px lg:w-8 w-px h-6 lg:w-8" style={{ background: `linear-gradient(to right, ${color}40, ${color}cc)` }} />
-        <div className="hidden lg:block w-0 h-0 border-t-4 border-b-4 border-l-6 border-transparent"
-          style={{ borderLeftColor: color + 'cc', borderTopWidth: 4, borderBottomWidth: 4, borderLeftWidth: 8 }} />
-        <ArrowRight className="w-4 h-4 lg:hidden" style={{ color: color + 'cc' }} />
-      </div>
-    </div>
-  );
-}
-
 // ── Main component ────────────────────────────────────────────
 export default function BiocharFlow() {
   const { t } = useTranslation();
@@ -92,111 +75,80 @@ export default function BiocharFlow() {
 
   const STEPS = [
     {
-      id: 1,
-      icon: Leaf,
-      color: '#22c55e',
-      bg: 'from-green-950/80 to-green-900/20',
-      border: 'border-green-500/25',
-      glow: 'shadow-green-500/10',
-      label: t('flow.step1.label'),
-      subtitle: t('flow.step1.subtitle'),
-      short: t('flow.step1.short'),
-      shortRefs: [8],
-      outputLabel: 'Raw Biomass →',
+      id: 1, icon: Leaf, color: '#22c55e',
+      bg: 'from-green-950/80 to-green-900/20', border: 'border-green-500/25', glow: 'shadow-green-500/10',
+      label: t('flow.step1.label'), subtitle: t('flow.step1.subtitle'),
+      short: t('flow.step1.short'), shortRefs: [8],
+      outputLabel: t('flow.step1.output'),
       params: [
-        { icon: Layers, label: 'Moisture', value: '< 15%', color: '#3b82f6' },
-        { icon: Leaf,   label: 'C content', value: '35–55%', color: '#22c55e' },
-        { icon: Globe,  label: 'Thailand supply', value: '60 Mt/yr', color: '#a855f7' },
+        { icon: Layers,      label: t('flow.step1.p1'), value: '< 15%',     color: '#3b82f6' },
+        { icon: Leaf,        label: t('flow.step1.p2'), value: '35–55%',    color: '#22c55e' },
+        { icon: Globe,       label: t('flow.step1.p3'), value: '60 Mt/yr',  color: '#a855f7' },
       ],
       detail: {
-        heading: t('flow.step1.heading'),
-        body: t('flow.step1.body'),
-        refs: [8, 10],
+        body: t('flow.step1.body'), refs: [8, 10],
         stats: [
-          { label: t('flow.step1.c1'), value: '35–55%', color: '#22c55e' },
-          { label: t('flow.step1.c2'), value: '< 15%', color: '#3b82f6' },
+          { label: t('flow.step1.c1'), value: '35–55%',   color: '#22c55e' },
+          { label: t('flow.step1.c2'), value: '< 15%',    color: '#3b82f6' },
           { label: t('flow.step1.c3'), value: '60 Mt/yr', color: '#a855f7' },
         ],
       },
     },
     {
-      id: 2,
-      icon: Flame,
-      color: '#f59e0b',
-      bg: 'from-amber-950/80 to-amber-900/20',
-      border: 'border-amber-500/25',
-      glow: 'shadow-amber-500/10',
-      label: t('flow.step2.label'),
-      subtitle: t('flow.step2.subtitle'),
-      short: t('flow.step2.short'),
-      shortRefs: [1, 10],
-      outputLabel: 'Biochar →',
+      id: 2, icon: Flame, color: '#f59e0b',
+      bg: 'from-amber-950/80 to-amber-900/20', border: 'border-amber-500/25', glow: 'shadow-amber-500/10',
+      label: t('flow.step2.label'), subtitle: t('flow.step2.subtitle'),
+      short: t('flow.step2.short'), shortRefs: [1, 10],
+      outputLabel: t('flow.step2.output'),
       params: [
-        { icon: Thermometer, label: 'Temperature', value: '300–900°C', color: '#f59e0b' },
-        { icon: Clock,       label: 'Residence time', value: '10–300 min', color: '#ef4444' },
-        { icon: Flame,       label: 'Biochar yield', value: '26–35%', color: '#22c55e' },
+        { icon: Thermometer, label: t('flow.step2.p1'), value: '300–900°C',  color: '#f59e0b' },
+        { icon: Clock,       label: t('flow.step2.p2'), value: '10–300 min', color: '#ef4444' },
+        { icon: Flame,       label: t('flow.step2.p3'), value: '26–35%',     color: '#22c55e' },
       ],
       detail: {
-        heading: t('flow.step2.heading'),
-        body: t('flow.step2.body'),
-        refs: [1, 6, 10, 12],
+        body: t('flow.step2.body'), refs: [1, 6, 10, 12],
         stats: [
           { label: t('flow.step2.c1'), value: '300–900°C', color: '#f59e0b' },
-          { label: t('flow.step2.c2'), value: '26–35%', color: '#ef4444' },
-          { label: t('flow.step2.c3'), value: '60–90%', color: '#22c55e' },
+          { label: t('flow.step2.c2'), value: '26–35%',    color: '#ef4444' },
+          { label: t('flow.step2.c3'), value: '60–90%',    color: '#22c55e' },
         ],
       },
     },
     {
-      id: 3,
-      icon: Sparkles,
-      color: '#8b5cf6',
-      bg: 'from-purple-950/80 to-purple-900/20',
-      border: 'border-purple-500/25',
-      glow: 'shadow-purple-500/10',
-      label: t('flow.step3.label'),
-      subtitle: t('flow.step3.subtitle'),
-      short: t('flow.step3.short'),
-      shortRefs: [7, 12],
-      outputLabel: 'Activated Biochar →',
+      id: 3, icon: Sparkles, color: '#8b5cf6',
+      bg: 'from-purple-950/80 to-purple-900/20', border: 'border-purple-500/25', glow: 'shadow-purple-500/10',
+      label: t('flow.step3.label'), subtitle: t('flow.step3.subtitle'),
+      short: t('flow.step3.short'), shortRefs: [7, 12],
+      outputLabel: t('flow.step3.output'),
       params: [
-        { icon: Sparkles,    label: 'BET Surface Area', value: '3,157 m²/g', color: '#8b5cf6' },
-        { icon: Layers,      label: 'Best Activator', value: 'KOH', color: '#06b6d4' },
-        { icon: Thermometer, label: 'Act. Temp.', value: '600–900°C', color: '#f59e0b' },
+        { icon: Sparkles,    label: t('flow.step3.p1'), value: '3,157 m²/g', color: '#8b5cf6' },
+        { icon: Layers,      label: t('flow.step3.p2'), value: 'KOH',         color: '#06b6d4' },
+        { icon: Thermometer, label: t('flow.step3.p3'), value: '600–900°C',   color: '#f59e0b' },
       ],
       detail: {
-        heading: t('flow.step3.heading'),
-        body: t('flow.step3.body'),
-        refs: [7, 10, 12],
+        body: t('flow.step3.body'), refs: [7, 10, 12],
         stats: [
-          { label: t('flow.step3.c1'), value: '3,157 m²/g', color: '#8b5cf6' },
-          { label: t('flow.step3.c2'), value: 'KOH', color: '#06b6d4' },
-          { label: t('flow.step3.c3'), value: '1.554 cm³/g', color: '#f59e0b' },
+          { label: t('flow.step3.c1'), value: '3,157 m²/g',  color: '#8b5cf6' },
+          { label: t('flow.step3.c2'), value: 'KOH',          color: '#06b6d4' },
+          { label: t('flow.step3.c3'), value: '1.554 cm³/g',  color: '#f59e0b' },
         ],
       },
     },
     {
-      id: 4,
-      icon: Wind,
-      color: '#06b6d4',
-      bg: 'from-cyan-950/80 to-cyan-900/20',
-      border: 'border-cyan-500/25',
-      glow: 'shadow-cyan-500/10',
-      label: t('flow.step4.label'),
-      subtitle: t('flow.step4.subtitle'),
-      short: t('flow.step4.short'),
-      shortRefs: [3, 12],
+      id: 4, icon: Wind, color: '#06b6d4',
+      bg: 'from-cyan-950/80 to-cyan-900/20', border: 'border-cyan-500/25', glow: 'shadow-cyan-500/10',
+      label: t('flow.step4.label'), subtitle: t('flow.step4.subtitle'),
+      short: t('flow.step4.short'), shortRefs: [3, 12],
+      outputLabel: null,
       params: [
-        { icon: Wind,    label: 'Peak CO₂ uptake', value: '7.5 mmol/g', color: '#06b6d4' },
-        { icon: Globe,   label: 'Sequestration',   value: '2.5 t CO₂/t', color: '#22c55e' },
-        { icon: Clock,   label: 'Carbon stability', value: '100–1000 yr', color: '#a855f7' },
+        { icon: Wind,  label: t('flow.step4.p1'), value: '7.5 mmol/g',   color: '#06b6d4' },
+        { icon: Globe, label: t('flow.step4.p2'), value: '2.5 t CO₂/t',  color: '#22c55e' },
+        { icon: Clock, label: t('flow.step4.p3'), value: '100–1000 yr',  color: '#a855f7' },
       ],
       detail: {
-        heading: t('flow.step4.heading'),
-        body: t('flow.step4.body'),
-        refs: [1, 2, 3, 4, 11, 12],
+        body: t('flow.step4.body'), refs: [1, 2, 3, 4, 11, 12],
         stats: [
-          { label: t('flow.step4.c1'), value: '7.5 mmol/g', color: '#06b6d4' },
+          { label: t('flow.step4.c1'), value: '7.5 mmol/g',  color: '#06b6d4' },
           { label: t('flow.step4.c2'), value: '2.5 t CO₂/t', color: '#22c55e' },
           { label: t('flow.step4.c3'), value: '100–1000 yr', color: '#a855f7' },
         ],
@@ -204,9 +156,19 @@ export default function BiocharFlow() {
     },
   ];
 
+  // Material transformation chain nodes — fully translated
+  const CHAIN = [
+    { dot: '🌾', label: t('flow.chain.n1'), sub: t('flow.chain.n1sub'), color: '#22c55e' },
+    { dot: '🔥', label: t('flow.chain.n2'), sub: t('flow.chain.n2sub'), color: '#f59e0b' },
+    { dot: '⬛', label: t('flow.chain.n3'), sub: t('flow.chain.n3sub'), color: '#94a3b8' },
+    { dot: '⚗️', label: t('flow.chain.n4'), sub: t('flow.chain.n4sub'), color: '#8b5cf6' },
+    { dot: '🔬', label: t('flow.chain.n5'), sub: t('flow.chain.n5sub'), color: '#8b5cf6' },
+    { dot: '🌍', label: t('flow.chain.n6'), sub: t('flow.chain.n6sub'), color: '#06b6d4' },
+  ];
+
   return (
     <section className="py-20 bg-slate-950 relative overflow-hidden">
-      {/* Background grid + glows */}
+      {/* Background */}
       <div className="absolute inset-0 opacity-[0.07]"
         style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)', backgroundSize: '48px 48px' }} />
       <div className="absolute top-0 left-1/3 w-[500px] h-[300px] bg-green-500/5 rounded-full blur-3xl pointer-events-none" />
@@ -214,7 +176,7 @@ export default function BiocharFlow() {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* Section header */}
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -226,22 +188,21 @@ export default function BiocharFlow() {
             <span className="text-green-400 text-sm font-medium">{t('flow.badge')}</span>
           </div>
           <h2 className="font-space font-bold text-3xl lg:text-5xl text-white mb-4 leading-tight">
-            From{' '}
-            <span className="text-gradient-green">Agricultural Waste</span>
-            <br />to <span className="text-cyan-400">Carbon Sink</span>
+            {t('flow.heading.from')}{' '}
+            <span className="text-gradient-green">{t('flow.heading.highlight1')}</span>
+            <br />{t('flow.heading.to')}{' '}
+            <span className="text-cyan-400">{t('flow.heading.highlight2')}</span>
           </h2>
           <p className="text-slate-400 text-base max-w-2xl mx-auto leading-relaxed">
-            A four-stage thermochemical conversion process transforms biomass residues into
-            high-performance CO₂ adsorbents. Click any stage to explore the science.
+            {t('flow.heading.desc')}
           </p>
         </motion.div>
 
-        {/* Flow chain */}
+        {/* Flow cards */}
         <div className="flex flex-col lg:flex-row items-stretch gap-0 mb-12">
           {STEPS.map((step, i) => (
             <div key={step.id} className="flex lg:flex-row flex-col items-center flex-1 gap-0">
 
-              {/* Card */}
               <motion.button
                 initial={{ opacity: 0, y: 28 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -252,19 +213,19 @@ export default function BiocharFlow() {
                 onClick={() => setActive(step)}
                 className={`group relative w-full flex-1 rounded-2xl border bg-gradient-to-br ${step.bg} ${step.border} p-5 text-left cursor-pointer transition-all shadow-xl ${step.glow} hover:shadow-2xl`}
               >
-                {/* Top accent line */}
+                {/* Top accent */}
                 <div className="absolute top-0 left-4 right-4 h-px rounded-full"
                   style={{ background: `linear-gradient(90deg, transparent, ${step.color}80, transparent)` }} />
 
-                {/* Step badge */}
+                {/* Step badge + icon */}
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-[9px] font-black uppercase tracking-[0.2em] px-2 py-0.5 rounded-full border"
                     style={{ color: step.color, borderColor: step.color + '40', background: step.color + '12' }}>
-                    Step {step.id} / 4
+                    {t('flow.stepBadge', { id: step.id })}
                   </span>
                   <div className="w-9 h-9 rounded-xl flex items-center justify-center border"
                     style={{ background: `${step.color}15`, borderColor: `${step.color}35` }}>
-                    <step.icon className="w-4.5 h-4.5 w-[18px] h-[18px]" style={{ color: step.color }} />
+                    <step.icon className="w-[18px] h-[18px]" style={{ color: step.color }} />
                   </div>
                 </div>
 
@@ -276,7 +237,7 @@ export default function BiocharFlow() {
                   {step.subtitle}
                 </p>
 
-                {/* Key parameters */}
+                {/* Inline parameters */}
                 <div className="space-y-2 mb-4">
                   {step.params.map(p => (
                     <div key={p.label} className="flex items-center justify-between">
@@ -296,35 +257,31 @@ export default function BiocharFlow() {
                 </p>
 
                 {/* CTA */}
-                <div className="flex items-center gap-1 text-[10px] font-semibold transition-all"
-                  style={{ color: step.color }}>
+                <div className="flex items-center gap-1 text-[10px] font-semibold" style={{ color: step.color }}>
                   {t('flow.stepExplore')}
                   <ChevronRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                 </div>
               </motion.button>
 
-              {/* Connector */}
+              {/* Connector arrow */}
               {i < STEPS.length - 1 && (
                 <motion.div
-                  initial={{ opacity: 0, scaleX: 0 }}
-                  whileInView={{ opacity: 1, scaleX: 1 }}
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 + 0.25 }}
                   className="flex-shrink-0 flex flex-col items-center justify-center px-2 py-4 lg:py-0"
                 >
                   <div className="hidden lg:flex flex-col items-center gap-1">
                     <p className="text-[8px] font-bold uppercase tracking-widest text-center leading-tight"
-                      style={{ color: STEPS[i].color + '80', maxWidth: 52 }}>
+                      style={{ color: STEPS[i].color + '80', maxWidth: 56 }}>
                       {step.outputLabel}
                     </p>
                     <div className="flex items-center">
-                      <div className="w-6 h-px" style={{ background: `linear-gradient(to right, ${STEPS[i].color}60, ${STEPS[i + 1].color}60)` }} />
+                      <div className="w-5 h-px"
+                        style={{ background: `linear-gradient(to right, ${STEPS[i].color}60, ${STEPS[i + 1].color}60)` }} />
                       <div className="w-0 h-0"
-                        style={{
-                          borderTop: '4px solid transparent',
-                          borderBottom: '4px solid transparent',
-                          borderLeft: `6px solid ${STEPS[i + 1].color}80`,
-                        }} />
+                        style={{ borderTop: '4px solid transparent', borderBottom: '4px solid transparent', borderLeft: `6px solid ${STEPS[i + 1].color}80` }} />
                     </div>
                   </div>
                   <ArrowRight className="w-5 h-5 text-slate-700 lg:hidden rotate-90" />
@@ -334,7 +291,7 @@ export default function BiocharFlow() {
           ))}
         </div>
 
-        {/* Material transformation timeline bar */}
+        {/* Material transformation timeline */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -343,26 +300,19 @@ export default function BiocharFlow() {
           className="rounded-2xl border border-white/8 bg-white/[0.03] p-5"
         >
           <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-4 text-center">
-            Material Transformation Chain
+            {t('flow.chain.title')}
           </p>
           <div className="flex items-center justify-between gap-2 overflow-x-auto pb-1">
-            {[
-              { label: 'Biomass', sublabel: 'Rice husk · Corn straw · Sugarcane', color: '#22c55e', dot: '🌾' },
-              { label: 'Pyrolysis', sublabel: '300–900°C · Limited O₂', color: '#f59e0b', dot: '🔥' },
-              { label: 'Raw Biochar', sublabel: 'Porous carbon matrix', color: '#94a3b8', dot: '⬛' },
-              { label: 'Activation', sublabel: 'KOH · K₂CO₃ · CO₂ gas', color: '#8b5cf6', dot: '⚗️' },
-              { label: 'Activated Biochar', sublabel: 'BET up to 3,157 m²/g', color: '#8b5cf6', dot: '🔬' },
-              { label: 'CO₂ Capture', sublabel: 'Up to 7.5 mmol/g · 100–1000 yr', color: '#06b6d4', dot: '🌍' },
-            ].map((node, i, arr) => (
+            {CHAIN.map((node, i) => (
               <div key={node.label} className="flex items-center gap-2 flex-shrink-0">
                 <div className="flex flex-col items-center text-center" style={{ minWidth: 72 }}>
                   <div className="text-base mb-1">{node.dot}</div>
                   <p className="text-[10px] font-bold text-white leading-tight">{node.label}</p>
-                  <p className="text-[9px] text-slate-500 leading-tight mt-0.5 max-w-[80px]">{node.sublabel}</p>
+                  <p className="text-[9px] text-slate-500 leading-tight mt-0.5 max-w-[80px]">{node.sub}</p>
                 </div>
-                {i < arr.length - 1 && (
-                  <div className="flex items-center gap-0 flex-shrink-0">
-                    <div className="w-6 h-px bg-slate-700" />
+                {i < CHAIN.length - 1 && (
+                  <div className="flex items-center flex-shrink-0">
+                    <div className="w-5 h-px bg-slate-700" />
                     <div className="w-0 h-0 border-t-[3px] border-b-[3px] border-l-[5px] border-transparent border-l-slate-600" />
                   </div>
                 )}
@@ -375,7 +325,7 @@ export default function BiocharFlow() {
 
       {/* Modal */}
       <AnimatePresence>
-        {active && <StepModal step={active} onClose={() => setActive(null)} />}
+        {active && <StepModal step={active} onClose={() => setActive(null)} t={t} />}
       </AnimatePresence>
     </section>
   );
