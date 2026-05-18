@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
@@ -109,8 +110,11 @@ function ResultCard({ result, rank, target }) {
 }
 
 export default function MaterialsAdvisor() {
-  const [targetCO2, setTargetCO2] = useState(4.5);
-  const [biomass, setBiomass] = useState('All');
+  const location = useLocation();
+  const prefill = location.state?.prefill ?? {};
+
+  const [targetCO2, setTargetCO2] = useState(prefill.targetCO2 ?? 4.5);
+  const [biomass, setBiomass] = useState(prefill.biomass ?? 'All');
   const [tolerance, setTolerance] = useState(0.75);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -118,8 +122,16 @@ export default function MaterialsAdvisor() {
   const [tertiaryObjective, setTertiaryObjective] = useState('none');
 
   const coverageData = getCoverageMatrix();
-
   const [mlValidations, setMlValidations] = useState({});
+  const [prefillBanner, setPrefillBanner] = useState(!!prefill.targetCO2);
+
+  // Auto-run when navigated from a use-case scenario
+  useEffect(() => {
+    if (prefill.autoRun) {
+      const timer = setTimeout(() => handleAnalyze(), 600);
+      return () => clearTimeout(timer);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleAnalyze = async () => {
     setLoading(true);
@@ -187,6 +199,13 @@ export default function MaterialsAdvisor() {
           {!result ? (
             <motion.div key="input" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
               <div className="glass-card rounded-3xl p-8 border border-border max-w-2xl mx-auto">
+                {prefillBanner && (
+                  <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-indigo-500/8 border border-indigo-500/20 mb-4 text-xs text-indigo-300">
+                    <Sliders className="w-3.5 h-3.5 shrink-0" />
+                    Parameters pre-filled from a research scenario — adjust or run as-is.
+                    <button onClick={() => setPrefillBanner(false)} className="ml-auto text-indigo-400 hover:text-white">✕</button>
+                  </div>
+                )}
                 <h2 className="font-space font-bold text-xl mb-1 flex items-center gap-2">
                   <Target className="w-5 h-5 text-indigo-500" /> Define Your Target
                 </h2>

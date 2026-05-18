@@ -8,6 +8,7 @@ import KnowledgeCenterSection from '../components/home/KnowledgeCenterSection';
 import DocumentsSection from '../components/home/DocumentsSection';
 import BiocharSocietySection from '../components/home/BiocharSocietySection';
 import TriplePhaseFlow from '../components/home/TriplePhaseFlow';
+import UseCaseScenarios from '../components/home/UseCaseScenarios';
 import HeatmapSection from '../components/home/HeatmapSection';
 import ScientificReferences from '../components/home/ScientificReferences';
 import SectionNavDots from '../components/home/SectionNavDots';
@@ -60,6 +61,9 @@ export default function Home() {
       <div id="section-triplephase">
         <TriplePhaseFlow />
       </div>
+
+      {/* 7b. Use-case scenarios — pre-filled shortcuts */}
+      <UseCaseScenarios />
 
       {/* 8. CO₂ Adsorption Hotspots — Temperature × Activator Matrix */}
       <div id="section-heatmap">

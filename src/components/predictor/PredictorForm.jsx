@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Zap, ChevronDown, Thermometer, Clock, TrendingUp, FlaskConical, Database, Layers, Brain } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { TOTAL_DATA_POINTS } from '../../lib/biocharKnowledgeBase';
@@ -78,14 +78,18 @@ function SelectField({ label, value, options, onChange, isObject = false }) {
 
 export default function PredictorForm() {
   const navigate  = useNavigate();
+  const location  = useLocation();
+  const prefill   = location.state?.prefill ?? {};
+  const hasPrefill = !!(prefill.biomass || prefill.activator || prefill.temperature);
+
   const [loading, setLoading] = useState(false);
   const [selectedModel, setSelectedModel] = useState('ridge');
   const [params, setParams] = useState({
-    biomass:       'Corn straw',
-    temperature:   600,
-    residenceTime: 60,
-    heatingRate:   10,
-    activator:     'Non',
+    biomass:       prefill.biomass       ?? 'Corn straw',
+    temperature:   prefill.temperature   ?? 600,
+    residenceTime: prefill.residenceTime ?? 60,
+    heatingRate:   prefill.heatingRate   ?? 10,
+    activator:     prefill.activator     ?? 'Non',
     chemBlend: {
       enabled:  false,
       chemical: 'PKBC',  // chemical name (PKBC, TKBC, or custom)
@@ -108,6 +112,14 @@ export default function PredictorForm() {
 
   return (
     <div className="glass-card rounded-3xl p-8 border border-border max-w-2xl mx-auto">
+      {/* Pre-fill banner */}
+      {hasPrefill && (
+        <div className="flex items-center gap-2 p-3 rounded-xl bg-indigo-50 border border-indigo-200 mb-4 text-xs text-indigo-700">
+          <Zap className="w-3.5 h-3.5 shrink-0 text-indigo-500" />
+          Parameters pre-filled from a research scenario — adjust any value and click Generate.
+        </div>
+      )}
+
       {/* Data badge */}
       <div className="flex items-center gap-2 p-3 rounded-xl bg-green-50 border border-green-200 mb-6">
         <Database className="w-4 h-4 text-green-600 shrink-0" />
