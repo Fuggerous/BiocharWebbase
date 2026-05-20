@@ -72,7 +72,10 @@ function BiomassLayerFilter({ selected, onChange }) {
 
       {open && (
         <div className="space-y-0.5">
-          {Object.entries(BIOMASS_SPECIES_MAP).map(([species, parts]) => {
+          {Object.entries(BIOMASS_SPECIES_MAP)
+            .sort(([a], [b]) => a === 'Other' ? 1 : b === 'Other' ? -1 : a.localeCompare(b))
+            .map(([species, parts]) => {
+            const sortedParts = [...parts].sort((a, b) => a.localeCompare(b));
             const selectedCount = parts.filter(p => selected.includes(p)).length;
             const allPicked = selectedCount === parts.length;
             const somePicked = selectedCount > 0 && selectedCount < parts.length;
@@ -97,16 +100,16 @@ function BiomassLayerFilter({ selected, onChange }) {
                       selectedCount > 0 ? 'text-green-700 font-semibold' : 'text-muted-foreground hover:text-foreground'
                     }`}>
                     {species}
-                    {parts.length > 1 && (
-                      <span className="ml-1 text-[9px] text-muted-foreground/60 font-normal">({parts.length})</span>
+                    {sortedParts.length > 1 && (
+                      <span className="ml-1 text-[9px] text-muted-foreground/60 font-normal">({sortedParts.length})</span>
                     )}
-                    {selectedCount > 0 && selectedCount < parts.length && (
+                    {selectedCount > 0 && selectedCount < sortedParts.length && (
                       <span className="ml-1 px-1 py-0.5 rounded-full bg-green-500/15 text-green-600 text-[9px] font-bold">{selectedCount}</span>
                     )}
                   </button>
 
                   {/* Expand arrow — only if species has multiple parts */}
-                  {parts.length > 1 && (
+                  {sortedParts.length > 1 && (
                     <button onClick={() => toggleExpand(species)}
                       className="p-0.5 rounded hover:bg-muted transition-colors flex-shrink-0">
                       {isExpanded
@@ -117,9 +120,9 @@ function BiomassLayerFilter({ selected, onChange }) {
                 </div>
 
                 {/* Parts rows — shown when expanded */}
-                {isExpanded && parts.length > 1 && (
+                {isExpanded && sortedParts.length > 1 && (
                   <div className="ml-5 mt-0.5 space-y-0.5">
-                    {parts.map(part => {
+                    {sortedParts.map(part => {
                       const active = selected.includes(part);
                       const color = BIOMASS_COLORS?.[part];
                       return (

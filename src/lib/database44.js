@@ -1405,9 +1405,9 @@ export const DB44_RECORDS = [
   { id: 1396, isothermId: null, biomass: "Hybrid popular wood", pyroTemp: 600, residenceTime: 30.0, heatingRate: 190.0, activator: "Non", activationType: "Non", activationTemp: null, blend: "Non", surfaceArea: 222.67, poreVolume: null, adsorpTemp: 25, pressure: null, isIsotherm: false, co2Uptake: null, C_cha: 83.17, H_cha: 3.44, O_cha: 6.81, N_cha: 0.49, S_cha: 6.09 }
 ];
 
-export const BIOMASS_LIST         = [...new Set(DB44_RECORDS.map(r => r.biomass))];
-export const ACTIVATOR_LIST       = [...new Set(DB44_RECORDS.map(r => r.activator))];
-export const ACTIVATION_TYPE_LIST = [...new Set(DB44_RECORDS.map(r => r.activationType))];
+export const BIOMASS_LIST         = [...new Set(DB44_RECORDS.map(r => r.biomass))].sort((a, b) => a.localeCompare(b));
+export const ACTIVATOR_LIST       = [...new Set(DB44_RECORDS.map(r => r.activator))].sort((a, b) => a.localeCompare(b));
+export const ACTIVATION_TYPE_LIST = [...new Set(DB44_RECORDS.map(r => r.activationType))].sort((a, b) => a.localeCompare(b));
 export const BLEND_LIST           = [...new Set(DB44_RECORDS.map(r => r.blend))].sort();
 export const ADSORPTION_TEMP_LIST = [...new Set(DB44_RECORDS.map(r => r.adsorpTemp).filter(Boolean))].sort((a,b)=>a-b);
 export const PYRO_TEMP_LIST       = [...new Set(DB44_RECORDS.map(r => r.pyroTemp).filter(Boolean))].sort((a,b)=>a-b);
@@ -1453,23 +1453,24 @@ export const SPECIES_COLORS = {
 
 
 // Two-layer biomass hierarchy: species → individual biomass names
+// Keys in A–Z order; parts within each group also A–Z; Other always last.
 export const BIOMASS_SPECIES_MAP = {
-  'Rice':       ['Rice Straw', 'Rice husk'],
-  'Corn':       ['Corn straw', 'Corn stalk', 'Corncob'],
-  'Cotton':     ['Cotton straw', 'Cotton stalk'],
-  'Banana':     ['Banana straw', 'Banana pseudo-stem'],
-  'Coconut':    ['Coconut husk', 'Coconut shell', 'Cocopeat', 'Green coconuts'],
-  'Sugarcane':  ['Sugarcane bagasse', 'Bagasse', 'Orange Bagasse'],
-  'Palm':       ['Palm fibre', 'Palm kernel shell', 'Date palm'],
-  'Pine':       ['Pine sawdust powders', 'Pinewood sawdust', 'Pitch pine', 'Pinus Pinea L. cone', 'Pinus halepensis Mill'],
-  'Wood':       ['Hickory wood', 'Douglas fir wood', 'Hybrid popular wood', 'Spruce wood', 'Wood', 'Wood bark', 'Wood stem', 'Acacia wood Sawdust', 'Mixed wood sawdust'],
-  'Bamboo':     ['Bamboo'],
-  'Wheat':      ['Raw wheat straw', 'Straw'],
-  'Coffee':     ['Coffee ground-based'],
-  'Pomelo':     ['Pomelo peel'],
-  'Durian':     ['Durian peel'],
   'Algae':      ['Dry algae'],
-  'Other':      ['Agro-food waste', 'Food waste solid digestate', 'Green waste', 'Dried Okara biomass', 'non-thermal dried okara'],
+  'Bamboo':     ['Bamboo'],
+  'Banana':     ['Banana pseudo-stem', 'Banana straw'],
+  'Coconut':    ['Cocopeat', 'Coconut husk', 'Coconut shell', 'Green coconuts'],
+  'Coffee':     ['Coffee ground-based'],
+  'Corn':       ['Corncob', 'Corn stalk', 'Corn straw'],
+  'Cotton':     ['Cotton stalk', 'Cotton straw'],
+  'Durian':     ['Durian peel'],
+  'Palm':       ['Date palm', 'Palm fibre', 'Palm kernel shell'],
+  'Pine':       ['Pine sawdust powders', 'Pinewood sawdust', 'Pinus halepensis Mill', 'Pinus Pinea L. cone', 'Pitch pine'],
+  'Pomelo':     ['Pomelo peel'],
+  'Rice':       ['Rice husk', 'Rice Straw'],
+  'Sugarcane':  ['Bagasse', 'Orange Bagasse', 'Sugarcane bagasse'],
+  'Wheat':      ['Raw wheat straw', 'Straw'],
+  'Wood':       ['Acacia wood Sawdust', 'Douglas fir wood', 'Hickory wood', 'Hybrid popular wood', 'Mixed wood sawdust', 'Spruce wood', 'Wood', 'Wood bark', 'Wood stem'],
+  'Other':      ['Agro-food waste', 'Dried Okara biomass', 'Food waste solid digestate', 'Green waste', 'non-thermal dried okara'],
 };
 
 // Default filter state for the Database page
