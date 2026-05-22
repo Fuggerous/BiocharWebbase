@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 // ── Data ──────────────────────────────────────────────────────────────────────
 const DOCS = [
   {
-    id: 1, category: 'สาระน่ารู้', catKey: 'docs.cat.info', type:'website',
+    id: 1, uploadDate: '22/05/2026', category: 'สาระน่ารู้', catKey: 'docs.cat.info', type:'website',
     title: 'กุญแจสำคัญสู่ Net Zero Emission ด้วยเทคโนโลยีไบโอชาร์ ผนึกกำลังภาครัฐ ภาควิชาการ ภาคการเกษตรและภาคอุตสาหกรรม',
     titleEn: 'Driving Progress Towards Net Zero Emissions: A Collaborative Effort Leveraging Biochar Technology, Involving Government, Academia, Agriculture, and Industry Sectors',
     desc: 'งานนำเสนอศักยภาพของเทคโนโลยีไบโอชาร์ในการลดก๊าซเรือนกระจก และส่งเสริมการพัฒนาที่ยั่งยืน โดยผู้เชี่ยวชาญจากหลากหลายภาคส่วน',
@@ -25,7 +25,7 @@ const DOCS = [
     url: 'https://www.nstda.or.th/nac/2025/seminar/nac-28/',
   },
   {
-    id: 2, category: 'เอกสาร', catKey: 'docs.cat.document', type: 'pdf',
+    id: 2, uploadDate: '22/05/2026', category: 'เอกสาร', catKey: 'docs.cat.document', type: 'pdf',
     title: 'บทบาทและแนวทางการใช้ประโยชน์ไบโอชาร์ของภาครัฐเพื่อการจัดการก๊าซเรือนกระจกสำหรับภาคเกษตร',
     titleEn: 'The Role of Biochar in Government Strategies for Greenhouse Gas Management in the Agricultural Sector',
     desc: 'บทบาท แนวทางและการสนับสนุน/ส่งเสริมของภาครัฐต่อการใช้ประโยชน์ไบโอชาร์เพื่อการจัดการก๊าซเรือนกระจกสำหรับภาคเกษตร โดย ดร.ธีรวุฒิ ชุตินันทกุล',
@@ -33,7 +33,7 @@ const DOCS = [
     tags: ['GHG', 'Biochar Consortium', 'Net Zero'], featured: false, url: 'https://www.nstda.or.th/nac/2025/wp-content/uploads/2025/04/0900-%E0%B8%98%E0%B8%B5%E0%B8%A3%E0%B8%A7%E0%B8%B8%E0%B8%92%E0%B8%B4-%E0%B8%8A%E0%B8%B8%E0%B8%95%E0%B8%B4%E0%B8%99%E0%B8%B1%E0%B8%99%E0%B8%97%E0%B8%81%E0%B8%B8%E0%B8%A5.pdf',
   },
   {
-    id: 3, category: 'เอกสาร', catKey: 'docs.cat.document', type: 'pdf',
+    id: 3, uploadDate: '22/05/2026', category: 'เอกสาร', catKey: 'docs.cat.document', type: 'pdf',
     title: 'มาตรฐานที่เกี่ยวข้องกับไบโอชาร์กรอบการพัฒนามาตรฐานด้านการประเมินการกักเก็บคาร์บอนของไบโอชาร์',
     titleEn: 'Biochar Standards and Carbon Sequestration Assessment Frameworks: An Overview of Relevant Standards in Biochar Development',
     desc: 'มาตรฐานที่เกี่ยวข้องกับไบโอชาร์กรอบการพัฒนามาตรฐานด้านการประเมินการกักเก็บคาร์บอนของไบโอชาร์ โดย คุณประกายธรรม สุขสถิตย์',
@@ -41,7 +41,7 @@ const DOCS = [
     tags: ['Biochar Consortium', 'Net Zero', 'Biochar Standards'], featured: false, url: 'https://www.nstda.or.th/nac/2025/wp-content/uploads/2025/04/0930-%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%81%E0%B8%B2%E0%B8%A2%E0%B8%98%E0%B8%A3%E0%B8%A3%E0%B8%A1-%E0%B8%AA%E0%B8%B8%E0%B8%82%E0%B8%AA%E0%B8%96%E0%B8%B4%E0%B8%95%E0%B8%A2%E0%B9%8C.pdf',
   },
   {
-    id: 4, category: 'เอกสาร', catKey: 'docs.cat.document', type: 'pdf',
+    id: 4, uploadDate: '22/05/2026', category: 'เอกสาร', catKey: 'docs.cat.document', type: 'pdf',
     title: 'มาตรฐานคุณภาพไบโอชาร์ที่ใช้ในต่างประเทศและแนวทางในการพัฒนามาตรฐานในประเทศไทย',
     titleEn: 'Biochar Standards and Carbon Sequestration Assessment Frameworks: An Overview of Relevant Standards in Biochar Development by Prakaitham Suksatit',
     desc: 'มาตรฐานคุณภาพไบโอชาร์ที่ใช้ในต่างประเทศและแนวทางในการพัฒนามาตรฐานในประเทศไทย โดย ดร.เปรมฤดี กาญจนปิยะ',
@@ -49,7 +49,7 @@ const DOCS = [
     tags: ['Biochar Consortium', 'Net Zero', 'Biochar Standards'], featured: false, url: 'https://www.nstda.or.th/nac/2025/wp-content/uploads/2025/04/0930-%E0%B9%80%E0%B8%9B%E0%B8%A3%E0%B8%A1%E0%B8%A4%E0%B8%94%E0%B8%B5-%E0%B8%81%E0%B8%B2%E0%B8%8D%E0%B8%88%E0%B8%99%E0%B8%9B%E0%B8%B4%E0%B8%A2%E0%B8%B0.pdf',
   },
   {
-    id: 5, category: 'เอกสาร', catKey: 'docs.cat.document', type: 'pdf',
+    id: 5, uploadDate: '22/05/2026', category: 'เอกสาร', catKey: 'docs.cat.document', type: 'pdf',
     title: 'การออกแบบ พัฒนาและสร้างเตาไพโรไลซิสสำหรับผลิตไบโอชาร์ที่ได้ตามมาตรฐานสากล',
     titleEn: 'Design, Development, and Construction of a Pyrolysis Stove for Producing Biochar that Meets International Standards',
     desc: 'การออกแบบ พัฒนาและสร้างเตาไพโรไลซิสสำหรับผลิตไบโอชาร์ที่ได้ตามมาตรฐานสากล โดย คุณชุมพล เมฆอารี',
@@ -57,7 +57,7 @@ const DOCS = [
     tags: ['Pyrolysis', 'Biochar Standards'], featured: false, url: 'https://www.nstda.or.th/nac/2025/wp-content/uploads/2025/04/1000-%E0%B8%8A%E0%B8%B8%E0%B8%A1%E0%B8%9E%E0%B8%A5-%E0%B9%80%E0%B8%A1%E0%B8%86%E0%B8%AD%E0%B8%B2%E0%B8%A3%E0%B8%B5.pdf ',
   },
   {
-    id: 6, category: 'เอกสาร', catKey: 'docs.cat.document', type: 'pdf',
+    id: 6, uploadDate: '22/05/2026', category: 'เอกสาร', catKey: 'docs.cat.document', type: 'pdf',
     title: 'ไบโอชาร์กักเก็บสารคีเลตจุลธาตุอาหารพืชเพื่อ พัฒนาเป็นสารปรับสภาพดินประสิทธิภาพสูง',
     titleEn: 'Biochar incorporated with plant micronutrient chelates as efficient soil conditioner',
     desc: 'ไบโอชาร์กักเก็บสารคีเลตจุลธาตุอาหารพืชเพื่อ พัฒนาเป็นสารปรับสภาพดินประสิทธิภาพสูง โดย ดร.คมสันต์ สุทธิสินทอง',
@@ -65,7 +65,7 @@ const DOCS = [
     tags: ['soil conditioner', 'Factsheet'], featured: false, url: 'https://www.nstda.or.th/nac/2025/wp-content/uploads/2025/04/1030-%E0%B8%84%E0%B8%A1%E0%B8%AA%E0%B8%B1%E0%B8%99%E0%B8%95%E0%B9%8C-%E0%B8%AA%E0%B8%B8%E0%B8%97%E0%B8%98%E0%B8%B4%E0%B8%AA%E0%B8%B4%E0%B8%99%E0%B8%97%E0%B8%AD%E0%B8%87.pdf',
   },
   {
-    id: 7, category: 'เอกสาร', catKey: 'docs.cat.document', type: 'pdf',
+    id: 7, uploadDate: '22/05/2026', category: 'เอกสาร', catKey: 'docs.cat.document', type: 'pdf',
     title: 'การพัฒนาสารปรับปรุงบำรุงดินที่ผสมไบโอชาร์',
     titleEn: 'The development of soil conditioners mixed with biochar',
     desc: 'การพัฒนาสารปรับปรุงบำรุงดินที่ผสมไบโอชาร์ โดย ดร.สิทธิศักดิ์ ประสานพันธ์',
@@ -73,13 +73,40 @@ const DOCS = [
     tags: ['Agriculture', 'Soil conditioner'], featured: false, url: 'https://www.nstda.or.th/nac/2025/wp-content/uploads/2025/04/1030-%E0%B8%AA%E0%B8%B4%E0%B8%97%E0%B8%98%E0%B8%B4%E0%B8%A8%E0%B8%B1%E0%B8%81%E0%B8%94%E0%B8%B4%E0%B9%8C-%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%AA%E0%B8%B2%E0%B8%99%E0%B8%9E%E0%B8%B1%E0%B8%99%E0%B8%98%E0%B9%8C.pdf',
   },
   {
-    id: 8, category: 'เอกสาร', catKey: 'docs.cat.document', type: 'pdf',
+    id: 8, uploadDate: '22/05/2026', category: 'เอกสาร', catKey: 'docs.cat.document', type: 'pdf',
     title: 'การต่อยอดธุรกิจการใช้ประโยชน์ไบโอชาร์ในการปลูกพืชเศรษฐกิจ/ปลูกอ้อย',
     titleEn: 'Business expansion in utilizing biochar for planting economic crops/sugarcane cultivation',
     desc: 'การต่อยอดธุรกิจการใช้ประโยชน์ไบโอชาร์ในการปลูกพืชเศรษฐกิจ/ปลูกอ้อย โดย คุณอภิชาติ นุชประยูร',
     descEn: 'Business expansion in utilizing biochar for planting economic crops/sugarcane cultivation by Apichat Nuchprayoon.',
-    tags: ['Business', 'Agriculture'], featured: false, url: 'chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://www.nstda.or.th/nac/2025/wp-content/uploads/2025/04/1100-%E0%B8%AD%E0%B8%A0%E0%B8%B4%E0%B8%8A%E0%B8%B2%E0%B8%95%E0%B8%B4-%E0%B8%99%E0%B8%B8%E0%B8%8A%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%A2%E0%B8%B9%E0%B8%A3.pdf',
+    tags: ['Business', 'Agriculture'], featured: false, url: 'https://www.nstda.or.th/nac/2025/wp-content/uploads/2025/04/1100-%E0%B8%AD%E0%B8%A0%E0%B8%B4%E0%B8%8A%E0%B8%B2%E0%B8%95%E0%B8%B4-%E0%B8%99%E0%B8%B8%E0%B8%8A%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%A2%E0%B8%B9%E0%B8%A3.pdf ',
   },
+  {
+    id: 9, uploadDate: '22/05/2026', category: 'เอกสาร', catKey: 'docs.cat.document', type: 'pdf',
+    title: 'ไบโอชาร์สำหรับคอนกรีตดูดซับคาร์บอนไดออกไซด์',
+    titleEn: 'Biochar for Carbon Removal Concrete',
+    desc: 'โอกาสและทิศทางการประยุกต์ใช้ไบโอชาร์ในกลุ่มผลิตภัณฑ์ซีเมนต์ คอนกรีตและวัสดุก่อสร้าง โดย ดร.ศักดิ์ประยุทธ สินธุภิญโญ',
+    descEn: 'Opportunities and Directions for Applying Biochar in Cement, Concrete, and Construction Materials by Dr. Sakdiporn Sinttham.',
+    tags: ['Business', 'Construction'], featured: false, url: 'https://www.nstda.or.th/nac/2025/wp-content/uploads/2025/04/1130-%E0%B8%A8%E0%B8%B1%E0%B8%81%E0%B8%94%E0%B8%B4%E0%B9%8C%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%A2%E0%B8%B8%E0%B8%97%E0%B8%98-%E0%B8%AA%E0%B8%B4%E0%B8%99%E0%B8%98%E0%B8%B8%E0%B8%A0%E0%B8%B4%E0%B8%8D%E0%B9%82%E0%B8%8D.pdf',
+  },
+  {
+    id: 10, uploadDate: '22/05/2026', category: 'วีดีโอ', catKey: 'docs.cat.video', type: 'youtube',
+    title: 'การสัมมนาหัวข้อ “กุญแจสำคัญสู่ Net Zero Emission ด้วยเทคโนโลยีไบโอชาร์ ผนึกกำลังภาครัฐ ภาควิชาการ ภาคการเกษตรและภาคอุตสาหกรรม”',
+    titleEn: 'Development of Biochar Products for Household Use',
+    desc: 'การพัฒนาผลิตภัณฑ์ไบโอชาร์สำหรับใช้ในครัวเรือน โดย คุณณัฐวุฒิ ศรีสุวรรณ',
+    descEn: 'Development of Biochar Products for Household Use by Natthawut Srisuwan.',
+    tags: ['Household', 'Biochar Products'], featured: false, url: 'https://www.youtube.com/watch?v=kOpLo2PCTMY',
+  },
+  {
+    id: 11, uploadDate: '22/05/2026', category: 'สาระน่ารู้', catKey: 'docs.cat.info', type: 'website',
+    title: 'ฐานข้อมูลไบโอชาร์ไทย',
+    titleEn: 'Thai Biochar Database',
+    desc: 'ศูนย์กลางการแบ่งปันข้อมูลเกี่ยวกับไบโอชาร์ในประเทศไทย',
+    descEn: 'Hub for sharing information about Biochar in Thailand.',
+    tags: ['Database', 'Biochar'], featured: true, url: 'https://thaibiochar.net/#home',
+
+    
+  }
+
 ];
 
 const PER_PAGE = 4;
@@ -114,6 +141,22 @@ function CatalogRow({ doc, index, lang, t }) {
   const title    = lang === 'en' ? doc.titleEn : doc.title;
   const desc     = lang === 'en' ? (doc.descEn ?? doc.desc) : doc.desc;
   const catLabel = t(doc.catKey) ?? doc.category;
+  const uploadDateLabel = doc.uploadDate
+    ? (() => {
+        const [dayStr, monthStr, yearStr] = doc.uploadDate.split('/');
+        const day = Number(dayStr);
+        const month = Number(monthStr);
+        const year = Number(yearStr);
+
+        if (!day || !month || !year) return null;
+
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const monthName = monthNames[month - 1];
+        if (!monthName) return null;
+
+        return `${String(day).padStart(2, '0')}/${monthName}/${year}`;
+      })()
+    : null;
 
   return (
     <motion.div
@@ -121,12 +164,12 @@ function CatalogRow({ doc, index, lang, t }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
       transition={{ delay: index * 0.04, duration: 0.15 }}
-      className={`group flex items-start gap-4 p-4 rounded-xl border transition-all duration-150
+      className={`group flex items-stretch gap-4 p-4 rounded-xl border transition-all duration-150
         hover:shadow-sm hover:border-green-400/30 cursor-default
         ${doc.featured ? 'bg-gradient-to-r from-green-500/5 via-background to-background border-green-400/25' : 'bg-card border-border'}`}
     >
       {/* Left: type icon */}
-      <div className="flex-shrink-0 mt-0.5">
+      <div className="flex-shrink-0 self-start mt-0.5">
         <div className="w-9 h-9 rounded-xl flex items-center justify-center"
           style={{ background: `${typeCfg.color}20`, border: `1.5px solid ${typeCfg.color}45` }}>
           <TypeIcon className="w-4 h-4" style={{ color: typeCfg.color }} />
@@ -134,7 +177,7 @@ function CatalogRow({ doc, index, lang, t }) {
       </div>
 
       {/* Center: content */}
-      <div className="flex-1 min-w-0">
+      <div className="flex-1 min-w-0 self-start">
         <div className="flex items-center gap-2 mb-1 flex-wrap">
           <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full"
             style={{ background: `${catCfg.color}22`, color: catCfg.color, border: `1.5px solid ${catCfg.color}50` }}>
@@ -168,28 +211,35 @@ function CatalogRow({ doc, index, lang, t }) {
       </div>
 
       {/* Right: actions */}
-      <div className="flex-shrink-0 flex items-center gap-1.5 mt-0.5">
-        <a href={doc.url}
-          target={doc.url?.startsWith('http') ? '_blank' : undefined}
-          rel={doc.url?.startsWith('http') ? 'noopener noreferrer' : undefined}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold
-            transition-all whitespace-nowrap
-            ${doc.featured
-              ? 'bg-green-500 text-white hover:bg-green-600'
-              : 'bg-muted border border-border hover:bg-green-500 hover:text-white hover:border-green-500'}`}
-        >
-          <ExternalLink className="w-3 h-3" />
-          {t('kc.docs.open')}
-        </a>
-        <a href={doc.url}
-          target={doc.url?.startsWith('http') ? '_blank' : undefined}
-          rel={doc.url?.startsWith('http') ? 'noopener noreferrer' : undefined}
-          className="w-7 h-7 rounded-lg flex items-center justify-center bg-muted border border-border
-            hover:bg-green-500/10 hover:border-green-400 hover:text-green-600 transition-all text-muted-foreground"
-          title={t('docs.download')}
-        >
-          <Download className="w-3.5 h-3.5" />
-        </a>
+      <div className="flex-shrink-0 self-stretch flex flex-col items-end justify-between gap-2 min-w-[92px]">
+        <div className="flex items-center gap-1.5 mt-0.5">
+          <a href={doc.url}
+            target={doc.url?.startsWith('http') ? '_blank' : undefined}
+            rel={doc.url?.startsWith('http') ? 'noopener noreferrer' : undefined}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold
+              transition-all whitespace-nowrap
+              ${doc.featured
+                ? 'bg-green-500 text-white hover:bg-green-600'
+                : 'bg-muted border border-border hover:bg-green-500 hover:text-white hover:border-green-500'}`}
+          >
+            <ExternalLink className="w-3 h-3" />
+            {t('kc.docs.open')}
+          </a>
+          <a href={doc.url}
+            target={doc.url?.startsWith('http') ? '_blank' : undefined}
+            rel={doc.url?.startsWith('http') ? 'noopener noreferrer' : undefined}
+            className="w-7 h-7 rounded-lg flex items-center justify-center bg-muted border border-border
+              hover:bg-green-500/10 hover:border-green-400 hover:text-green-600 transition-all text-muted-foreground"
+            title={t('docs.download')}
+          >
+            <Download className="w-3.5 h-3.5" />
+          </a>
+        </div>
+        {uploadDateLabel && (
+          <p className="mt-auto text-[10px] font-medium text-muted-foreground text-right whitespace-nowrap">
+            Uploaded: {uploadDateLabel}
+          </p>
+        )}
       </div>
     </motion.div>
   );
@@ -210,7 +260,7 @@ function ForumZone() {
       const matchSearch = !q || doc.title.toLowerCase().includes(q) || doc.titleEn.toLowerCase().includes(q);
       return matchCat && matchSearch;
     });
-    // Keep newest entries first based on larger numeric id values.
+    // Keep the latest id first so new items always appear at the top.
     return docs.sort((a, b) => Number(b.id) - Number(a.id));
   }, [activeCat, search]);
 
