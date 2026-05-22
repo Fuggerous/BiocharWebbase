@@ -75,7 +75,7 @@ const METRICS = [
     bg: 'from-cyan-500/15 to-cyan-600/5',
     border: 'border-cyan-500/25',
     headline: `${DB_OVERALL_MAX.toFixed(2)} mmol/g`,
-    subline: 'maximum CO₂ capture from 44Database',
+    subline: 'maximum CO₂ capture from Database',
     body: `KOH-activated biochar achieves up to ${DB_OVERALL_MAX.toFixed(2)} mmol/g in our dataset — among the highest reported for biowaste-derived carbons without metal loading.`,
     refs: [6, 12],
     countEnd: DB_OVERALL_MAX,

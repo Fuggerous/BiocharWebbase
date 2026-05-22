@@ -70,6 +70,24 @@ export const CO2_MODELS = [
   },
 ];
 
+// ─── Strategy A comparison — within-isotherm pressure-point split ─────────────
+// Strategy A: train/test split at individual pressure-point level.
+// Points on the SAME isotherm appear in both train and test → inflated R²
+// from data leakage (adjacent points share conditions/curve shape).
+// Values here are from the Strategy-A training run (02a_compare.png).
+// Shown for transparency only; NOT used for deployment decisions.
+export const CO2_COMPARISON_A = [
+  { name: 'KNN',        r2: 0.918, deployed: false, fill: '#94a3b8' },
+  { name: 'XGBoost',   r2: 0.892, deployed: false, fill: '#94a3b8' },
+  { name: 'Stacking',   r2: 0.873, deployed: false, fill: '#f97316' },
+  { name: 'MLP',        r2: 0.851, deployed: false, fill: '#94a3b8' },
+  { name: 'SVR',        r2: 0.829, deployed: true,  fill: '#a855f7' },
+  { name: 'ExtraTrees', r2: 0.796, deployed: false, fill: '#94a3b8' },
+  { name: 'ElasticNet', r2: 0.713, deployed: false, fill: '#94a3b8' },
+  { name: 'Ridge',      r2: 0.682, deployed: true,  fill: '#3b82f6' },
+  { name: 'Lasso',      r2: 0.664, deployed: false, fill: '#94a3b8' },
+];
+
 // ─── Full comparison — all trained CO₂ models ────────────────────────────────
 // Deployed models use their actual validated metric; others from 02b_compare.png test-set.
 // Ridge: deployed model uses LOO-CV R²=0.4455 (different feature set from comparison);
@@ -100,7 +118,7 @@ export const PROP_MODELS = [
     badge:       `BET R²=${_m01}`,
     tag:         'Best · Deployed',
     tagStyle:    'bg-purple-500/10 text-purple-700 border-purple-500/20',
-    pro:         'Highest BET R² of all tested models · data-trained on 44Database',
+    pro:         'Highest BET R² of all tested models · data-trained on Database',
     con:         'Small training set · pore volume prediction excluded (all R²<0.01)',
     status:      'deployed',
     deployed:    true,

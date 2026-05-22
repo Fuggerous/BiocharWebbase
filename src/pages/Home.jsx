@@ -57,7 +57,7 @@ export default function Home() {
         <BiocharSocietySection />
       </div>
 
-      {/* 7. Triple-Phase Intelligence Framework */}
+      {/* 7. Multi-tools Intelligence Framework */}
       <div id="section-triplephase">
         <TriplePhaseFlow />
       </div>

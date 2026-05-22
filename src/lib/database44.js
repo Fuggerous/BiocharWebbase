@@ -1,7 +1,7 @@
 // @ts-nocheck
 /**
- * BiocharHub - 44Database Full Records
- * Auto-generated from 44Database.xlsx by generate_database.py
+ * BiocharHub - Database Full Records
+ * Auto-generated from Database.xlsx by generate_database.py
  * 1396 experimental isotherm data points | DO NOT EDIT MANUALLY
  * Imputation: group-median per (biomass, activator) for residenceTime & heatingRate
  */
@@ -1269,7 +1269,7 @@ export const DB44_RECORDS = [
   { id: 1260, isothermId: 111, biomass: "Pomelo peel", pyroTemp: 600, residenceTime: 60.0, heatingRate: 5.0, activator: "KOH", activationType: "Chemical", activationTemp: "700.0", blend: "0.5TKBC", surfaceArea: 60.06, poreVolume: 7e-05, adsorpTemp: 45, pressure: 1.01, isIsotherm: true, co2Uptake: 1.89, C_cha: null, H_cha: null, O_cha: null, N_cha: null, S_cha: null },
   { id: 1261, isothermId: 112, biomass: "Pomelo peel", pyroTemp: 600, residenceTime: 60.0, heatingRate: 5.0, activator: "KOH", activationType: "Chemical", activationTemp: "700.0", blend: "0.5TKBC", surfaceArea: 60.06, poreVolume: 7e-05, adsorpTemp: 65, pressure: 1.01, isIsotherm: true, co2Uptake: 1.68, C_cha: null, H_cha: null, O_cha: null, N_cha: null, S_cha: null },
   { id: 1262, isothermId: 113, biomass: "Pomelo peel", pyroTemp: 600, residenceTime: 60.0, heatingRate: 5.0, activator: "KOH", activationType: "Chemical", activationTemp: "700.0", blend: "20PKBC", surfaceArea: 6.88, poreVolume: 3e-05, adsorpTemp: 35, pressure: 1.01, isIsotherm: true, co2Uptake: 1.27, C_cha: null, H_cha: null, O_cha: null, N_cha: null, S_cha: null },
-  { id: 1263, isothermId: 114, biomass: "Pomelo peel", pyroTemp: 600, residenceTime: 60.0, heatingRate: 5.0, activator: "KOH", activationType: "Chemical", activationTemp: "700.0", blend: "20TKBC", surfaceArea: 4.11, poreVolume: 2e-05, adsorpTemp: 35, pressure: 1.01, isIsotherm: true, co2Uptake: 1.1, C_cha: null, H_cha: null, O_cha: null, N_cha: null, S_cha: null },
+  { id: 1395, isothermId: 114, biomass: "Pomelo peel", pyroTemp: 600, residenceTime: 60.0, heatingRate: 5.0, activator: "KOH", activationType: "Chemical", activationTemp: "700.0", blend: "20TKBC", surfaceArea: 4.11, poreVolume: 2e-05, adsorpTemp: 35, pressure: 1.01, isIsotherm: true, co2Uptake: 1.1, C_cha: null, H_cha: null, O_cha: null, N_cha: null, S_cha: null },
   { id: 1264, isothermId: null, biomass: "Corncob", pyroTemp: 400, residenceTime: 60.0, heatingRate: 10.0, activator: "Non", activationType: "Non", activationTemp: null, blend: "Non", surfaceArea: 180.1, poreVolume: null, adsorpTemp: 25, pressure: null, isIsotherm: false, co2Uptake: null, C_cha: 79.65, H_cha: 3.96, O_cha: 15.72, N_cha: 0.67, S_cha: 0.0 },
   { id: 1265, isothermId: null, biomass: "Corncob", pyroTemp: 500, residenceTime: 60.0, heatingRate: 10.0, activator: "Non", activationType: "Non", activationTemp: null, blend: "Non", surfaceArea: 212.6, poreVolume: null, adsorpTemp: 25, pressure: null, isIsotherm: false, co2Uptake: null, C_cha: 83.27, H_cha: 3.33, O_cha: 12.62, N_cha: 0.78, S_cha: 0.0 },
   { id: 1266, isothermId: null, biomass: "Corncob", pyroTemp: 600, residenceTime: 60.0, heatingRate: 10.0, activator: "Non", activationType: "Non", activationTemp: null, blend: "Non", surfaceArea: 192.9, poreVolume: null, adsorpTemp: 25, pressure: null, isIsotherm: false, co2Uptake: null, C_cha: 84.31, H_cha: 2.41, O_cha: 12.52, N_cha: 0.76, S_cha: 0.0 },

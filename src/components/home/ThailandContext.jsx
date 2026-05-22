@@ -1,67 +1,70 @@
 // @ts-nocheck
 import { motion } from 'framer-motion';
-import { MapPin, Leaf, TrendingUp, Zap } from 'lucide-react';
+import { Leaf, TrendingUp, Zap, Award } from 'lucide-react';
 import { Cite } from './ScientificReferences';
 import { BIOMASS_STATS, TOTAL_DATA_POINTS, TOTAL_EXPERIMENTS, DB_OVERALL_MAX } from '../../lib/biocharKnowledgeBase';
 import { DB44_RECORDS } from '../../lib/database44';
 import { useTranslation } from 'react-i18next';
+import riceHuskImg from '../../assets/images/rice-husk.webp';
+import sugarcaneImg from '../../assets/images/sugarcane.jpeg';
+import cornStrawImg from '../../assets/images/corn-straw.jpg';
+import cassavaImg from '../../assets/images/cassava.jpg';
 
 function betRange(biomassKey) {
   const vals = DB44_RECORDS.filter(r => r.biomass === biomassKey && r.surfaceArea > 0).map(r => r.surfaceArea);
   if (!vals.length) return null;
   return `${Math.round(Math.min(...vals)).toLocaleString()}–${Math.round(Math.max(...vals)).toLocaleString()} m²/g`;
 }
-const CORN_BET   = betRange('Corn straw')          ?? '598–3,157 m²/g';
-const COFFEE_BET = betRange('Coffee ground-based') ?? '645–2,337 m²/g';
+const CORN_BET = betRange('Corn straw') ?? '598–3,157 m²/g';
 
 const FEEDSTOCKS = [
   {
     name: 'Rice Husk',
     icon: '🌾',
-    region: 'Central Plains & North',
+    thaiRank: '#1 Crop Residue',
     abundance: '~10 Mt/yr',
     carbonContent: '35–40%',
     betPotential: '200–500 m²/g',
     color: '#f59e0b',
     noteKey: 'feedstock.riceHusk.note',
-    refs: [8, 10],
-    image: 'https://images.unsplash.com/photo-1536054454-cf14a6cc0854?w=400&q=80',
+    refs: [8, 10, 16, 17],
+    image: riceHuskImg,
+  },
+  {
+    name: 'Sugarcane Bagasse',
+    icon: '🎋',
+    thaiRank: 'World Top 4 Producer',
+    abundance: '~35 Mt/yr',
+    carbonContent: '40–48%',
+    betPotential: '500–1,200 m²/g',
+    color: '#22c55e',
+    noteKey: 'feedstock.sugarcane.note',
+    refs: [8, 12, 16],
+    image: sugarcaneImg,
   },
   {
     name: 'Corn Straw',
     icon: '🌽',
-    region: 'Northern Highland Regions',
+    thaiRank: 'North Highland Staple',
     abundance: '~8 Mt/yr',
     carbonContent: '42–48%',
     betPotential: CORN_BET,
-    color: '#22c55e',
+    color: '#a855f7',
     noteKey: 'feedstock.cornStraw.note',
-    refs: [6, 12],
-    image: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=400&q=80',
+    refs: [6, 12, 17],
+    image: cornStrawImg,
   },
   {
     name: 'Cassava Rhizome',
     icon: '🪵',
-    region: 'Northeast (Isaan)',
-    abundance: '~4 Mt/yr',
+    thaiRank: '#1 World Exporter',
+    abundance: '~30 Mt/yr',
     carbonContent: '40–45%',
     betPotential: '150–600 m²/g',
-    color: '#a855f7',
-    noteKey: 'feedstock.cassava.note',
-    refs: [8, 1],
-    image: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=400&q=80',
-  },
-  {
-    name: 'Coffee Grounds',
-    icon: '☕',
-    region: 'Northern Highlands (Doi Chang)',
-    abundance: '~1.2 Mt/yr',
-    carbonContent: '47–55%',
-    betPotential: COFFEE_BET,
     color: '#06b6d4',
-    noteKey: 'feedstock.coffee.note',
-    refs: [9, 12],
-    image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&q=80',
+    noteKey: 'feedstock.cassava.note',
+    refs: [8, 18, 19],
+    image: cassavaImg,
   },
 ];
 
@@ -80,9 +83,9 @@ export default function ThailandContext() {
           viewport={{ once: true }}
           className="text-center mb-14"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 mb-4">
-            <MapPin className="w-4 h-4 text-amber-400" />
-            <span className="text-amber-400 text-sm font-medium">{t('th.badge')}</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-100 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800/50 mb-4">
+            <Award className="w-4 h-4 text-amber-500" />
+            <span className="text-amber-700 text-sm font-medium">{t('th.badge')}</span>
           </div>
           <h2 className="font-space font-bold text-3xl lg:text-4xl text-foreground mb-3">
             {t('th.heading1')}{' '}
@@ -109,20 +112,24 @@ export default function ThailandContext() {
                   src={f.image}
                   alt={f.name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  onError={e => {
+                    e.target.style.display = 'none';
+                    e.target.parentElement.style.background = `linear-gradient(135deg, ${f.color}40 0%, ${f.color}18 100%)`;
+                  }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent" />
                 <div className="absolute bottom-3 left-4 flex items-center gap-2">
                   <span className="text-2xl">{f.icon}</span>
                   <div>
                     <h3 className="font-space font-bold text-white text-lg leading-none">{f.name}</h3>
                     <div className="flex items-center gap-1 mt-0.5">
-                      <MapPin className="w-3 h-3 text-slate-300" />
-                      <span className="text-slate-300 text-xs">{f.region}</span>
+                      <Award className="w-3 h-3" style={{ color: f.color }} />
+                      <span className="text-xs font-semibold" style={{ color: f.color }}>{f.thaiRank}</span>
                     </div>
                   </div>
                 </div>
-                <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-bold border"
-                  style={{ background: `${f.color}25`, borderColor: `${f.color}50`, color: f.color }}>
+                <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-bold border bg-black/30 backdrop-blur-sm"
+                  style={{ borderColor: `${f.color}60`, color: f.color }}>
                   {f.abundance}
                 </div>
               </div>

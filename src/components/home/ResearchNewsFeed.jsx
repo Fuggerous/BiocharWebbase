@@ -1,7 +1,7 @@
 // @ts-nocheck
 /**
  * DatabaseInsights — replaces the fake ResearchNewsFeed.
- * Shows real computed findings from the 44Database.
+ * Shows real computed findings from the Database.
  */
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -65,9 +65,9 @@ export default function ResearchNewsFeed() {
   ];
 
   return (
-    <section className="py-20 bg-slate-950 relative overflow-hidden">
+    <section className="py-20 bg-gradient-to-br from-emerald-50 via-white to-teal-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 relative overflow-hidden">
       <div className="absolute inset-0 bg-grid-pattern opacity-10" />
-      <div className="absolute top-1/2 left-0 w-96 h-96 bg-green-500/5 rounded-full blur-3xl -translate-y-1/2" />
+      <div className="absolute top-1/2 left-0 w-96 h-96 bg-green-100/40 rounded-full blur-3xl -translate-y-1/2" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
@@ -76,14 +76,14 @@ export default function ResearchNewsFeed() {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 mb-4">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-100 border border-green-300 mb-4">
             <Zap className="w-4 h-4 text-green-400" />
-            <span className="text-green-400 text-sm font-medium">{t('research.badge')}</span>
+            <span className="text-green-700 text-sm font-medium">{t('research.badge')}</span>
           </div>
-          <h2 className="font-space font-bold text-3xl lg:text-4xl text-white mb-3">
+          <h2 className="font-space font-bold text-3xl lg:text-4xl text-foreground mb-3">
             {t('research.heading1')} <span className="text-gradient-green">{t('research.heading2')}</span>
           </h2>
-          <p className="text-slate-400 text-base max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-base max-w-2xl mx-auto">
             {t('research.desc').replace('{count}', TOTAL_DATA_POINTS.toLocaleString())}
           </p>
         </motion.div>
@@ -98,18 +98,18 @@ export default function ResearchNewsFeed() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.08 }}
-                className="glass-dark rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all"
+                className="glass-card rounded-2xl p-6 border border-green-200 hover:border-green-300 transition-all"
               >
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4"
                   style={{ background: `${item.color}20`, border: `1px solid ${item.color}40` }}>
                   <Icon className="w-5 h-5" style={{ color: item.color }} />
                 </div>
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1">{t(item.labelKey)}</p>
-                <p className="font-space font-bold text-xl text-white mb-2" style={{ color: item.color }}>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1">{t(item.labelKey)}</p>
+                <p className="font-space font-bold text-xl mb-2" style={{ color: item.color }}>
                   {item.value}
                 </p>
-                <p className="text-xs text-slate-300 mb-1">{item.detail}</p>
-                <p className="text-[10px] text-slate-500">{item.sub}</p>
+                <p className="text-xs text-muted-foreground mb-1">{item.detail}</p>
+                <p className="text-[10px] text-muted-foreground/70">{item.sub}</p>
               </motion.div>
             );
           })}
@@ -120,7 +120,7 @@ export default function ResearchNewsFeed() {
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="glass-dark rounded-2xl p-5 border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-5"
+          className="glass-card rounded-2xl p-5 border border-green-200 flex flex-col sm:flex-row items-center justify-between gap-5"
         >
           <div className="flex flex-wrap justify-center sm:justify-start gap-8">
             {[
@@ -131,7 +131,7 @@ export default function ResearchNewsFeed() {
             ].map(s => (
               <div key={s.label} className="text-center">
                 <p className="font-space font-bold text-lg text-green-400">{s.value}</p>
-                <p className="text-[10px] text-slate-400">{s.label}</p>
+                <p className="text-[10px] text-muted-foreground">{s.label}</p>
               </div>
             ))}
           </div>

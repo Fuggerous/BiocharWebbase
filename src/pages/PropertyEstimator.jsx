@@ -66,6 +66,47 @@ export default function PropertyEstimator() {
     <div className="min-h-screen bg-background">
       <Navbar />
 
+      {/* Page Header */}
+      <div className="bg-gradient-to-r from-amber-50 via-orange-50 to-yellow-50 dark:from-slate-950 dark:via-amber-950 dark:to-slate-950 pt-24 pb-12 relative overflow-hidden border-b border-amber-100 dark:border-amber-900/30">
+        <div className="absolute inset-0 opacity-30"
+          style={{ backgroundImage: 'linear-gradient(rgba(245,158,11,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(245,158,11,0.08) 1px, transparent 1px)', backgroundSize: '40px 40px' }}
+        />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-amber-200/30 dark:bg-amber-900/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-1/4 w-64 h-64 bg-orange-200/20 dark:bg-orange-900/10 rounded-full blur-3xl" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-100 border border-amber-300 mb-4">
+              <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse" />
+              <span className="text-amber-700 text-sm font-medium">BioChar Property Estimator · 44-Record Database · Pyrolysis Analysis</span>
+            </div>
+            <h1 className="font-space font-bold text-4xl lg:text-5xl text-foreground mb-3">
+              Biochar Property<br />
+              <span className="text-amber-600">Estimator</span>
+            </h1>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Estimate key biochar properties from pyrolysis parameters using statistical matching against peer-reviewed experimental records.
+            </p>
+            <div className="flex flex-wrap justify-center gap-6 mt-8">
+              {[
+                { icon: FlaskConical, label: 'Parameter-Driven', desc: 'Biomass type · Pyrolysis temp · Residence time · Activator' },
+                { icon: Database, label: 'Database-Backed', desc: '44 curated biochar records · 8 biomass species · validated data' },
+                { icon: Brain, label: 'Multi-Model Output', desc: 'Elemental composition · Surface area · Pore volume · Yield' },
+              ].map(f => (
+                <div key={f.label} className="flex items-center gap-2.5 text-sm text-muted-foreground">
+                  <div className="w-7 h-7 rounded-lg bg-amber-100 border border-amber-300 flex items-center justify-center">
+                    <f.icon className="w-3.5 h-3.5 text-amber-600" />
+                  </div>
+                  <div className="text-left">
+                    <p className="font-semibold text-foreground text-xs">{f.label}</p>
+                    <p className="text-muted-foreground text-[10px]">{f.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </div>
+
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Input Form */}
@@ -74,7 +115,7 @@ export default function PropertyEstimator() {
               <div className="flex items-center gap-2 p-3 rounded-xl bg-amber-50 border border-amber-200 mb-6">
                 <Database className="w-4 h-4 text-amber-600 shrink-0" />
                 <p className="text-xs text-amber-700">
-                  <span className="font-semibold">Inputs:</span> Pyrolysis conditions matched against 44Database records
+                  <span className="font-semibold">Inputs:</span> Pyrolysis conditions matched against Database records
                 </p>
               </div>
 

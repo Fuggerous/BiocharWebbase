@@ -84,7 +84,7 @@ export default function Database() {
     const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = `44Database_filtered_${filtered.length}records.csv`;
+    a.href = url; a.download = `Database_filtered_${filtered.length}records.csv`;
     a.click();
     URL.revokeObjectURL(url);
   }, [filtered]);
@@ -101,24 +101,24 @@ export default function Database() {
       <Navbar />
 
       {/* ── Header ── */}
-      <div className="bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 pt-24 pb-14 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10"
-          style={{ backgroundImage: 'linear-gradient(rgba(59,130,246,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.3) 1px, transparent 1px)', backgroundSize: '40px 40px' }}
+      <div className="bg-gradient-to-r from-sky-50 via-blue-50 to-emerald-50 dark:from-slate-950 dark:via-sky-950 dark:to-slate-950 pt-24 pb-14 relative overflow-hidden border-b border-blue-100 dark:border-sky-900/30">
+        <div className="absolute inset-0 opacity-30"
+          style={{ backgroundImage: 'linear-gradient(rgba(59,130,246,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.08) 1px, transparent 1px)', backgroundSize: '40px 40px' }}
         />
-        <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-[600px] h-24 bg-green-500/10 rounded-full blur-3xl" />
+        <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-[600px] h-24 bg-green-300/20 dark:bg-green-900/10 rounded-full blur-3xl" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-9 h-9 rounded-xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center">
-                <DbIcon className="w-5 h-5 text-blue-400" />
+              <div className="w-9 h-9 rounded-xl bg-blue-100 border border-blue-300 flex items-center justify-center">
+                <DbIcon className="w-5 h-5 text-blue-600" />
               </div>
-              <span className="text-blue-400 text-sm font-medium">Scientific Database · 44Database.xlsx</span>
+              <span className="text-blue-600 text-sm font-medium">Scientific Database · Database.xlsx</span>
             </div>
-            <h1 className="font-space font-bold text-4xl lg:text-5xl text-white mb-3">
-              Biochar <span className="text-green-400">Dataset Explorer</span>{' '}
-              <span className="text-lg font-normal text-slate-400 align-middle">v1.2</span>
+            <h1 className="font-space font-bold text-4xl lg:text-5xl text-foreground mb-3">
+              Biochar <span className="text-green-600">Dataset Explorer</span>{' '}
+              <span className="text-lg font-normal text-muted-foreground align-middle">v1.2</span>
             </h1>
-            <p className="text-slate-400 text-lg max-w-2xl mb-6">
+            <p className="text-muted-foreground text-lg max-w-2xl mb-6">
               {TOTAL_DATA_POINTS.toLocaleString()} peer-reviewed experimental records across {BIOMASS_LIST.length} biomass species and {ACTIVATOR_LIST.filter(a => a !== 'Non').length} activation methods. Interactive multidimensional correlation analysis.
             </p>
             {/* Quick stats */}
@@ -130,9 +130,9 @@ export default function Database() {
                 { label: 'Adsorption Temps',   value: String(ADSORPTION_TEMP_LIST.length) },
                 { label: 'Max CO₂ (mmol/g)',   value: DB_OVERALL_MAX.toFixed(2) },
               ].map(s => (
-                <div key={s.label} className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-center">
-                  <div className="text-green-400 font-space font-bold text-lg leading-tight">{s.value}</div>
-                  <div className="text-slate-400 text-xs">{s.label}</div>
+                <div key={s.label} className="px-4 py-2 rounded-xl bg-card/80 border border-blue-200 dark:border-blue-900/40 text-center">
+                  <div className="text-green-600 font-space font-bold text-lg leading-tight">{s.value}</div>
+                  <div className="text-muted-foreground text-xs">{s.label}</div>
                 </div>
               ))}
             </div>
@@ -168,7 +168,7 @@ export default function Database() {
                     <FlaskConical className="w-4 h-4 text-green-500" /> Dataset Records
                   </h3>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    {filtered.length} records shown · {TOTAL_DATA_POINTS.toLocaleString()} total in 44Database
+                    {filtered.length} records shown · {TOTAL_DATA_POINTS.toLocaleString()} total in Database
                   </p>
                 </div>
                 <div className="flex items-center gap-2 flex-wrap">

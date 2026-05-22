@@ -361,13 +361,12 @@ export default function GlossarySection() {
           </motion.div>
         ) : (
           <div className="overflow-y-auto pr-2" style={{ maxHeight: '34rem' }}>
-            <motion.div key="grid" className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3" style={{ gridAutoRows: 'minmax(8rem, auto)' }}>
+            <motion.div key="grid" className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
             {filtered.map((term, i) => {
               const isOpen = expanded === term.abbr;
               return (
                 <motion.button
                   key={term.abbr}
-                  layout
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
@@ -426,8 +425,8 @@ export default function GlossarySection() {
 
       <p className="text-center text-[10px] text-muted-foreground pt-2 border-t border-border/50">
         {lang === 'th'
-          ? (<><span>ศัพท์อ้างอิงจาก IUPAC, ASTM D7544 และวรรณกรรมไบโอชาร์ที่ผ่านการตรวจสอบ · ฐานข้อมูล 44Database · </span><a href="#references" className="text-green-500 hover:underline">รายการอ้างอิงทางวิทยาศาสตร์</a></>)
-          : (<><span>Terms sourced from IUPAC nomenclature, ASTM D7544, and peer-reviewed biochar literature · 44Database records · </span><a href="#references" className="text-green-500 hover:underline">Scientific References</a></>)
+          ? (<><span>ศัพท์อ้างอิงจาก IUPAC, ASTM D7544 และวรรณกรรมไบโอชาร์ที่ผ่านการตรวจสอบ · ฐานข้อมูล Database · </span><a href="#references" className="text-green-500 hover:underline">รายการอ้างอิงทางวิทยาศาสตร์</a></>)
+          : (<><span>Terms sourced from IUPAC nomenclature, ASTM D7544, and peer-reviewed biochar literature · Database records · </span><a href="#references" className="text-green-500 hover:underline">Scientific References</a></>)
         }
       </p>
     </div>

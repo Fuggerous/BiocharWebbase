@@ -104,11 +104,11 @@ export const REFS = [
   },
   {
     id: 12,
-    authors: '44Database (BiocharHub)',
+    authors: 'Database (BiocharHub)',
     year: '2025',
-    title: 'Experimental CO₂ Adsorption Isotherm Records — 44Database.xlsx.',
+    title: 'Experimental CO₂ Adsorption Isotherm Records — Database.xlsx.',
     journal: 'BiocharHub Internal Dataset',
-    detail: '1,263 records across 8 biomass species, 6 activators, 92 unique isotherm experiments.',
+    detail: '1,395 records across 8 biomass species, 6 activators, 92 unique isotherm experiments.',
     doi: null,
   },
   {
@@ -136,6 +136,42 @@ export const REFS = [
     title: 'Biochar for Environmental Management: Science, Technology and Implementation.',
     journal: 'Routledge / Earthscan',
     detail: 'Comprehensive reference on biochar science and applications.',
+    doi: null,
+  },
+  {
+    id: 16,
+    authors: 'National Science and Technology Development Agency (NSTDA) / MTEC',
+    year: '2022',
+    title: 'Biochar from Agricultural Residues for Carbon Capture and Soil Amendment in Thailand — Research Program Overview.',
+    journal: 'National Metal and Materials Technology Center (MTEC), Thailand',
+    detail: 'Program covering rice husk, sugarcane bagasse, and corn straw activation for CO₂ capture applications in industrial and agricultural sectors.',
+    doi: 'https://www.mtec.or.th',
+  },
+  {
+    id: 17,
+    authors: 'Pollution Control Department, Thailand (PCD)',
+    year: '2023',
+    title: "Thailand's PM2.5 National Action Plan: Reducing Open Agricultural Burning.",
+    journal: 'Ministry of Natural Resources and Environment, Thailand',
+    detail: 'Policy framework mandating reduction of open burning of rice straw, corn stover, and sugarcane leaves; promotes biomass valorisation including pyrolysis to biochar as a compliant alternative.',
+    doi: 'https://www.pcd.go.th',
+  },
+  {
+    id: 18,
+    authors: 'Food and Agriculture Organization of the United Nations (FAO)',
+    year: '2023',
+    title: 'FAOSTAT — Crops and Livestock Products: Cassava Production Data for Thailand.',
+    journal: 'FAO Statistics Division',
+    detail: 'Thailand ranks as the world\'s #1 cassava exporter, producing ~30 Mt/yr; rhizome residues represent a significant underutilised biochar feedstock in the Northeast (Isaan) region.',
+    doi: 'https://www.fao.org/faostat/',
+  },
+  {
+    id: 19,
+    authors: 'Biochar Consortium Thailand',
+    year: '2024',
+    title: 'Proceedings of the 4th Thailand Biochar Seminar: Agricultural Waste-Derived Activated Carbon for Climate Mitigation.',
+    journal: 'Kasetsart University, Bangkok',
+    detail: 'Compilation of research on biochar production from Thai agricultural residues; covers activation conditions, characterisation benchmarks (BET, pore volume), and field trials for soil carbon sequestration.',
     doi: null,
   },
 ];
@@ -221,7 +257,7 @@ export default function ScientificReferences() {
           viewport={{ once: true }}
           className="mt-6 text-center text-slate-600 text-xs"
         >
-          Database-derived statistics (marked [12]) are calculated directly from the BiocharHub 44Database.xlsx experimental records.
+          Database-derived statistics (marked [12]) are calculated directly from the BiocharHub Database.xlsx experimental records.
           All other figures cite published peer-reviewed sources. Last reviewed: April 2026.
         </motion.p>
       </div>

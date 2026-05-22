@@ -226,7 +226,7 @@ export default function ShareData() {
                   {TOP_CONTRIBUTORS.map((c, i) => (
                     <div key={c.name} className="flex items-center justify-between">
                       <div className="flex items-center gap-2.5">
-                        <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${i === 0 ? 'bg-amber-100 text-amber-700' : i === 1 ? 'bg-slate-100 text-slate-600' : i === 2 ? 'bg-orange-100 text-orange-600' : 'bg-muted text-muted-foreground'}`}>
+                        <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${i === 0 ? 'bg-amber-100 text-amber-700' : i === 1 ? 'bg-muted text-muted-foreground' : i === 2 ? 'bg-orange-100 text-orange-600' : 'bg-muted text-muted-foreground'}`}>
                           {i < 3 ? c.badge : i + 1}
                         </div>
                         <div>

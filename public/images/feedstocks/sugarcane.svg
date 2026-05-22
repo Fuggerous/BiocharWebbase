@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 360" width="800" height="360">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d1fae5"/>
+      <stop offset="40%" stop-color="#6ee7b7"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+    <linearGradient id="stalk" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#16a34a"/>
+      <stop offset="50%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#15803d"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="30%" cy="20%" r="50%">
+      <stop offset="0%" stop-color="#d1fae5" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#059669" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blur"><feGaussianBlur stdDeviation="10"/></filter>
+  </defs>
+
+  <!-- Sky/background -->
+  <rect width="800" height="360" fill="url(#bg)"/>
+  <ellipse cx="200" cy="100" rx="200" ry="140" fill="url(#glow)" filter="url(#blur)"/>
+
+  <!-- Sun -->
+  <circle cx="120" cy="70" r="35" fill="#fef9c3" opacity="0.9"/>
+  <ellipse cx="120" cy="70" rx="65" ry="55" fill="#fef3c7" opacity="0.3"/>
+
+  <!-- Back row stalks (thinner, lighter) -->
+  <g opacity="0.5">
+    <g transform="translate(20,360)">
+      <line x1="0" y1="0" x2="-5" y2="-280" stroke="#15803d" stroke-width="6"/>
+      <path d="M-5,-280 Q-30,-260 -50,-230" stroke="#16a34a" stroke-width="3" fill="none"/>
+      <path d="M-5,-260 Q20,-240 40,-200" stroke="#16a34a" stroke-width="3" fill="none"/>
+      <path d="M-5,-230 Q-25,-215 -45,-185" stroke="#16a34a" stroke-width="3" fill="none"/>
+      <path d="M-5,-200 Q15,-185 35,-155" stroke="#16a34a" stroke-width="3" fill="none"/>
+      <path d="M-5,-170 Q-20,-155 -38,-128" stroke="#16a34a" stroke-width="3" fill="none"/>
+    </g>
+    <g transform="translate(100,360)">
+      <line x1="0" y1="0" x2="8" y2="-260" stroke="#15803d" stroke-width="6"/>
+      <path d="M8,-260 Q35,-240 55,-210" stroke="#16a34a" stroke-width="3" fill="none"/>
+      <path d="M8,-235 Q-18,-215 -38,-185" stroke="#16a34a" stroke-width="3" fill="none"/>
+      <path d="M8,-205 Q30,-190 50,-160" stroke="#16a34a" stroke-width="3" fill="none"/>
+      <path d="M8,-175 Q-14,-160 -32,-132" stroke="#16a34a" stroke-width="3" fill="none"/>
+    </g>
+    <g transform="translate(200,360)">
+      <line x1="0" y1="0" x2="-10" y2="-270" stroke="#15803d" stroke-width="6"/>
+      <path d="M-10,-270 Q-35,-250 -55,-220" stroke="#16a34a" stroke-width="3" fill="none"/>
+      <path d="M-10,-245 Q15,-225 35,-195" stroke="#16a34a" stroke-width="3" fill="none"/>
+      <path d="M-10,-215 Q-32,-200 -50,-170" stroke="#16a34a" stroke-width="3" fill="none"/>
+    </g>
+    <g transform="translate(350,360)">
+      <line x1="0" y1="0" x2="6" y2="-255" stroke="#15803d" stroke-width="6"/>
+      <path d="M6,-255 Q32,-235 52,-205" stroke="#16a34a" stroke-width="3" fill="none"/>
+      <path d="M6,-228 Q-20,-208 -40,-178" stroke="#16a34a" stroke-width="3" fill="none"/>
+      <path d="M6,-198 Q28,-183 48,-153" stroke="#16a34a" stroke-width="3" fill="none"/>
+    </g>
+    <g transform="translate(500,360)">
+      <line x1="0" y1="0" x2="-8" y2="-265" stroke="#15803d" stroke-width="6"/>
+      <path d="M-8,-265 Q-33,-245 -53,-215" stroke="#16a34a" stroke-width="3" fill="none"/>
+      <path d="M-8,-240 Q18,-220 38,-190" stroke="#16a34a" stroke-width="3" fill="none"/>
+      <path d="M-8,-210 Q-28,-195 -48,-165" stroke="#16a34a" stroke-width="3" fill="none"/>
+    </g>
+    <g transform="translate(650,360)">
+      <line x1="0" y1="0" x2="10" y2="-258" stroke="#15803d" stroke-width="6"/>
+      <path d="M10,-258 Q36,-238 56,-208" stroke="#16a34a" stroke-width="3" fill="none"/>
+      <path d="M10,-232 Q-16,-212 -36,-182" stroke="#16a34a" stroke-width="3" fill="none"/>
+      <path d="M10,-202 Q32,-187 52,-157" stroke="#16a34a" stroke-width="3" fill="none"/>
+    </g>
+    <g transform="translate(770,360)">
+      <line x1="0" y1="0" x2="-5" y2="-270" stroke="#15803d" stroke-width="6"/>
+      <path d="M-5,-270 Q-30,-250 -50,-220" stroke="#16a34a" stroke-width="3" fill="none"/>
+      <path d="M-5,-245 Q20,-225 40,-195" stroke="#16a34a" stroke-width="3" fill="none"/>
+    </g>
+  </g>
+
+  <!-- Front row stalks (thick, vivid green) -->
+  <g transform="translate(-20,360)">
+    <line x1="0" y1="0" x2="-8" y2="-340" stroke="#15803d" stroke-width="11"/>
+    <path d="M-8,-340 Q-42,-308 -70,-265" stroke="#22c55e" stroke-width="5" fill="none"/>
+    <path d="M-8,-305 Q28,-272 56,-228" stroke="#22c55e" stroke-width="5" fill="none"/>
+    <path d="M-8,-268 Q-40,-240 -66,-198" stroke="#22c55e" stroke-width="5" fill="none"/>
+    <path d="M-8,-232 Q24,-205 50,-162" stroke="#22c55e" stroke-width="5" fill="none"/>
+    <path d="M-8,-196 Q-36,-170 -60,-130" stroke="#22c55e" stroke-width="5" fill="none"/>
+    <path d="M-8,-158 Q20,-133 44,-92" stroke="#22c55e" stroke-width="5" fill="none"/>
+  </g>
+  <g transform="translate(130,360)">
+    <line x1="0" y1="0" x2="12" y2="-325" stroke="#166534" stroke-width="11"/>
+    <path d="M12,-325 Q48,-294 76,-250" stroke="#4ade80" stroke-width="5" fill="none"/>
+    <path d="M12,-290 Q-24,-260 -50,-217" stroke="#4ade80" stroke-width="5" fill="none"/>
+    <path d="M12,-255 Q46,-226 72,-183" stroke="#4ade80" stroke-width="5" fill="none"/>
+    <path d="M12,-220 Q-20,-193 -44,-152" stroke="#4ade80" stroke-width="5" fill="none"/>
+    <path d="M12,-182 Q40,-157 64,-116" stroke="#4ade80" stroke-width="5" fill="none"/>
+  </g>
+  <g transform="translate(290,360)">
+    <line x1="0" y1="0" x2="-10" y2="-350" stroke="#15803d" stroke-width="11"/>
+    <path d="M-10,-350 Q-46,-318 -74,-274" stroke="#22c55e" stroke-width="5" fill="none"/>
+    <path d="M-10,-314 Q26,-282 54,-238" stroke="#22c55e" stroke-width="5" fill="none"/>
+    <path d="M-10,-278 Q-42,-250 -68,-208" stroke="#22c55e" stroke-width="5" fill="none"/>
+    <path d="M-10,-242 Q22,-215 48,-172" stroke="#22c55e" stroke-width="5" fill="none"/>
+    <path d="M-10,-205 Q-38,-179 -62,-139" stroke="#22c55e" stroke-width="5" fill="none"/>
+    <path d="M-10,-165 Q18,-140 42,-99" stroke="#22c55e" stroke-width="5" fill="none"/>
+  </g>
+  <g transform="translate(455,360)">
+    <line x1="0" y1="0" x2="14" y2="-332" stroke="#166534" stroke-width="11"/>
+    <path d="M14,-332 Q50,-300 78,-256" stroke="#4ade80" stroke-width="5" fill="none"/>
+    <path d="M14,-297 Q-22,-267 -48,-224" stroke="#4ade80" stroke-width="5" fill="none"/>
+    <path d="M14,-262 Q48,-233 74,-190" stroke="#4ade80" stroke-width="5" fill="none"/>
+    <path d="M14,-227 Q-18,-200 -42,-159" stroke="#4ade80" stroke-width="5" fill="none"/>
+    <path d="M14,-190 Q42,-165 66,-124" stroke="#4ade80" stroke-width="5" fill="none"/>
+  </g>
+  <g transform="translate(625,360)">
+    <line x1="0" y1="0" x2="-6" y2="-342" stroke="#15803d" stroke-width="11"/>
+    <path d="M-6,-342 Q-42,-310 -70,-266" stroke="#22c55e" stroke-width="5" fill="none"/>
+    <path d="M-6,-307 Q30,-275 58,-231" stroke="#22c55e" stroke-width="5" fill="none"/>
+    <path d="M-6,-272 Q-38,-244 -64,-202" stroke="#22c55e" stroke-width="5" fill="none"/>
+    <path d="M-6,-236 Q26,-209 52,-166" stroke="#22c55e" stroke-width="5" fill="none"/>
+    <path d="M-6,-198 Q-34,-172 -58,-132" stroke="#22c55e" stroke-width="5" fill="none"/>
+  </g>
+  <g transform="translate(790,360)">
+    <line x1="0" y1="0" x2="-12" y2="-320" stroke="#166534" stroke-width="11"/>
+    <path d="M-12,-320 Q-48,-288 -76,-244" stroke="#4ade80" stroke-width="5" fill="none"/>
+    <path d="M-12,-286 Q24,-256 50,-213" stroke="#4ade80" stroke-width="5" fill="none"/>
+    <path d="M-12,-250 Q-44,-222 -70,-180" stroke="#4ade80" stroke-width="5" fill="none"/>
+    <path d="M-12,-214 Q20,-187 44,-146" stroke="#4ade80" stroke-width="5" fill="none"/>
+  </g>
+
+  <!-- Ground -->
+  <rect x="0" y="345" width="800" height="15" fill="#14532d" opacity="0.9"/>
+
+  <!-- Bottom overlay -->
+  <linearGradient id="bot" x1="0" y1="1" x2="0" y2="0">
+    <stop offset="0%" stop-color="#14532d" stop-opacity="0.6"/>
+    <stop offset="40%" stop-color="#15803d" stop-opacity="0.1"/>
+    <stop offset="100%" stop-color="#059669" stop-opacity="0"/>
+  </linearGradient>
+  <rect width="800" height="360" fill="url(#bot)"/>
+</svg>

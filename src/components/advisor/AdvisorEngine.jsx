@@ -1,7 +1,7 @@
 /**
  * Materials Advisor Engine – Reverse Lookup
  * Given a desired CO2 uptake, finds the best-matching production parameters
- * from the 44Database records.
+ * from the Database records.
  */
 
 import { DB44_RECORDS, BIOMASS_SPECIES_MAP } from '../../lib/database44';

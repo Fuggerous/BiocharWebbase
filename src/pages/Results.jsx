@@ -12,7 +12,7 @@ import {
 } from 'recharts';
 import { queryExpertGuidance, TOTAL_DATA_POINTS, DB_OVERALL_AVG } from '../lib/biocharKnowledgeBase';
 import { mlPredict, mlPipelineLookup, mlBlendPredict, trainedRidgePredict, stackingCo2Lookup } from '../lib/mlPredictor';
-import { CO2_MODELS, CO2_COMPARISON } from '../lib/modelRegistry';
+import { CO2_MODELS, CO2_COMPARISON, CO2_COMPARISON_A } from '../lib/modelRegistry';
 import BLEND_EFFECTS from '../lib/blend_effects.json';
 import WhyThisPrediction from '../components/results/WhyThisPrediction';
 import DataDensityGauge from '../components/results/DataDensityGauge';
@@ -202,7 +202,7 @@ function ScientificInterpretation({ result, params }) {
       : matchLevel === 'biomass'
       ? `No temperature match found — result pools all ${biomass} records regardless of temperature. Mean±σ = ${mean.toFixed(2)}±${std} mmol/g. Use for order-of-magnitude reference only.`
       : `No biomass match in database — result is global fallback. Prediction is weakly constrained. Consider the sensitivity analysis for trend direction.`,
-    ref: `44Database · ${n} records used · σ = ${std} mmol/g`,
+    ref: `Database · ${n} records used · σ = ${std} mmol/g`,
   });
 
   const typeStyle = {
@@ -634,8 +634,8 @@ export default function Results() {
                           : 'Selected model prediction unavailable for these conditions.'}
                       </p>
                     )}
-                    <div className="mt-3 p-2.5 rounded-lg bg-slate-50 border border-slate-200">
-                      <p className="text-[10px] text-slate-500">
+                    <div className="mt-3 p-2.5 rounded-lg bg-muted border border-border">
+                      <p className="text-[10px] text-muted-foreground">
                         High agreement between DB lookup and your ML model = higher prediction confidence.
                         Divergence flags limited data or model uncertainty for this specific condition.
                       </p>
@@ -729,14 +729,60 @@ export default function Results() {
               </motion.div>
             )}
 
-            {/* Model Accuracy Comparison — full training comparison */}
-            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.48 }}>
-              <ModelAccuracyChart
-                data={CO2_COMPARISON}
-                title="CO₂ Model Training Comparison"
-                subtitle="Strategy B: direct pyrolysis conditions → CO₂ uptake · all trained models shown"
-                xLabel="R² Score (cross-validated test set)"
-              />
+            {/* Model Accuracy Comparison — Strategy A vs Strategy B */}
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.48 }} className="space-y-4">
+
+              {/* Why Strategy B explanation */}
+              <div className="glass-card rounded-2xl border border-border overflow-hidden">
+                <div className="px-5 py-4 border-b border-border/50 flex items-center gap-2">
+                  <Brain className="w-4 h-4 text-green-600" />
+                  <h3 className="font-space font-semibold text-base">Why We Use Strategy B</h3>
+                </div>
+                <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="rounded-xl bg-amber-50 border border-amber-200 p-4">
+                    <p className="text-xs font-bold text-amber-700 mb-2 uppercase tracking-wide">⚠ Strategy A — Not Used</p>
+                    <p className="text-xs text-amber-800 leading-relaxed mb-2">
+                      Split the data at the <strong>pressure-point level</strong>. Individual CO₂ readings at different pressures from the same isotherm experiment appear in both train and test sets.
+                    </p>
+                    <p className="text-xs text-amber-700 leading-relaxed">
+                      Result: models achieve <strong>R² = 0.66–0.92</strong> — deceptively high because they learn the shape of curves they've already seen, not how to predict new experiments.
+                    </p>
+                    <p className="text-[10px] text-amber-600 mt-2 italic font-semibold">Data leakage → overestimated performance</p>
+                  </div>
+                  <div className="rounded-xl bg-green-50 border border-green-200 p-4">
+                    <p className="text-xs font-bold text-green-700 mb-2 uppercase tracking-wide">✓ Strategy B — Deployed</p>
+                    <p className="text-xs text-green-800 leading-relaxed mb-2">
+                      Split at the <strong>isotherm (experiment) level</strong>. Each full experiment is entirely in train or entirely in test — the model never sees a hint of a test curve during training.
+                    </p>
+                    <p className="text-xs text-green-700 leading-relaxed">
+                      Result: models achieve <strong>R² = 0.05–0.45</strong> — honest and harder. Reflects real-world generalisation to truly unseen biomass–condition combinations.
+                    </p>
+                    <p className="text-[10px] text-green-600 mt-2 italic font-semibold">No leakage → trustworthy deployment metric</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Side-by-side charts */}
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-xs font-semibold text-amber-600 uppercase tracking-wide mb-2 px-1">Strategy A — Pressure-point split (inflated)</p>
+                  <ModelAccuracyChart
+                    data={CO2_COMPARISON_A}
+                    title="Strategy A Results"
+                    subtitle="Within-isotherm split · R² inflated by data leakage · not used for deployment"
+                    xLabel="R² Score (Strategy A — misleading)"
+                  />
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-green-600 uppercase tracking-wide mb-2 px-1">Strategy B — Isotherm-level split (deployed)</p>
+                  <ModelAccuracyChart
+                    data={CO2_COMPARISON}
+                    title="Strategy B Results"
+                    subtitle="Isotherm-level split · honest generalisation metric · platform uses these models"
+                    xLabel="R² Score (Strategy B — deployed)"
+                  />
+                </div>
+              </div>
             </motion.div>
 
             {/* Action buttons */}

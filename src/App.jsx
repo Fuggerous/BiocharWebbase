@@ -13,10 +13,12 @@ import MaterialsAdvisor from './pages/MaterialsAdvisor';
 import PropertyEstimator from './pages/PropertyEstimator';
 import { RoleProvider } from './lib/RoleContext';
 import AdminGate from './components/AdminGate';
+import { ThemeProvider } from './lib/ThemeContext';
 import './i18n/i18n';   // initialise i18next (side-effect import)
 
 function App() {
   return (
+    <ThemeProvider>
     <RoleProvider>
       <QueryClientProvider client={queryClientInstance}>
         <Router>
@@ -35,6 +37,7 @@ function App() {
         <Toaster />
       </QueryClientProvider>
     </RoleProvider>
+    </ThemeProvider>
   );
 }
 

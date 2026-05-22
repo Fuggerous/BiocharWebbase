@@ -179,27 +179,28 @@ export default function About() {
     <div className="min-h-screen bg-background">
       <Navbar />
 
-      <div className="gradient-hero pt-24 pb-16 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20"
-          style={{ backgroundImage: 'linear-gradient(rgba(34,197,94,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(34,197,94,0.1) 1px, transparent 1px)', backgroundSize: '50px 50px' }}
+      <div className="bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50 dark:from-[#0f1f38] dark:via-[#091422] dark:to-[#0c1930] pt-24 pb-16 relative overflow-hidden border-b border-green-100 dark:border-emerald-900/30">
+        <div className="absolute inset-0 opacity-30"
+          style={{ backgroundImage: 'linear-gradient(rgba(34,197,94,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(34,197,94,0.08) 1px, transparent 1px)', backgroundSize: '50px 50px' }}
         />
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-96 h-48 bg-green-500/10 rounded-full blur-3xl" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-green-200/30 dark:bg-emerald-900/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-1/4 w-64 h-64 bg-teal-200/20 dark:bg-teal-900/10 rounded-full blur-3xl" />
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <div className="inline-flex w-16 h-16 rounded-2xl gradient-green items-center justify-center mx-auto mb-6 glow-green">
               <Leaf className="w-8 h-8 text-white" />
             </div>
-            <h1 className="font-space font-bold text-5xl text-white mb-4">
-              {copy.heroTitle1} <span className="text-green-400">{copy.heroTitle2}</span>
+            <h1 className="font-space font-bold text-5xl text-foreground mb-4">
+              {copy.heroTitle1} <span className="text-green-600">{copy.heroTitle2}</span>
             </h1>
-            <p className="text-blue-100/70 text-xl leading-relaxed max-w-2xl mx-auto">
+            <p className="text-muted-foreground text-xl leading-relaxed max-w-2xl mx-auto">
               {copy.heroDesc}
             </p>
 
             {isAdmin && (
-              <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/20 border border-green-500/30">
-                <span className="text-green-300 text-sm font-medium">{copy.adminActive}</span>
-                <button onClick={logout} className="flex items-center gap-1 text-green-400 hover:text-white text-xs transition-colors">
+              <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-100 border border-green-300">
+                <span className="text-green-700 text-sm font-medium">{copy.adminActive}</span>
+                <button onClick={logout} className="flex items-center gap-1 text-green-600 hover:text-green-800 text-xs transition-colors">
                   <LogOut className="w-3 h-3" /> {copy.signOut}
                 </button>
               </div>

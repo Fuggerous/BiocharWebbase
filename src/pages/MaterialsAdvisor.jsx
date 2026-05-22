@@ -103,7 +103,7 @@ function ResultCard({ result, rank, target }) {
       {/* Data support */}
       <div className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground">
         <Info className="w-3.5 h-3.5" />
-        Supported by <span className="font-semibold text-foreground">{result.count}</span> matching isotherm record{result.count !== 1 ? 's' : ''} in 44Database
+        Supported by <span className="font-semibold text-foreground">{result.count}</span> matching isotherm record{result.count !== 1 ? 's' : ''} in Database
       </div>
     </motion.div>
   );
@@ -170,23 +170,23 @@ export default function MaterialsAdvisor() {
       <Navbar />
 
       {/* Header */}
-      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 pt-24 pb-14 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10"
-          style={{ backgroundImage: 'linear-gradient(rgba(99,102,241,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(99,102,241,0.3) 1px, transparent 1px)', backgroundSize: '40px 40px' }}
+      <div className="bg-gradient-to-r from-indigo-50 via-violet-50 to-purple-50 dark:from-slate-950 dark:via-indigo-950 dark:to-slate-950 pt-24 pb-14 relative overflow-hidden border-b border-indigo-100 dark:border-indigo-900/30">
+        <div className="absolute inset-0 opacity-30"
+          style={{ backgroundImage: 'linear-gradient(rgba(99,102,241,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(99,102,241,0.08) 1px, transparent 1px)', backgroundSize: '40px 40px' }}
         />
-        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-green-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-indigo-200/25 dark:bg-indigo-900/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-green-200/20 dark:bg-green-900/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 mb-5">
-              <Lightbulb className="w-4 h-4 text-indigo-400" />
-              <span className="text-indigo-300 text-sm font-medium">Reverse-Lookup · Data-Driven</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-100 border border-indigo-300 mb-5">
+              <Lightbulb className="w-4 h-4 text-indigo-600" />
+              <span className="text-indigo-700 text-sm font-medium">Reverse-Lookup · Data-Driven</span>
             </div>
-            <h1 className="font-space font-bold text-4xl lg:text-5xl text-white mb-3">
-              Materials <span className="text-green-400">Advisor</span>
+            <h1 className="font-space font-bold text-4xl lg:text-5xl text-foreground mb-3">
+              Materials <span className="text-green-600">Advisor</span>
             </h1>
-            <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-              Tell us your target CO₂ uptake capacity. We'll reverse-search the 44Database to recommend the optimal activator and pyrolysis temperature for your biochar production.
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Tell us your target CO₂ uptake capacity. We'll reverse-search the Database to recommend the optimal activator and pyrolysis temperature for your biochar production.
             </p>
           </motion.div>
         </div>
@@ -458,10 +458,10 @@ export default function MaterialsAdvisor() {
                     <p className="text-xs text-muted-foreground mb-3">Ranked matches vs your target</p>
                     <ResponsiveContainer width="100%" height={220}>
                       <BarChart layout="vertical" data={result.results.map((r, i) => ({ name: `#${i + 1} ${r.activator}`, co2: r.meanCO2, temp: r.pyroTemp }))}
-                        margin={{ top: 5, right: 10, left: -50, bottom: 10 }}>
+                        margin={{ top: 5, right: 10, left: -50, bottom: 15 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
                         <XAxis type="number" tick={{ fontSize: 10 }} 
-                        label={{ value: 'Mean CO₂ (mmol/g)', position: 'bottom', }} />
+                        label={{ value: 'Mean CO₂ (mmol/g)', position: 'bottom', fontSize: 10 }} />
                         <YAxis type="category" dataKey="name" tick={{ fontSize: 10 }} width={120} />
                         <Tooltip formatter={(v, n) => [`${v} mmol/g`, n]} />
                         {/* Target reference line rendered as bar annotation */}

@@ -17,7 +17,7 @@ Attribution
 
 When you publish results, visualizations, or derivative datasets that rely on significant portions of the Dataset, you must provide clear attribution to BiocharHub and cite the Dataset as:
 
-"44Database (BiocharHub). Experimental CO₂ Adsorption Isotherm Records. BiocharHub (2025–2026)."
+"Database (BiocharHub). Experimental CO₂ Adsorption Isotherm Records. BiocharHub (2025–2026)."
 
 Share-Alike (Optional)
 

@@ -7,7 +7,7 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  FileText, Video, BookOpen, Shield, Lightbulb,
+  FileText, Video, BookOpen, Shield, Lightbulb, Youtube,
   Download, ExternalLink, Search, Star, ChevronRight,
   ChevronLeft, X, Filter,
 } from 'lucide-react';
@@ -16,69 +16,69 @@ import { useTranslation } from 'react-i18next';
 // ── Data ──────────────────────────────────────────────────────────────────────
 const DOCS = [
   {
-    id: 1, category: 'เอกสาร', catKey: 'docs.cat.document', type: 'pdf',
-    title: 'บทบาทของ Biochar Consortium',
-    titleEn: 'Role of the Biochar Consortium',
-    desc: 'เอกสารประกอบการสัมมนา Biochar Consortium ครั้งที่ 4 — บทบาทและทิศทางของ Biochar Consortium Thailand',
-    descEn: 'Seminar document from the 4th Biochar Consortium covering the role and strategic direction of the Thai Biochar Consortium.',
-    tags: ['Biochar Consortium'], featured: false,
+    id: 1, category: 'สาระน่ารู้', catKey: 'docs.cat.info', type:'website',
+    title: 'กุญแจสำคัญสู่ Net Zero Emission ด้วยเทคโนโลยีไบโอชาร์ ผนึกกำลังภาครัฐ ภาควิชาการ ภาคการเกษตรและภาคอุตสาหกรรม',
+    titleEn: 'Driving Progress Towards Net Zero Emissions: A Collaborative Effort Leveraging Biochar Technology, Involving Government, Academia, Agriculture, and Industry Sectors',
+    desc: 'งานนำเสนอศักยภาพของเทคโนโลยีไบโอชาร์ในการลดก๊าซเรือนกระจก และส่งเสริมการพัฒนาที่ยั่งยืน โดยผู้เชี่ยวชาญจากหลากหลายภาคส่วน',
+    descEn: 'The event aims to showcase the potential of biochar technology in reducing greenhouse gas emissions and promoting sustainable development.',
+    tags: ['GHG', 'Biochar Consortium'], featured: false,
     url: 'https://www.nstda.or.th/nac/2025/seminar/nac-28/',
   },
   {
     id: 2, category: 'เอกสาร', catKey: 'docs.cat.document', type: 'pdf',
-    title: 'การนำไบโอชาร์ไปใช้ในการเกษตรอินทรีย์',
-    titleEn: 'Applying Biochar in Organic Agriculture',
-    desc: 'เอกสารประกอบการสัมมนา Biochar Consortium ครั้งที่ 4 — การนำไบโอชาร์ไปใช้ในการเกษตรอินทรีย์',
-    descEn: 'Seminar document from the 4th Biochar Consortium on biochar applications in organic farming practices.',
-    tags: ['เกษตรอินทรีย์', 'Organic'], featured: false, url: '#',
+    title: 'บทบาทและแนวทางการใช้ประโยชน์ไบโอชาร์ของภาครัฐเพื่อการจัดการก๊าซเรือนกระจกสำหรับภาคเกษตร',
+    titleEn: 'The Role of Biochar in Government Strategies for Greenhouse Gas Management in the Agricultural Sector',
+    desc: 'บทบาท แนวทางและการสนับสนุน/ส่งเสริมของภาครัฐต่อการใช้ประโยชน์ไบโอชาร์เพื่อการจัดการก๊าซเรือนกระจกสำหรับภาคเกษตร โดย ดร.ธีรวุฒิ ชุตินันทกุล',
+    descEn: 'The role, approaches, and government support for utilizing biochar in greenhouse gas management for the agricultural sector, presented by Dr. Theerawut Chutinantakul.',
+    tags: ['GHG', 'Biochar Consortium', 'Net Zero'], featured: false, url: 'https://www.nstda.or.th/nac/2025/wp-content/uploads/2025/04/0900-%E0%B8%98%E0%B8%B5%E0%B8%A3%E0%B8%A7%E0%B8%B8%E0%B8%92%E0%B8%B4-%E0%B8%8A%E0%B8%B8%E0%B8%95%E0%B8%B4%E0%B8%99%E0%B8%B1%E0%B8%99%E0%B8%97%E0%B8%81%E0%B8%B8%E0%B8%A5.pdf',
   },
   {
     id: 3, category: 'เอกสาร', catKey: 'docs.cat.document', type: 'pdf',
-    title: 'ไบโอชาร์ในนครพนมและจังหวัดอื่นๆ ของไทย',
-    titleEn: 'Biochar in Nakhon Phanom and Other Thai Provinces',
-    desc: 'เอกสารประกอบการสัมมนา Biochar Consortium ครั้งที่ 4 — Biochar in Nakhon Phanom and other provinces',
-    descEn: 'Seminar document covering biochar use across Nakhon Phanom and other provinces in Thailand.',
-    tags: ['นครพนม', 'Thailand'], featured: false, url: '#',
+    title: 'มาตรฐานที่เกี่ยวข้องกับไบโอชาร์กรอบการพัฒนามาตรฐานด้านการประเมินการกักเก็บคาร์บอนของไบโอชาร์',
+    titleEn: 'Biochar Standards and Carbon Sequestration Assessment Frameworks: An Overview of Relevant Standards in Biochar Development',
+    desc: 'มาตรฐานที่เกี่ยวข้องกับไบโอชาร์กรอบการพัฒนามาตรฐานด้านการประเมินการกักเก็บคาร์บอนของไบโอชาร์ โดย คุณประกายธรรม สุขสถิตย์',
+    descEn: 'Biochar Standards and Carbon Sequestration Assessment Frameworks: An Overview of Relevant Standards in Biochar Development by Prakaitham Suksatit.',
+    tags: ['Biochar Consortium', 'Net Zero', 'Biochar Standards'], featured: false, url: 'https://www.nstda.or.th/nac/2025/wp-content/uploads/2025/04/0930-%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%81%E0%B8%B2%E0%B8%A2%E0%B8%98%E0%B8%A3%E0%B8%A3%E0%B8%A1-%E0%B8%AA%E0%B8%B8%E0%B8%82%E0%B8%AA%E0%B8%96%E0%B8%B4%E0%B8%95%E0%B8%A2%E0%B9%8C.pdf',
   },
   {
     id: 4, category: 'เอกสาร', catKey: 'docs.cat.document', type: 'pdf',
-    title: 'ผลของการใช้ไบโอชาร์ต่อการปลูกข้าวในพื้นที่ดินเค็ม',
-    titleEn: 'Biochar Effects on Rice in Salt-Affected Soils of Thailand',
-    desc: 'ผลของการใช้ไบโอชาร์ต่อการปลูกข้าวในพื้นที่ดินเค็มของประเทศไทยและความท้าทายในอนาคต',
-    descEn: 'Research on biochar effects on rice cultivation in salt-affected soils of Thailand and future challenges.',
-    tags: ['ดินเค็ม', 'ข้าว', 'Rice'], featured: false, url: '#',
+    title: 'มาตรฐานคุณภาพไบโอชาร์ที่ใช้ในต่างประเทศและแนวทางในการพัฒนามาตรฐานในประเทศไทย',
+    titleEn: 'Biochar Standards and Carbon Sequestration Assessment Frameworks: An Overview of Relevant Standards in Biochar Development by Prakaitham Suksatit',
+    desc: 'มาตรฐานคุณภาพไบโอชาร์ที่ใช้ในต่างประเทศและแนวทางในการพัฒนามาตรฐานในประเทศไทย โดย ดร.เปรมฤดี กาญจนปิยะ',
+    descEn: 'An overview of biochar standards and carbon sequestration assessment frameworks used internationally and the approach for developing standards in Thailand by Dr. Promchit Kanchanapinyo.',
+    tags: ['Biochar Consortium', 'Net Zero', 'Biochar Standards'], featured: false, url: 'https://www.nstda.or.th/nac/2025/wp-content/uploads/2025/04/0930-%E0%B9%80%E0%B8%9B%E0%B8%A3%E0%B8%A1%E0%B8%A4%E0%B8%94%E0%B8%B5-%E0%B8%81%E0%B8%B2%E0%B8%8D%E0%B8%88%E0%B8%99%E0%B8%9B%E0%B8%B4%E0%B8%A2%E0%B8%B0.pdf',
   },
   {
     id: 5, category: 'เอกสาร', catKey: 'docs.cat.document', type: 'pdf',
-    title: 'ผลกระทบของไบโอชาร์ต่อการปล่อยก๊าซเรือนกระจก',
-    titleEn: 'Biochar Impact on GHG Emissions and Thai Crop Yields',
-    desc: 'ผลกระทบของการใช้ไบโอชาร์ต่อการปล่อยก๊าซเรือนกระจกและผลผลิตพืชเกษตรไทย',
-    descEn: 'Study on how biochar application affects greenhouse gas emissions and agricultural yields in Thailand.',
-    tags: ['GHG', 'เกษตร', 'Agriculture'], featured: false, url: '#',
+    title: 'การออกแบบ พัฒนาและสร้างเตาไพโรไลซิสสำหรับผลิตไบโอชาร์ที่ได้ตามมาตรฐานสากล',
+    titleEn: 'Design, Development, and Construction of a Pyrolysis Stove for Producing Biochar that Meets International Standards',
+    desc: 'การออกแบบ พัฒนาและสร้างเตาไพโรไลซิสสำหรับผลิตไบโอชาร์ที่ได้ตามมาตรฐานสากล โดย คุณชุมพล เมฆอารี',
+    descEn: 'Design, development, and construction of a pyrolysis stove for producing biochar that meets international standards by Chumphon Mekaree.',
+    tags: ['Pyrolysis', 'Biochar Standards'], featured: false, url: 'https://www.nstda.or.th/nac/2025/wp-content/uploads/2025/04/1000-%E0%B8%8A%E0%B8%B8%E0%B8%A1%E0%B8%9E%E0%B8%A5-%E0%B9%80%E0%B8%A1%E0%B8%86%E0%B8%AD%E0%B8%B2%E0%B8%A3%E0%B8%B5.pdf ',
   },
   {
-    id: 6, category: 'สาระน่ารู้', catKey: 'docs.cat.info', type: 'article',
-    title: 'สรุปข้อมูลสำคัญ — ไบโอชาร์',
-    titleEn: 'Biochar Key Facts Factsheet (MTEC-NZE)',
-    desc: 'สรุปข้อมูลสำคัญ (Factsheet) ภายใต้ยุทธศาสตร์ MTEC-NZE Biochar เพื่อยกระดับไบโอชาร์ไทย',
-    descEn: 'Key facts factsheet from the MTEC-NZE Biochar Strategy for upgrading Thailand\'s biochar sector.',
-    tags: ['MTEC', 'Factsheet'], featured: true, url: '#',
+    id: 6, category: 'เอกสาร', catKey: 'docs.cat.document', type: 'pdf',
+    title: 'ไบโอชาร์กักเก็บสารคีเลตจุลธาตุอาหารพืชเพื่อ พัฒนาเป็นสารปรับสภาพดินประสิทธิภาพสูง',
+    titleEn: 'Biochar incorporated with plant micronutrient chelates as efficient soil conditioner',
+    desc: 'ไบโอชาร์กักเก็บสารคีเลตจุลธาตุอาหารพืชเพื่อ พัฒนาเป็นสารปรับสภาพดินประสิทธิภาพสูง โดย ดร.คมสันต์ สุทธิสินทอง',
+    descEn: 'Biochar incorporated with plant micronutrient chelates as efficient soil conditioner by Dr. Komsan Suttisinthong.',
+    tags: ['soil conditioner', 'Factsheet'], featured: false, url: 'https://www.nstda.or.th/nac/2025/wp-content/uploads/2025/04/1030-%E0%B8%84%E0%B8%A1%E0%B8%AA%E0%B8%B1%E0%B8%99%E0%B8%95%E0%B9%8C-%E0%B8%AA%E0%B8%B8%E0%B8%97%E0%B8%98%E0%B8%B4%E0%B8%AA%E0%B8%B4%E0%B8%99%E0%B8%97%E0%B8%AD%E0%B8%87.pdf',
   },
   {
-    id: 7, category: 'มาตรฐาน', catKey: 'docs.cat.standard', type: 'standard',
-    title: 'มาตรฐานไบโอชาร์ระดับสากล (EBC / IBI)',
-    titleEn: 'International Biochar Standards — EBC / IBI',
-    desc: 'ภาพรวมมาตรฐานคุณภาพไบโอชาร์ตามเกณฑ์ European Biochar Certificate และ International Biochar Initiative',
-    descEn: 'Overview of biochar quality standards under the European Biochar Certificate (EBC) and IBI frameworks.',
-    tags: ['EBC', 'IBI', 'Standards'], featured: false, url: '#',
+    id: 7, category: 'เอกสาร', catKey: 'docs.cat.document', type: 'pdf',
+    title: 'การพัฒนาสารปรับปรุงบำรุงดินที่ผสมไบโอชาร์',
+    titleEn: 'The development of soil conditioners mixed with biochar',
+    desc: 'การพัฒนาสารปรับปรุงบำรุงดินที่ผสมไบโอชาร์ โดย ดร.สิทธิศักดิ์ ประสานพันธ์',
+    descEn: 'The development of soil conditioners mixed with biochar by Dr. Sithisak Prasarnpan.',
+    tags: ['Agriculture', 'Soil conditioner'], featured: false, url: 'https://www.nstda.or.th/nac/2025/wp-content/uploads/2025/04/1030-%E0%B8%AA%E0%B8%B4%E0%B8%97%E0%B8%98%E0%B8%B4%E0%B8%A8%E0%B8%B1%E0%B8%81%E0%B8%94%E0%B8%B4%E0%B9%8C-%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%AA%E0%B8%B2%E0%B8%99%E0%B8%9E%E0%B8%B1%E0%B8%99%E0%B8%98%E0%B9%8C.pdf',
   },
   {
-    id: 8, category: 'วีดีโอ', catKey: 'docs.cat.video', type: 'video',
-    title: 'แนะนำไบโอชาร์',
-    titleEn: 'Introduction to Biochar — Video Guide',
-    desc: 'วิดีโอแนะนำเกี่ยวกับไบโอชาร์ ประโยชน์และการนำไปใช้ในภาคเกษตรกรรมและสิ่งแวดล้อม',
-    descEn: 'Video guide introducing biochar, its benefits, and applications in agriculture and environmental management.',
-    tags: ['Video', 'Intro'], featured: false, url: '#',
+    id: 8, category: 'เอกสาร', catKey: 'docs.cat.document', type: 'pdf',
+    title: 'การต่อยอดธุรกิจการใช้ประโยชน์ไบโอชาร์ในการปลูกพืชเศรษฐกิจ/ปลูกอ้อย',
+    titleEn: 'Business expansion in utilizing biochar for planting economic crops/sugarcane cultivation',
+    desc: 'การต่อยอดธุรกิจการใช้ประโยชน์ไบโอชาร์ในการปลูกพืชเศรษฐกิจ/ปลูกอ้อย โดย คุณอภิชาติ นุชประยูร',
+    descEn: 'Business expansion in utilizing biochar for planting economic crops/sugarcane cultivation by Apichat Nuchprayoon.',
+    tags: ['Business', 'Agriculture'], featured: false, url: 'chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://www.nstda.or.th/nac/2025/wp-content/uploads/2025/04/1100-%E0%B8%AD%E0%B8%A0%E0%B8%B4%E0%B8%8A%E0%B8%B2%E0%B8%95%E0%B8%B4-%E0%B8%99%E0%B8%B8%E0%B8%8A%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%A2%E0%B8%B9%E0%B8%A3.pdf',
   },
 ];
 
@@ -88,7 +88,9 @@ const PER_PAGE = 4;
 const TYPE_CFG = {
   pdf:      { icon: FileText,  color: '#a855f7', label: 'PDF'      },
   video:    { icon: Video,     color: '#f59e0b', label: 'Video'    },
+  youtube:  { icon: Youtube,   color: '#ef4444', label: 'YouTube'  },
   article:  { icon: Lightbulb, color: '#06b6d4', label: 'Article'  },
+  website:  { icon: ExternalLink, color: '#14b8a6', label: 'Website' },
   standard: { icon: Shield,    color: '#3b82f6', label: 'Standard' },
 };
 
@@ -126,7 +128,7 @@ function CatalogRow({ doc, index, lang, t }) {
       {/* Left: type icon */}
       <div className="flex-shrink-0 mt-0.5">
         <div className="w-9 h-9 rounded-xl flex items-center justify-center"
-          style={{ background: `${typeCfg.color}12`, border: `1.5px solid ${typeCfg.color}30` }}>
+          style={{ background: `${typeCfg.color}20`, border: `1.5px solid ${typeCfg.color}45` }}>
           <TypeIcon className="w-4 h-4" style={{ color: typeCfg.color }} />
         </div>
       </div>
@@ -134,8 +136,8 @@ function CatalogRow({ doc, index, lang, t }) {
       {/* Center: content */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1 flex-wrap">
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-            style={{ background: `${catCfg.color}12`, color: catCfg.color, border: `1px solid ${catCfg.color}25` }}>
+          <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full"
+            style={{ background: `${catCfg.color}22`, color: catCfg.color, border: `1.5px solid ${catCfg.color}50` }}>
             {catLabel}
           </span>
           {doc.featured && (
@@ -143,7 +145,8 @@ function CatalogRow({ doc, index, lang, t }) {
               <Star className="w-2.5 h-2.5" /> {t('docs.featured')}
             </span>
           )}
-          <span className="text-[10px] text-muted-foreground ml-auto flex-shrink-0">
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full ml-auto flex-shrink-0"
+            style={{ background: `${typeCfg.color}15`, color: typeCfg.color, border: `1px solid ${typeCfg.color}35` }}>
             {typeCfg.label}
           </span>
         </div>
@@ -202,11 +205,13 @@ function ForumZone() {
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
-    return DOCS.filter(doc => {
+    const docs = DOCS.filter(doc => {
       const matchCat    = activeCat === 'ทั้งหมด' || doc.category === activeCat;
       const matchSearch = !q || doc.title.toLowerCase().includes(q) || doc.titleEn.toLowerCase().includes(q);
       return matchCat && matchSearch;
     });
+    // Keep newest entries first based on larger numeric id values.
+    return docs.sort((a, b) => Number(b.id) - Number(a.id));
   }, [activeCat, search]);
 
   // Always clamp page to valid range when filtered list changes

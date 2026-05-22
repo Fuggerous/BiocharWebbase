@@ -1,6 +1,6 @@
 """
 BiocharHub – database44.js generator
-Reads 44Database.xlsx → cleans → imputes → exports src/lib/database44.js
+Reads Database.xlsx → cleans → imputes → exports src/lib/database44.js
 """
 import sys, io, json, math
 import numpy as np
@@ -10,9 +10,9 @@ from pathlib import Path
 if sys.stdout.encoding != "utf-8":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 
-EXCEL  = Path("C:/Users/fan_d/AppData/Local/Temp/44Database_temp.xlsx")
+EXCEL  = Path("C:/Users/fan_d/AppData/Local/Temp/Database_temp.xlsx")
 if not EXCEL.exists():
-    EXCEL = Path("Database/44Database.xlsx")
+    EXCEL = Path("Database/Database.xlsx")
 OUTPUT = Path("src/lib/database44.js")
 
 COL = {
@@ -184,8 +184,8 @@ def rec_to_js(rec):
 lines = [
     "// @ts-nocheck",
     "/**",
-    " * BiocharHub - 44Database Full Records",
-    " * Auto-generated from 44Database.xlsx by generate_database.py",
+    " * BiocharHub - Database Full Records",
+    " * Auto-generated from Database.xlsx by generate_database.py",
     f" * {len(records)} experimental isotherm data points | DO NOT EDIT MANUALLY",
     " * Imputation: group-median per (biomass, activator) for residenceTime & heatingRate",
     " */",
