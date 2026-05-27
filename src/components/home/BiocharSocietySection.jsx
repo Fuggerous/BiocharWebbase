@@ -25,7 +25,7 @@ const ORGS = [
     url: 'https://www.nstda.or.th',
   },
   {
-    name: 'Biochar Consortium Thailand',
+    name: 'Thai Biochar Society',
     nameTh: 'สมาคมไบโอชาร์ไทย',
     descKey: 'soc.org.biochar.desc',
     tagKey: 'soc.org.biochar.tag',

@@ -2,8 +2,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Zap, Database, Leaf, ArrowRight, FlaskConical, BarChart3, Layers, Sparkles } from 'lucide-react';
-import { PEAK_RECORDS, TOTAL_DATA_POINTS, TOTAL_EXPERIMENTS } from '../../lib/biocharKnowledgeBase';
+import { Database, Leaf, ArrowRight, FlaskConical, BarChart3, Layers, Sparkles } from 'lucide-react';
+import { PEAK_RECORDS, TOTAL_DATA_POINTS } from '../../lib/biocharKnowledgeBase';
 import { useTranslation } from 'react-i18next';
 
 const ACTIVATOR_LABELS = {
@@ -12,13 +12,17 @@ const ACTIVATOR_LABELS = {
 };
 
 const TOOL_PILLS = [
-  { icon: FlaskConical, label: 'Property Estimator', color: 'bg-amber-100 border-amber-300 text-amber-700', dot: 'bg-amber-500' },
-  { icon: BarChart3,   label: 'CO₂ Predictor',      color: 'bg-green-100 border-green-300 text-green-700',  dot: 'bg-green-500' },
-  { icon: Layers,      label: 'Material Advisor',    color: 'bg-violet-100 border-violet-300 text-violet-700', dot: 'bg-violet-500' },
+  { icon: FlaskConical, label: 'Property Estimator', color: 'bg-amber-100 border-amber-300 text-amber-700', dot: 'bg-amber-500', to: '/property-estimator' },
+  { icon: BarChart3,   label: 'CO₂ Predictor',      color: 'bg-green-100 border-green-300 text-green-700',  dot: 'bg-green-500', to: '/predictor' },
+  { icon: Layers,      label: 'Material Advisor',    color: 'bg-violet-100 border-violet-300 text-violet-700', dot: 'bg-violet-500', to: '/advisor' },
 ];
 
 export default function HeroSection() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  // Thai glyphs render ~15% smaller visually than Latin at the same px size
+  // Compensate by boosting Thai heading size to match EN visual weight
+  const isThai = i18n.language === 'th';
+  const headingSize = isThai ? 'text-5xl lg:text-7xl' : 'text-4xl lg:text-6xl';
 
   const topRecords = useMemo(() => {
     const sorted = [...PEAK_RECORDS].sort((a, b) => b.co2Uptake - a.co2Uptake);
@@ -34,14 +38,8 @@ export default function HeroSection() {
 
   const rec = topRecords[idx] ?? topRecords[0];
 
-  const avgCO2 = useMemo(() => {
-    const valid = topRecords.filter(r => Number.isFinite(r.co2Uptake));
-    const sum = valid.reduce((a, b) => a + b.co2Uptake, 0);
-    return (sum / valid.length).toFixed(2);
-  }, [topRecords]);
-
   return (
-    <section className="relative gradient-hero py-20 lg:py-28 flex items-center overflow-hidden">
+    <section className="relative gradient-hero py-20 lg:py-28 min-h-[700px] lg:min-h-[780px] flex items-center overflow-hidden">
       {/* Background animated blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 -left-32 w-96 h-96 bg-green-500/20 rounded-full blur-3xl animate-pulse" />
@@ -85,7 +83,7 @@ export default function HeroSection() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.15 }}
-                className="text-4xl lg:text-6xl block"
+                className={`${headingSize} block`}
               >
                 {t('hero.heading1')}
               </motion.span>
@@ -93,7 +91,7 @@ export default function HeroSection() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.22 }}
-                className="text-4xl lg:text-6xl block"
+                className={`${headingSize} block`}
                 style={{
                   background: 'linear-gradient(135deg, #16a34a 0%, #059669 50%, #0d9488 100%)',
                   WebkitBackgroundClip: 'text',
@@ -107,7 +105,7 @@ export default function HeroSection() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.29 }}
-                className="text-4xl lg:text-6xl block"
+                className={`${headingSize} block`}
               >
                 {t('hero.heading3')}
               </motion.span>
@@ -139,56 +137,25 @@ export default function HeroSection() {
                 {t('hero.exploreData')}
                 <ArrowRight className="w-3.5 h-3.5 opacity-70 group-hover:translate-x-0.5 transition-transform" />
               </Link>
-              <Link
-                to="/predictor"
-                className="group inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-xl font-space font-bold text-sm text-white transition-all hover:scale-105 hover:shadow-lg hover:shadow-blue-200"
-                style={{ background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', boxShadow: '0 4px 20px rgba(59,130,246,0.3)' }}
-              >
-                <Zap className="w-4 h-4" />
-                {t('hero.co2Estimator')}
-                <ArrowRight className="w-3.5 h-3.5 opacity-70 group-hover:translate-x-0.5 transition-transform" />
-              </Link>
             </motion.div>
 
-            {/* Stat badges */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="grid grid-cols-3 gap-3 max-w-sm"
-            >
-              {[
-                { val: TOTAL_DATA_POINTS.toLocaleString(), label: t('hero.records'),     bg: 'bg-green-50',  border: 'border-green-200', text: 'text-green-700', sub: 'text-green-600' },
-                { val: TOTAL_EXPERIMENTS.toLocaleString(), label: t('hero.experiments'), bg: 'bg-sky-50',    border: 'border-sky-200',   text: 'text-sky-700',   sub: 'text-sky-600' },
-                { val: avgCO2,                             label: t('hero.avgCO2'),      bg: 'bg-violet-50', border: 'border-violet-200', text: 'text-violet-700', sub: 'text-violet-600' },
-              ].map((s, i) => (
-                <motion.div
-                  key={s.label}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 + i * 0.08 }}
-                  className={`p-3 rounded-xl ${s.bg} border ${s.border} text-center shadow-sm`}
-                >
-                  <p className={`${s.text} text-lg font-black font-space`}>{s.val}</p>
-                  <p className={`text-xs ${s.sub} mt-0.5`}>{s.label}</p>
-                </motion.div>
-              ))}
-            </motion.div>
-
-            {/* Tool pill strip */}
+            {/* Tool pill strip — clickable links */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.65 }}
+              transition={{ delay: 0.55 }}
               className="flex flex-wrap gap-2 mt-6"
             >
               {TOOL_PILLS.map(pill => (
-                <span key={pill.label}
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-semibold ${pill.color}`}>
+                <Link
+                  key={pill.label}
+                  to={pill.to}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-semibold transition-all hover:scale-105 hover:shadow-md ${pill.color}`}
+                >
                   <div className={`w-1.5 h-1.5 rounded-full ${pill.dot}`} />
                   <pill.icon className="w-3 h-3" />
                   {pill.label}
-                </span>
+                </Link>
               ))}
             </motion.div>
           </motion.div>

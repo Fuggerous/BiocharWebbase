@@ -24,7 +24,7 @@
   "hero.heading1": "The Global",
   "hero.heading2": "Biochar",
   "hero.heading3": "Intelligence Platform",
-  "hero.desc": "Data-driven insights from {count} experimental records. Predict biochar performance instantly.",
+  "hero.desc": "Powered by {count} peer-reviewed experimental records, BiocharHub delivers instant machine-learning predictions for CO₂ adsorption capacity, surface properties, and optimal material selection. The first open-access intelligence platform built to accelerate biochar research and sustainable carbon capture.",
   "hero.exploreData": "Explore Data",
   "hero.co2Estimator": "CO₂ Estimator",
   "hero.records": "Records",
