@@ -1,6 +1,6 @@
 {
   "version": "3.0",
-  "description": "BiocharHub CO2 predictor - Ridge Regression trained on Database PEAK_RECORDS",
+  "description": "BiocharInformaticsThailand CO2 predictor - Ridge Regression trained on Database PEAK_RECORDS",
   "model_type": "ridge",
   "architecture": {
     "input_size": 17,

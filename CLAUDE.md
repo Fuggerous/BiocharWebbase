@@ -1,4 +1,4 @@
-# BiocharHub Website — Project Intelligence
+# BiocharInformaticsThailand Website — Project Intelligence
 
 This file is read automatically by Claude at the start of every session.
 It defines project context, tech stack, and design standards.
@@ -7,7 +7,7 @@ It defines project context, tech stack, and design standards.
 
 ## Project Overview
 
-**BiocharHub** is a React + Vite + Tailwind CSS scientific web application for biochar CO₂ adsorption research. It is the UI layer for a Thai MS thesis on biochar machine learning.
+**BiocharInformaticsThailand** is a React + Vite + Tailwind CSS scientific web application for biochar CO₂ adsorption research. It is the UI layer for a Thai MS thesis on biochar machine learning.
 
 - **Stack**: React 18, Vite, Tailwind CSS, Framer Motion, react-i18next, Recharts, lucide-react
 - **Theme**: Light pastel — white/slate base with green (`#22c55e`), amber (`#f59e0b`), violet (`#8b5cf6`) accents

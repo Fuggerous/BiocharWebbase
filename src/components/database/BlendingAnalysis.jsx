@@ -1,5 +1,5 @@
 /**
- * BiocharHub v1.3 – Co-Pyrolysis / Hybrid Biochar Composite Analysis
+ * BiocharInformaticsThailand V.1.0 – Co-Pyrolysis / Hybrid Biochar Composite Analysis
  * Blending Performance Comparison + Multi-Dimensional Blend Correlation
  */
 import { useState, useMemo } from 'react';

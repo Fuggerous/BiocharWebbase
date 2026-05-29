@@ -1,17 +1,68 @@
 // @ts-nocheck
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
-import { motion } from 'framer-motion';
-import { Leaf, Target, Globe, BookOpen, ArrowRight, Brain, Database, LogOut } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Leaf, Target, Globe, Brain, Database, LogOut, ExternalLink, X, Users } from 'lucide-react';
+import { useState } from 'react';
 import { useRole } from '../lib/RoleContext';
 import { TOTAL_DATA_POINTS, TOTAL_EXPERIMENTS, DB_OVERALL_MAX } from '../lib/biocharKnowledgeBase';
 import { useTranslation } from 'react-i18next';
 
+// ─── Network partners — add entries here to populate the slider ──────────────
+// Each partner: { name, initials, color, tagline, desc, url (optional), logo (optional filename in src/assets/images/) }
+const PARTNERS = [
+  {
+    name: 'Petroleum and Petrochemical College',
+    initials: 'PPC',
+    color: 'from-green-500 to-emerald-600',
+    tagline: 'Chulalongkorn University · Bangkok, Thailand',
+    desc: 'The Petroleum and Petrochemical College (PPC) at Chulalongkorn University is the host institution for this research. PPC specialises in petroleum, petrochemical, and materials engineering — providing laboratory facilities, academic supervision, and research infrastructure for the BiocharInformaticsThailand project.',
+    url: 'https://www.ppc.chula.ac.th',
+    logo: 'ppc.png',
+  },
+];
+
+// Pre-bundle ALL images in assets/images/ so Vite includes them — supports any extension
+const logoModules = import.meta.glob('../assets/images/*', { eager: true });
+const getLogoUrl = (filename) => {
+  const mod = logoModules[`../assets/images/${filename}`];
+  return mod?.default ?? null;
+};
+
+// Partner avatar — shows logo image if available, falls back to initials
+function PartnerAvatar({ partner, size = 'card' }) {
+  const [imgError, setImgError] = useState(false);
+  const logoUrl = partner.logo ? getLogoUrl(partner.logo) : null;
+  const showLogo = logoUrl && !imgError;
+
+  const sizeClasses = size === 'modal'
+    ? 'w-16 h-16 rounded-2xl text-xl mb-0'
+    : 'w-14 h-14 rounded-2xl text-lg mb-4 group-hover:scale-105 transition-transform';
+
+  if (showLogo) {
+    return (
+      <div className={`${sizeClasses} bg-white border border-border flex items-center justify-center shadow-md overflow-hidden flex-shrink-0`}>
+        <img
+          src={logoUrl}
+          alt={partner.name}
+          onError={() => setImgError(true)}
+          className="w-full h-full object-contain p-1.5"
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className={`${sizeClasses} bg-gradient-to-br ${partner.color} flex items-center justify-center text-white font-bold shadow-md flex-shrink-0`}>
+      {partner.initials}
+    </div>
+  );
+}
+
 const COPY = {
   en: {
     heroTitle1: 'About',
-    heroTitle2: 'BiocharHub',
+    heroTitle2: 'BiocharInformaticsThailand',
     heroDesc: 'A research platform built at Chulalongkorn University to accelerate biochar CO₂ adsorption science through open data, AI prediction, and accessible tools.',
     adminActive: 'Admin mode active',
     signOut: 'Sign out',
@@ -32,10 +83,11 @@ const COPY = {
     timelineHeading: 'Project Timeline',
     timelineSubtitle: 'From research to live platform',
     techHeading: 'Built With',
-    ctaHeading: 'Explore the Platform',
-    ctaDesc: 'Browse the database, run CO₂ predictions, or find optimal synthesis conditions — all running locally in your browser.',
-    ctaPrimary: 'CO₂ Estimator',
-    ctaSecondary: 'Browse Database',
+    networkHeading: 'Network',
+    networkSubtitle: 'Research collaborators, institutional partners, and supporting organisations.',
+    networkEmpty: 'Partners coming soon',
+    networkEmptyDesc: 'We\'re building our network. Partner logos and details will appear here.',
+    networkVisit: 'Visit Website',
     tagResearch: 'Research',
     tagDataset: 'Dataset',
     tagML: 'ML Model',
@@ -49,11 +101,11 @@ const COPY = {
     m2Desc: 'Manual extraction and curation of CO₂ adsorption isotherm data from peer-reviewed journals. Standardized format covering 8 biomass species, 6 activators, and isotherm curves at multiple pressures.',
     m3Title: 'PI-DNN Model Developed',
     m3Desc: 'Physics-Informed Deep Neural Network (PI-DNN) developed with Langmuir, Freundlich, Temkin, and Sips isotherm constraints. Trained on the curated dataset with pressure-weighted loss function.',
-    m4Title: 'Biochar Assistant Thailand Launched',
+    m4Title: 'BiocharInformaticsThailand Launched',
     m4Desc: 'Full-stack research web platform launched. Three predictor tools (CO₂ Estimator, Property Estimator, Materials Advisor) with real database integration, interactive heatmap, and correlation analysis.',
     m5Title: '{count} Datapoints Published',
     m5Desc: '{points} experimental isotherm records across {experiments} unique experiments now live on the platform. Sklearn ML pipeline (KNN → SVR) trained and integrated. Peak CO₂ recorded: {max} mmol/g.',
-    m6Title: 'Extended Dataset & PI-DNN v2',
+    m6Title: 'Extended Dataset & PI-DNN V.1.0',
     m6Desc: 'Additional biochar isotherm data from extended literature sources. Improved PI-DNN with monotonicity constraints, Clausius–Clapeyron temperature consistency, and transfer learning from synthetic isotherms.',
     teamOrg: 'Petroleum and Petrochemical College (PPC)\nChulalongkorn University',
     team1Role: 'Team Leader & Research Supervisor',
@@ -67,7 +119,7 @@ const COPY = {
   },
   th: {
     heroTitle1: 'เกี่ยวกับ',
-    heroTitle2: 'BiocharHub',
+    heroTitle2: 'BiocharInformaticsThailand',
     heroDesc: 'แพลตฟอร์มวิจัยที่พัฒนาขึ้นที่จุฬาลงกรณ์มหาวิทยาลัย เพื่อเร่งงานวิทยาศาสตร์ด้านการดูดซับ CO₂ ของไบโอชาร์ ด้วยข้อมูลเปิด ระบบพยากรณ์ด้วย AI และเครื่องมือที่ใช้งานได้สะดวก',
     adminActive: 'โหมดผู้ดูแลระบบกำลังใช้งาน',
     signOut: 'ออกจากระบบ',
@@ -88,10 +140,11 @@ const COPY = {
     timelineHeading: 'ลำดับพัฒนาการโครงการ',
     timelineSubtitle: 'จากงานวิจัยสู่แพลตฟอร์มใช้งานจริง',
     techHeading: 'เทคโนโลยีที่ใช้',
-    ctaHeading: 'สำรวจแพลตฟอร์ม',
-    ctaDesc: 'เรียกดูฐานข้อมูล พยากรณ์ค่า CO₂ หรือค้นหาเงื่อนไขการสังเคราะห์ที่เหมาะสม — ทั้งหมดทำงานภายในเบราว์เซอร์ของคุณ',
-    ctaPrimary: 'ตัวพยากรณ์ CO₂',
-    ctaSecondary: 'เปิดฐานข้อมูล',
+    networkHeading: 'เครือข่าย',
+    networkSubtitle: 'นักวิจัยที่ร่วมมือ หน่วยงานพันธมิตร และองค์กรสนับสนุน',
+    networkEmpty: 'พันธมิตรเร็ว ๆ นี้',
+    networkEmptyDesc: 'เรากำลังสร้างเครือข่าย โลโก้และรายละเอียดพันธมิตรจะปรากฏที่นี่',
+    networkVisit: 'เยี่ยมชมเว็บไซต์',
     tagResearch: 'งานวิจัย',
     tagDataset: 'ชุดข้อมูล',
     tagML: 'โมเดล ML',
@@ -105,11 +158,11 @@ const COPY = {
     m2Desc: 'สกัดและจัดทำข้อมูลไอโซเธิร์มการดูดซับ CO₂ ด้วยมือจากวารสารที่ผ่านการตรวจสอบ จัดรูปแบบมาตรฐานครอบคลุมชีวมวล 8 ชนิด, activator 6 แบบ และเส้นโค้งไอโซเธิร์มที่หลายความดัน',
     m3Title: 'พัฒนาโมเดล PI-DNN',
     m3Desc: 'พัฒนา Physics-Informed Deep Neural Network (PI-DNN) พร้อมข้อจำกัด Langmuir, Freundlich, Temkin และ Sips โดยฝึกกับชุดข้อมูลที่คัดสรรและใช้ loss แบบถ่วงน้ำหนักด้วยความดัน',
-    m4Title: 'เปิดตัว Biochar Assistant Thailand',
+    m4Title: 'เปิดตัว BiocharInformaticsThailand',
     m4Desc: 'เปิดตัวแพลตฟอร์มวิจัยแบบ full-stack มีเครื่องมือทำนาย 3 ตัว (CO₂ Estimator, Property Estimator, Materials Advisor) พร้อมเชื่อมฐานข้อมูลจริง heatmap แบบโต้ตอบ และการวิเคราะห์ความสัมพันธ์',
     m5Title: 'เผยแพร่ข้อมูล {count} จุด',
     m5Desc: 'ตอนนี้มีบันทึกไอโซเธิร์มการทดลอง {points} รายการจาก {experiments} การทดลองบนแพลตฟอร์มแล้ว Pipeline ของ sklearn (KNN → SVR) ถูกฝึกและเชื่อมใช้งานจริง ค่า CO₂ สูงสุดที่บันทึกได้คือ {max} mmol/g',
-    m6Title: 'ขยายชุดข้อมูล & PI-DNN v2',
+    m6Title: 'ขยายชุดข้อมูล & PI-DNN V.1.0',
     m6Desc: 'เพิ่มข้อมูลไอโซเธิร์มไบโอชาร์จากแหล่งวรรณกรรมเพิ่มเติม พร้อมปรับปรุง PI-DNN ด้วย monotonicity constraints, ความสอดคล้องของอุณหภูมิตาม Clausius–Clapeyron และ transfer learning จาก synthetic isotherms',
     teamOrg: 'วิทยาลัยปิโตรเลียมและปิโตรเคมี (PPC)\nจุฬาลงกรณ์มหาวิทยาลัย',
     team1Role: 'หัวหน้าทีมและที่ปรึกษางานวิจัย',
@@ -124,6 +177,7 @@ const COPY = {
 };
 
 export default function About() {
+  const [selectedPartner, setSelectedPartner] = useState(null);
   const { isAdmin, logout } = useRole();
   const { i18n } = useTranslation();
   const lang = i18n?.language && i18n.language.startsWith('th') ? 'th' : 'en';
@@ -131,7 +185,7 @@ export default function About() {
 
   const team = [
     {
-      name: 'Dr. Nuttapong Sueviriyapan',
+      name: 'Dr. Nutthapong Sueviriyapan',
       role: copy.team1Role,
       org: copy.teamOrg,
       avatar: 'NS',
@@ -225,30 +279,6 @@ export default function About() {
           ))}
         </div>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-          className="glass-card rounded-2xl p-6 border border-green-500/20 bg-green-500/5 mb-16">
-          <div className="flex items-center gap-2 mb-4">
-            <Database className="w-5 h-5 text-green-500" />
-            <h3 className="font-space font-semibold text-base">{copy.statsHeading}</h3>
-            <span className="ml-auto text-[10px] px-2 py-1 rounded-full bg-green-500/10 text-green-600 font-bold border border-green-500/20">
-              {copy.liveData}
-            </span>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {[
-              { label: copy.points, value: TOTAL_DATA_POINTS.toLocaleString(), color: '#22c55e' },
-              { label: copy.experiments, value: TOTAL_EXPERIMENTS, color: '#3b82f6' },
-              { label: copy.peak, value: `${DB_OVERALL_MAX.toFixed(2)} mmol/g`, color: '#a855f7' },
-              { label: copy.species, value: '8', color: '#f59e0b' },
-            ].map(s => (
-              <div key={s.label} className="text-center p-3 rounded-xl bg-muted/40 border border-border">
-                <p className="font-space font-bold text-xl" style={{ color: s.color }}>{s.value}</p>
-                <p className="text-[11px] text-muted-foreground mt-0.5">{s.label}</p>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }} className="mb-16">
           <h2 className="font-space font-bold text-3xl mb-2 text-center">{copy.teamHeading}</h2>
@@ -279,6 +309,52 @@ export default function About() {
               </motion.div>
             ))}
           </div>
+        </motion.div>
+
+        {/* ── Network Section ── */}
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }} className="mb-16">
+          <div className="flex items-center gap-3 justify-center mb-2">
+            <Users className="w-5 h-5 text-green-500" />
+            <h2 className="font-space font-bold text-3xl">{copy.networkHeading}</h2>
+          </div>
+          <p className="text-muted-foreground text-center text-sm mb-8 max-w-xl mx-auto">{copy.networkSubtitle}</p>
+
+          {PARTNERS.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-14 px-8 rounded-2xl border border-dashed border-border bg-muted/20 max-w-md mx-auto text-center">
+              <div className="w-14 h-14 rounded-2xl bg-green-500/10 border border-green-500/20 flex items-center justify-center mb-4">
+                <Users className="w-6 h-6 text-green-500" />
+              </div>
+              <p className="font-space font-semibold text-base mb-1">{copy.networkEmpty}</p>
+              <p className="text-xs text-muted-foreground">{copy.networkEmptyDesc}</p>
+            </div>
+          ) : (
+            <div className="relative">
+              <div className="flex gap-5 overflow-x-auto pb-3 snap-x snap-mandatory scroll-smooth"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                {PARTNERS.map((partner, i) => (
+                  <motion.button
+                    key={partner.name}
+                    initial={{ opacity: 0, x: 30 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.08 }}
+                    onClick={() => setSelectedPartner(partner)}
+                    className="flex-shrink-0 snap-start w-52 glass-card rounded-2xl p-5 border border-border hover:border-green-400/40 hover:shadow-lg transition-all text-left group"
+                  >
+                    <PartnerAvatar partner={partner} size="card" />
+                    <p className="font-space font-semibold text-sm leading-tight mb-1">{partner.name}</p>
+                    <p className="text-[11px] text-muted-foreground leading-relaxed line-clamp-2">{partner.tagline}</p>
+                  </motion.button>
+                ))}
+                <div className="flex-shrink-0 snap-start w-52 rounded-2xl border border-dashed border-border flex flex-col items-center justify-center p-5 gap-2 text-muted-foreground">
+                  <div className="w-10 h-10 rounded-full border-2 border-dashed border-border flex items-center justify-center text-xl">+</div>
+                  <p className="text-xs font-medium text-center">More partners<br/>coming soon</p>
+                </div>
+              </div>
+              <div className="absolute right-0 top-0 bottom-3 w-16 bg-gradient-to-l from-background to-transparent pointer-events-none rounded-r-2xl" />
+            </div>
+          )}
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
@@ -336,22 +412,46 @@ export default function About() {
           </div>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }} className="text-center">
-          <div className="glass-card rounded-3xl p-10 border border-green-200/50 bg-gradient-to-br from-green-50/50 to-blue-50/50 max-w-2xl mx-auto">
-            <BookOpen className="w-10 h-10 text-green-500 mx-auto mb-4" />
-            <h3 className="font-space font-bold text-2xl mb-3">{copy.ctaHeading}</h3>
-            <p className="text-muted-foreground mb-6">{copy.ctaDesc}</p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link to="/predictor" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl gradient-green text-white font-semibold text-sm glow-green hover:scale-105 transition-transform">
-                {copy.ctaPrimary} <ArrowRight className="w-4 h-4" />
-              </Link>
-              <Link to="/database" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-border text-foreground font-semibold text-sm hover:bg-muted transition-colors">
-                {copy.ctaSecondary}
-              </Link>
-            </div>
-          </div>
-        </motion.div>
+        {/* Partner detail modal */}
+        <AnimatePresence>
+          {selectedPartner && (
+            <motion.div
+              className="fixed inset-0 z-50 flex items-center justify-center p-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedPartner(null)}
+            >
+              <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+              <motion.div
+                className="relative glass-modal rounded-3xl p-8 border border-border max-w-md w-full z-10 shadow-2xl"
+                initial={{ opacity: 0, scale: 0.92, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.92, y: 20 }}
+                onClick={e => e.stopPropagation()}
+              >
+                <button onClick={() => setSelectedPartner(null)}
+                  className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+                  <X className="w-4 h-4 text-white" />
+                </button>
+                <div className="flex items-center gap-4 mb-5">
+                  <PartnerAvatar partner={selectedPartner} size="modal" />
+                  <div>
+                    <h3 className="font-space font-bold text-lg leading-tight text-white">{selectedPartner.name}</h3>
+                    <p className="text-xs text-white/60 mt-0.5">{selectedPartner.tagline}</p>
+                  </div>
+                </div>
+                <p className="text-sm text-white/75 leading-relaxed mb-6">{selectedPartner.desc}</p>
+                {selectedPartner.url && (
+                  <a href={selectedPartner.url} target="_blank" rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl gradient-green text-white text-sm font-semibold glow-green hover:scale-105 transition-transform">
+                    <ExternalLink className="w-4 h-4" /> {copy.networkVisit}
+                  </a>
+                )}
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <Footer />

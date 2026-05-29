@@ -25,14 +25,14 @@ const ORGS = [
     url: 'https://www.nstda.or.th',
   },
   {
-    name: 'Thai Biochar Society',
-    nameTh: 'สมาคมไบโอชาร์ไทย',
+    name: 'International Biochar Asia Pacific Trade Association',
+    nameTh: 'สมาคมการค้าไบโอชาร์นานาชาติ เอเชียแปซิฟิก',
     descKey: 'soc.org.biochar.desc',
     tagKey: 'soc.org.biochar.tag',
     color: 'border-emerald-500/30 hover:border-emerald-500/60',
     tagColor: 'bg-emerald-500/10 text-emerald-600',
     emoji: '🌱',
-    url: '#',
+    url: 'https://biochar-ibap.org/',
   },
   {
     name: 'Kasetsart University',

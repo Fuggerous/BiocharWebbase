@@ -1,4 +1,4 @@
-Terms of Service — BiocharHub (Version 1.0)
+Terms of Service — BiocharInformaticsThailand (Version 1.0)
 
 Effective date: 2026-05-15
 
@@ -44,4 +44,4 @@ These Terms are governed by the law applicable where the Site operates; disputes
 
 Contact
 
-Questions: biocharhub@yourdomain.example
+Questions: biocharinformaticsthailand@yourdomain.example

@@ -15,7 +15,7 @@ const PHASES = [
     icon: FlaskConical,
     color: '#22c55e',
     title: 'Statistical Estimator',
-    subtitle: `Live · v1.0 · ${TOTAL_DATA_POINTS.toLocaleString()} records`,
+    subtitle: `Live · V.1.0 · ${TOTAL_DATA_POINTS.toLocaleString()} records`,
     desc: `Progressive database lookup across ${TOTAL_EXPERIMENTS} unique isotherm experiments. Matches user conditions to real experimental records — returns min, mean, max with confidence level and prediction intervals.`,
     tags: ['DB Lookup', 'Prediction Intervals', 'Match Confidence'],
   },
@@ -25,7 +25,7 @@ const PHASES = [
     icon: Brain,
     color: '#3b82f6',
     title: 'Sklearn ML Pipeline',
-    subtitle: 'Live · v1.7 · Trained on real data',
+    subtitle: 'Live · V.1.0 · Trained on real data',
     desc: `Two-stage sklearn pipeline trained on ${TOTAL_EXPERIMENTS} experiments: KNN Property Estimator predicts BET surface area and pore volume (R²=${R2_PROP}), then SVR CO₂ Estimator predicts peak adsorption capacity (R²=${R2_CO2}). Pre-computed for 1,728 synthesis conditions.`,
     tags: [`KNN R²=${R2_PROP}`, `SVR R²=${R2_CO2}`, '1,728 Lookups', 'No API needed'],
   },
@@ -35,7 +35,7 @@ const PHASES = [
     icon: GitBranch,
     color: '#a855f7',
     title: 'Ensemble & Stacking Models',
-    subtitle: 'In Development · v2.0',
+    subtitle: 'In Development · V.1.0',
     desc: 'Stacking ensemble combining Ridge, KNN, Random Forest, XGBoost, and SVR with a meta-learner. All 8 algorithms trained and cross-validated. Stacking tested on full dataset — deployment in progress.',
     tags: ['Stacking Ensemble', 'XGBoost', 'Random Forest', '8 Algorithms'],
   },
@@ -45,7 +45,7 @@ const PHASES = [
     icon: Cpu,
     color: '#f59e0b',
     title: 'Physics-Informed Neural Network',
-    subtitle: 'Research Phase · v3.0',
+    subtitle: 'Research Phase · V.1.0',
     desc: 'PI-DNN with Langmuir / Freundlich / Sips isotherm physics constraints. Extended multi-source dataset. Target R² > 0.90 on peak CO₂ capacity across all biomass species.',
     tags: ['PI-DNN', 'Isotherm Physics', 'Multi-source Data'],
   },
@@ -99,13 +99,13 @@ export default function AIRoadmapSection() {
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 mb-4">
             <Sparkles className="w-4 h-4 text-blue-400" />
-            <span className="text-blue-400 text-sm font-medium">AI Predictor Roadmap · BioPredict v1.7</span>
+            <span className="text-blue-400 text-sm font-medium">AI Predictor Roadmap · BioPredict V.1.0</span>
           </div>
           <h2 className="font-space font-bold text-3xl lg:text-4xl text-foreground mb-3">
             Statistics + <span className="text-gradient-blue">Machine Learning</span>
           </h2>
           <p className="text-muted-foreground text-base max-w-2xl mx-auto">
-            BiocharHub now runs two live prediction engines side-by-side —
+            BiocharInformaticsThailand now runs two live prediction engines side-by-side —
             a statistical DB lookup and a trained sklearn ML pipeline — with ensemble and PI-DNN on the roadmap.
           </p>
         </motion.div>

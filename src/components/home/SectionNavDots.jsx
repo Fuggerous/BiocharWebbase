@@ -11,6 +11,7 @@ const SECTIONS = [
   { id: 'section-society',      labelKey: 'navdots.society' },
   { id: 'section-triplephase',  labelKey: 'navdots.triple' },
   { id: 'section-heatmap',      labelKey: 'navdots.heatmap' },
+  { id: 'section-faq',          labelKey: 'navdots.faq' },
 ];
 
 export default function SectionNavDots() {

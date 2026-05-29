@@ -116,7 +116,7 @@ export default function Database() {
             </div>
             <h1 className="font-space font-bold text-4xl lg:text-5xl text-foreground mb-3">
               Biochar <span className="text-green-600">Dataset Explorer</span>{' '}
-              <span className="text-lg font-normal text-muted-foreground align-middle">v1.2</span>
+              <span className="text-lg font-normal text-muted-foreground align-middle">V.1.0</span>
             </h1>
             <p className="text-muted-foreground text-lg max-w-2xl mb-6">
               {TOTAL_DATA_POINTS.toLocaleString()} peer-reviewed experimental records across {BIOMASS_LIST.length} biomass species and {ACTIVATOR_LIST.filter(a => a !== 'Non').length} activation methods. Interactive multidimensional correlation analysis.
@@ -168,7 +168,7 @@ export default function Database() {
                     <FlaskConical className="w-4 h-4 text-green-500" /> Dataset Records
                   </h3>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    {filtered.length} records shown · {TOTAL_DATA_POINTS.toLocaleString()} total in Database
+                     {TOTAL_DATA_POINTS.toLocaleString()} total in Database
                   </p>
                 </div>
                 <div className="flex items-center gap-2 flex-wrap">

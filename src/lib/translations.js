@@ -18,7 +18,7 @@ export const translations = {
     'intro.badge':             '🌱 About This Platform',
     'intro.heading':           'Your Open-Access Hub for',
     'intro.headingHighlight':  'Biochar Research',
-    'intro.desc':              'Biochar Assistant Thailand is a data-driven platform that brings together peer-reviewed experimental data, ML-powered prediction tools, and curated knowledge resources — all focused on biochar\'s role in carbon sequestration and sustainable agriculture across Thailand.',
+    'intro.desc':              'BiocharInformaticsThailand is a data-driven platform that brings together peer-reviewed experimental data, ML-powered prediction tools, and curated knowledge resources — all focused on biochar\'s role in carbon sequestration and sustainable agriculture across Thailand.',
     'intro.db.title':          'Scientific Database',
     'intro.db.desc':           'Browse peer-reviewed biochar records with interactive filters, charts, and correlation analysis.',
     'intro.db.cta':            'Open Database',
@@ -30,7 +30,7 @@ export const translations = {
     'intro.know.cta':          'Explore Knowledge',
 
     // ── Hero / Stats / Research Insights ──────────────────────────────────
-    'hero.badge':             'BioPredict AI v1.7 · Multi-tools Hub · ML Predictor',
+    'hero.badge':             'BioPredict AI V.1.0 · Multi-tools Hub · ML Predictor',
     'hero.heading1':          'The Global',
     'hero.heading2':          'Biochar',
     'hero.heading3':          'Intelligence Platform',
@@ -133,7 +133,7 @@ export const translations = {
     'th.badge':               'Regional Feedstock Intelligence',
     'th.heading1':            "Harnessing Thailand's",
     'th.heading2':            'Agricultural Potential',
-    'th.desc':                'Thailand produces over 60 million tonnes of agricultural residue annually. BiocharHub maps the highest-potential feedstocks to their known biochar performance characteristics.',
+    'th.desc':                'Thailand produces over 60 million tonnes of agricultural residue annually. BiocharInformaticsThailand maps the highest-potential feedstocks to their known biochar performance characteristics.',
     'th.stat.carbon':         'Carbon Content',
     'th.stat.bet':            'BET Potential',
     'th.stat.abundance':      'Abundance',
@@ -247,7 +247,7 @@ export const translations = {
     'intro.badge':             '🌱 เกี่ยวกับแพลตฟอร์ม',
     'intro.heading':           'ศูนย์กลางข้อมูลแบบเปิดสำหรับ',
     'intro.headingHighlight':  'งานวิจัยไบโอชาร์',
-    'intro.desc':              'Biochar Assistant Thailand คือแพลตฟอร์มที่ขับเคลื่อนด้วยข้อมูล รวบรวมข้อมูลจากงานวิจัยที่ผ่านการตรวจสอบ เครื่องมือพยากรณ์ด้วย ML และแหล่งความรู้ที่คัดสรร — มุ่งเน้นบทบาทของไบโอชาร์ต่อการกักเก็บคาร์บอนและเกษตรกรรมยั่งยืนในประเทศไทย',
+    'intro.desc':              'BiocharInformaticsThailand คือแพลตฟอร์มที่ขับเคลื่อนด้วยข้อมูล รวบรวมข้อมูลจากงานวิจัยที่ผ่านการตรวจสอบ เครื่องมือพยากรณ์ด้วย ML และแหล่งความรู้ที่คัดสรร — มุ่งเน้นบทบาทของไบโอชาร์ต่อการกักเก็บคาร์บอนและเกษตรกรรมยั่งยืนในประเทศไทย',
     'intro.db.title':          'ฐานข้อมูลวิทยาศาสตร์',
     'intro.db.desc':           'เรียกดูข้อมูลไบโอชาร์กว่า 1,395 รายการจากงานวิจัยที่ผ่านการตรวจสอบ พร้อมฟิลเตอร์ กราฟ และการวิเคราะห์ความสัมพันธ์',
     'intro.db.cta':            'เปิดฐานข้อมูล',
@@ -259,7 +259,7 @@ export const translations = {
     'intro.know.cta':          'สำรวจความรู้',
 
     // ── Hero / Stats / Research Insights ──────────────────────────────────
-    'hero.badge':             'BioPredict AI v1.7 · ศูนย์กลางหลายเครื่องมือ · ตัวพยากรณ์ ML',
+    'hero.badge':             'BioPredict AI V.1.0 · ศูนย์กลางหลายเครื่องมือ · ตัวพยากรณ์ ML',
     'hero.heading1':          'แพลตฟอร์ม',
     'hero.heading2':          'Biochar',
     'hero.heading3':          'อัจฉริยะแห่งโลก',
@@ -362,7 +362,7 @@ export const translations = {
     'th.badge':               'ข่าวกรองวัตถุดิบระดับภูมิภาค',
     'th.heading1':            'ใช้ประโยชน์ศักยภาพ',
     'th.heading2':            'การเกษตรของไทย',
-    'th.desc':                'ประเทศไทยมีเศษวัสดุเกษตรมากกว่า 60 ล้านตันต่อปี BiocharHub จัดทำแผนที่วัตถุดิบที่มีศักยภาพสูงและคุณลักษณะสมรรถนะไบโอชาร์ที่ทราบแล้ว',
+    'th.desc':                'ประเทศไทยมีเศษวัสดุเกษตรมากกว่า 60 ล้านตันต่อปี BiocharInformaticsThailand จัดทำแผนที่วัตถุดิบที่มีศักยภาพสูงและคุณลักษณะสมรรถนะไบโอชาร์ที่ทราบแล้ว',
     'th.stat.carbon':         'ปริมาณคาร์บอน',
     'th.stat.bet':            'ศักยภาพ BET',
     'th.stat.abundance':      'ปริมาณที่พบ',

@@ -1,4 +1,4 @@
-# Biochar Assistant Thailand — User Experience Evaluation
+# BiocharInformaticsThailand — User Experience Evaluation
 ### Google Forms questionnaire · All questions for non-technical users
 
 ---

@@ -3,6 +3,7 @@ import Footer from '../components/layout/Footer';
 import PredictorForm from '../components/predictor/PredictorForm';
 import { motion } from 'framer-motion';
 import { Zap, Shield, BarChart3, Brain } from 'lucide-react';
+import PredictionDisclaimer from '../components/shared/PredictionDisclaimer';
 
 const features = [
   { icon: Brain, label: '3-Method Prediction', desc: 'Statistical lookup + Ridge approximation + Sklearn ML pipeline (KNN → SVR)' },
@@ -22,9 +23,9 @@ export default function Predictor() {
         <div className="absolute top-0 right-0 w-96 h-96 bg-green-200/30 dark:bg-emerald-900/20 rounded-full blur-3xl" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-100 border border-green-300 mb-4">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-100 border border-green-300 mb-4">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-              <span className="text-green-700 text-sm font-medium">BioPredict AI v1.7 · Statistical + ML Model · Database-Driven</span>
+              <span className="text-green-700 text-sm font-medium">BioPredict AI V.1.0 · Statistical + ML Model · Database-Driven</span>
             </div>
             <h1 className="font-space font-bold text-4xl lg:text-5xl text-foreground mb-3">
               CO₂ Adsorption<br />
@@ -52,6 +53,9 @@ export default function Predictor() {
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+          <div className="mb-6">
+            <PredictionDisclaimer accentColor="green" />
+          </div>
           <PredictorForm />
         </motion.div>
       </div>

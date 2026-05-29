@@ -1,6 +1,6 @@
 // @ts-nocheck
 /**
- * BiocharHub - Database Full Records
+ * BiocharInformaticsThailand - Database Full Records
  * Auto-generated from Database.xlsx by generate_database.py
  * 1396 experimental isotherm data points | DO NOT EDIT MANUALLY
  * Imputation: group-median per (biomass, activator) for residenceTime & heatingRate

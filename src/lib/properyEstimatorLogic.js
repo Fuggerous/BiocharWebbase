@@ -4,6 +4,7 @@
  * Returns: Estimated BET Surface Area, Pore Volume, and Elemental ranges
  */
 import { DB44_RECORDS } from './database44';
+import { elasticnetSaLookup, mlPipelineLookup, mlpSaLookup } from './mlPredictor';
 
 // Approximate CHNS-O data by biomass (from literature — not in DB44 directly)
 const ELEMENTAL_PROFILES = {
@@ -69,15 +70,18 @@ export function estimateProperties({ biomass, pyroTemp, residenceTime, activator
   }
 
   const surfaceAreas = closest.map(r => r.surfaceArea);
-  const poreVols = closest.map(r => r.poreVolume);
+  // Filter out null/undefined/zero pore volumes — these are truly missing data, not zero
+  const validPoreVols = closest.map(r => r.poreVolume).filter(v => v != null && v > 0);
 
   const minSA = Math.min(...surfaceAreas);
   const maxSA = Math.max(...surfaceAreas);
   const meanSA = surfaceAreas.reduce((a, b) => a + b, 0) / surfaceAreas.length;
 
-  const minPV = Math.min(...poreVols);
-  const maxPV = Math.max(...poreVols);
-  const meanPV = poreVols.reduce((a, b) => a + b, 0) / poreVols.length;
+  // Only compute pore volume stats if we have valid data
+  const hasPoreVolData = validPoreVols.length > 0;
+  const minPV = hasPoreVolData ? Math.min(...validPoreVols) : null;
+  const maxPV = hasPoreVolData ? Math.max(...validPoreVols) : null;
+  const meanPV = hasPoreVolData ? validPoreVols.reduce((a, b) => a + b, 0) / validPoreVols.length : null;
 
   // Elemental profile
   const ep = ELEMENTAL_PROFILES[biomass] || ELEMENTAL_PROFILES['Corn straw'];
@@ -98,15 +102,165 @@ export function estimateProperties({ biomass, pyroTemp, residenceTime, activator
 
   return {
     surfaceArea: { min: minSA, max: maxSA, mean: parseFloat(meanSA.toFixed(1)) },
-    poreVolume: {
+    // null when no matched records have pore volume data
+    poreVolume: hasPoreVolData ? {
       min: parseFloat((minPV * 1000).toFixed(3)),
       max: parseFloat((maxPV * 1000).toFixed(3)),
       mean: parseFloat((meanPV * 1000).toFixed(3)),
-    },
+      recordsWithData: validPoreVols.length,
+    } : null,
     elemental: elem,
     dataPointsUsed,
     confidence,
     matchedRecords: closest,
+  };
+}
+
+const SHAP_BASELINE = {
+  biomass: 'Corn straw',
+  pyroTemp: 600,
+  residenceTime: 60,
+  activator: 'Non',
+};
+
+const MODEL_LOOKUPS = {
+  knn: mlPipelineLookup,
+  elasticnet: elasticnetSaLookup,
+  mlp: mlpSaLookup,
+};
+
+const MODEL_NAMES = {
+  knn: 'KNN Regressor',
+  elasticnet: 'ElasticNet',
+  mlp: 'MLP Neural Network',
+};
+
+function getSelectedModelPrediction(modelId, params) {
+  const lookup = MODEL_LOOKUPS[modelId];
+  if (!lookup) return null;
+
+  const result = lookup({
+    biomass: params.biomass,
+    temperature: params.pyroTemp,
+    activator: params.activator,
+    residenceTime: params.residenceTime,
+    heatingRate: 10,
+  });
+
+  if (!result) return null;
+  return Number(result.sa ?? result.surfaceArea ?? result.value ?? NaN);
+}
+
+function createEvaluationKey(mask, features) {
+  return features.map((feature, index) => (mask & (1 << index) ? feature.key : '-')).join('|');
+}
+
+function countBits(mask) {
+  let count = 0;
+  let value = mask;
+  while (value > 0) {
+    value &= value - 1;
+    count += 1;
+  }
+  return count;
+}
+
+/**
+ * Exact SHAP-style decomposition for the deployed BET surface-area model.
+ * Uses a fixed neutral reference input and evaluates all feature subsets.
+ */
+export function buildPropertyShapAnalysis({ modelId, params }) {
+  const lookup = MODEL_LOOKUPS[modelId];
+  if (!lookup) return null;
+
+  const prediction = getSelectedModelPrediction(modelId, params);
+  if (!Number.isFinite(prediction)) return null;
+
+  const features = [
+    { key: 'biomass', label: 'Biomass Species', value: params.biomass, baseline: SHAP_BASELINE.biomass },
+    { key: 'pyroTemp', label: 'Pyrolysis Temperature', value: Number(params.pyroTemp), baseline: SHAP_BASELINE.pyroTemp },
+    { key: 'residenceTime', label: 'Residence Time', value: Number(params.residenceTime), baseline: SHAP_BASELINE.residenceTime },
+    { key: 'activator', label: 'Activation Method', value: params.activator, baseline: SHAP_BASELINE.activator },
+  ];
+
+  const evalCache = new Map();
+  const featureCount = features.length;
+  const factorial = [1, 1, 2, 6, 24, 120];
+
+  const evaluate = (mask) => {
+    const key = createEvaluationKey(mask, features);
+    if (evalCache.has(key)) return evalCache.get(key);
+
+    const current = {
+      biomass: SHAP_BASELINE.biomass,
+      pyroTemp: SHAP_BASELINE.pyroTemp,
+      residenceTime: SHAP_BASELINE.residenceTime,
+      activator: SHAP_BASELINE.activator,
+    };
+
+    features.forEach((feature, index) => {
+      if (mask & (1 << index)) {
+        current[feature.key] = feature.value;
+      }
+    });
+
+    const value = getSelectedModelPrediction(modelId, current);
+    evalCache.set(key, value);
+    return value;
+  };
+
+  const baseline = evaluate(0);
+  if (!Number.isFinite(baseline)) return null;
+
+  const shapValues = features.map((feature, featureIndex) => {
+    let contribution = 0;
+
+    for (let mask = 0; mask < (1 << featureCount); mask += 1) {
+      if (mask & (1 << featureIndex)) continue;
+
+      const subsetSize = countBits(mask);
+      const weight = factorial[subsetSize] * factorial[featureCount - subsetSize - 1] / factorial[featureCount];
+      const withoutFeature = evaluate(mask);
+      const withFeature = evaluate(mask | (1 << featureIndex));
+
+      if (!Number.isFinite(withoutFeature) || !Number.isFinite(withFeature)) {
+        continue;
+      }
+
+      contribution += weight * (withFeature - withoutFeature);
+    }
+
+    return {
+      key: feature.key,
+      label: feature.label,
+      value: +contribution.toFixed(2),
+      absValue: +Math.abs(contribution).toFixed(2),
+      sign: contribution >= 0 ? 'positive' : 'negative',
+      actual: feature.value,
+      baseline: feature.baseline,
+    };
+  }).sort((a, b) => b.absValue - a.absValue);
+
+  const totalAbs = shapValues.reduce((sum, item) => sum + item.absValue, 0) || 1;
+  const totalEffect = prediction - baseline;
+  const dominant = shapValues[0];
+  const runnerUp = shapValues[1];
+
+  return {
+    modelId,
+    modelName: MODEL_NAMES[modelId] || 'Selected Model',
+    baseline: +baseline.toFixed(2),
+    prediction: +prediction.toFixed(2),
+    delta: +totalEffect.toFixed(2),
+    totalAbs: +totalAbs.toFixed(2),
+    shapValues: shapValues.map(item => ({
+      ...item,
+      share: +((item.absValue / totalAbs) * 100).toFixed(1),
+    })),
+    summary: dominant
+      ? `${dominant.label} is the strongest driver${runnerUp ? `, followed by ${runnerUp.label}` : ''}.`
+      : 'No dominant driver identified.',
+    methodNote: `Exact SHAP-style subset decomposition on the deployed ${MODEL_NAMES[modelId] || modelId} lookup surface using 16 feature combinations.`,
   };
 }
 

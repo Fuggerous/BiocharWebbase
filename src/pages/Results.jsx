@@ -19,6 +19,7 @@ import DataDensityGauge from '../components/results/DataDensityGauge';
 import SensitivityAnalysis from '../components/results/SensitivityAnalysis';
 import ReportExporter from '../components/results/ReportExporter';
 import ModelAccuracyChart from '../components/shared/ModelAccuracyChart';
+import { Cite } from '../components/home/ScientificReferences';
 import { Brain } from 'lucide-react';
 
 const insightColors = {
@@ -122,76 +123,76 @@ function ScientificInterpretation({ result, params }) {
 
   const insights = [];
 
-  // Activation method interpretation (refs: Cha et al. 2016; Zhang et al. 2022)
+  // ── Activation method ──────────────────────────────────────────────────────
   if (activator === 'KOH') {
     insights.push({
       type: 'positive',
       title: 'KOH Chemical Activation',
-      text: `KOH activation is reported as the most effective method for micropore generation in biochar, consistently yielding CO₂ uptake of 3–7 mmol/g at 25°C. KOH etches carbon layers, creating abundant micropores (<2 nm) ideal for CO₂ physisorption. DB mean for KOH: ${activatorStats?.mean?.toFixed(2)} mmol/g (n=${activatorStats?.count}).`,
-      ref: 'Zhang et al. (2022) Chem. Eng. J.; Cha et al. (2016) Bioresour. Technol.',
+      text: `KOH activation generates abundant micropores (<2 nm) by etching carbon layers via carbonate/oxide intermediates at high temperature. This consistently yields CO₂ uptake of 3–7 mmol/g at 25°C — the highest among single-activator methods in our database. A direct KOH-vs-CO₂ comparison confirms KOH-derived biochars achieve superior micropore volumes. DB mean for KOH: ${activatorStats?.mean?.toFixed(2)} mmol/g (n=${activatorStats?.count}).`,
+      refs: [20, 7],
     });
   } else if (activator === 'KOH-CO2') {
     insights.push({
       type: 'positive',
       title: 'Combined KOH + CO₂ Activation',
-      text: `Combined activation merges chemical (KOH) and physical (CO₂) mechanisms. Literature reports synergistic pore widening that can exceed single-method activation by 15–30%. DB mean: ${activatorStats?.mean?.toFixed(2)} mmol/g.`,
-      ref: 'Shen et al. (2021) Energy Fuels; Shafeeyan et al. (2010) J. Anal. Appl. Pyrolysis.',
+      text: `Combined activation sequentially applies chemical (KOH) and physical (CO₂) mechanisms. KOH creates the micropore framework; subsequent CO₂ gasification widens pores and removes residual potassium compounds, often yielding 15–30% higher uptake than either method alone. DB mean: ${activatorStats?.mean?.toFixed(2)} mmol/g.`,
+      refs: [20, 9],
     });
   } else if (activator === 'K2CO3') {
     insights.push({
       type: 'positive',
       title: 'K₂CO₃ Chemical Activation',
-      text: `K₂CO₃ produces a well-developed micropore network through carbonate decomposition at high temperature. Gentler than KOH, producing narrower pore-size distribution. DB mean: ${activatorStats?.mean?.toFixed(2)} mmol/g.`,
-      ref: 'Manyà et al. (2018) J. CO₂ Util.; Sevilla & Fuertes (2011) Energy Environ. Sci.',
+      text: `K₂CO₃ decomposes above 700°C to generate K₂O and CO₂ in situ, producing a well-developed micropore network with a narrower pore-size distribution than KOH. It is a milder activating agent, reducing equipment corrosion while maintaining high CO₂ capture performance. Coffee-ground biochars activated with K₂CO₃ reached high surface areas and excellent CO₂ selectivity in our reference literature. DB mean: ${activatorStats?.mean?.toFixed(2)} mmol/g.`,
+      refs: [9, 7],
     });
   } else if (activator === 'CO2') {
     insights.push({
       type: 'neutral',
-      title: 'Physical CO₂ Activation',
-      text: `CO₂ gasification selectively burns the most reactive carbon sites, creating a pore structure without chemical contamination. Yields moderate surface areas (500–1500 m²/g) with CO₂ uptake typically 1.5–4 mmol/g. DB mean: ${activatorStats?.mean?.toFixed(2)} mmol/g.`,
-      ref: 'Duan et al. (2018) Bioresour. Technol.; Wiedner et al. (2013) Chemosphere.',
+      title: 'Physical CO₂ Activation (Gasification)',
+      text: `CO₂ gasification selectively oxidises the most reactive disordered carbon sites (C + CO₂ → 2CO), creating a clean, contaminant-free pore structure without residual alkali. Surface areas of 500–1,500 m²/g are typical, with CO₂ uptake 1.5–4 mmol/g. Pine sawdust under CO₂ atmosphere shows measurable porosity improvement even at moderate temperatures. DB mean: ${activatorStats?.mean?.toFixed(2)} mmol/g.`,
+      refs: [20, 32],
     });
   } else if (activator === 'LiCl') {
     insights.push({
       type: 'warning',
       title: 'LiCl Chemical Activation',
-      text: `LiCl activation is less common in CO₂ adsorption literature. It can introduce heteroatom doping but typically yields lower surface areas than KOH. DB mean: ${activatorStats?.mean?.toFixed(2)} mmol/g.`,
-      ref: 'Limited literature — treat as exploratory.',
+      text: `LiCl activation is uncommon in CO₂ adsorption literature and primarily explored for capacitor and ionic applications. It can introduce Cl-doping but typically yields lower surface areas than alkaline activators such as KOH. Amine-functionalised approaches offer better CO₂ selectivity for non-standard activators. DB mean: ${activatorStats?.mean?.toFixed(2)} mmol/g — treat as exploratory.`,
+      refs: [24, 12],
     });
   } else {
     insights.push({
       type: 'neutral',
       title: 'No Activation (Raw Biochar)',
-      text: `Unactivated biochars rely solely on pyrolysis-induced porosity. CO₂ uptake is generally lower (0.5–2.5 mmol/g) due to limited micropore development. Activation can increase capacity by 2–5×. DB mean without activation: ${activatorStats?.mean?.toFixed(2)} mmol/g.`,
-      ref: 'Huggins et al. (2016) Bioresour. Technol.; Tan et al. (2015) Chem. Eng. J.',
+      text: `Unactivated biochars rely solely on pyrolysis-induced porosity — surface areas rarely exceed 400 m²/g without chemical treatment. CO₂ uptake is generally lower (0.5–2.5 mmol/g) due to limited micropore development, and activation is shown to increase capacity 2–5×. Straw-derived raw biochars represent the baseline case in recent CO₂ capture studies. DB mean without activation: ${activatorStats?.mean?.toFixed(2)} mmol/g.`,
+      refs: [10, 22],
     });
   }
 
-  // Temperature interpretation (refs: Cha et al. 2016; Weber & Quicker 2018)
+  // ── Pyrolysis temperature ──────────────────────────────────────────────────
   if (temperature >= 750) {
     insights.push({
       type: 'positive',
       title: `High Pyrolysis Temperature (${temperature}°C)`,
-      text: `Temperatures ≥750°C promote complete aromatization and graphitization of the carbon matrix, maximizing micropore volume. DB records in this bracket average ${temperatureBracket?.mean?.toFixed(2) ?? '—'} mmol/g (n=${temperatureBracket?.count ?? '—'}).`,
-      ref: 'Weber & Quicker (2018) Fuel; Cha et al. (2016) Bioresour. Technol.',
+      text: `Temperatures ≥750°C drive complete aromatization and graphitization of the carbon matrix. Volatile matter is fully expelled, maximizing fixed carbon content and developing true microporosity. Studies of slow pyrolysis across a wide temperature range confirm that higher temperatures monotonically increase BET surface area and micropore volume up to ~850°C. DB records in this bracket average ${temperatureBracket?.mean?.toFixed(2) ?? '—'} mmol/g (n=${temperatureBracket?.count ?? '—'}).`,
+      refs: [28, 35],
     });
   } else if (temperature >= 550) {
     insights.push({
       type: 'neutral',
       title: `Moderate Pyrolysis Temperature (${temperature}°C)`,
-      text: `Mid-range temperatures (550–750°C) produce a mix of amorphous and aromatic carbon. Surface area and CO₂ affinity increase monotonically through this range. DB bracket mean: ${temperatureBracket?.mean?.toFixed(2) ?? '—'} mmol/g.`,
-      ref: 'Zhao et al. (2019) Bioresour. Technol.',
+      text: `The 550–750°C range produces a mixture of amorphous and aromatic carbon. Surface area and CO₂ affinity increase monotonically through this window as volatile matter content falls and aromatic ring condensation progresses. Pyrolysis temperature studies consistently place this range as the transition zone between functional and structural carbon. DB bracket mean: ${temperatureBracket?.mean?.toFixed(2) ?? '—'} mmol/g.`,
+      refs: [27, 35],
     });
   } else {
     insights.push({
       type: 'warning',
       title: `Low Pyrolysis Temperature (${temperature}°C)`,
-      text: `Temperatures <550°C result in incomplete carbonization. Residual volatile matter partially blocks pores. Literature recommends ≥600°C to achieve useful CO₂ adsorption capacity. DB bracket mean: ${temperatureBracket?.mean?.toFixed(2) ?? '—'} mmol/g.`,
-      ref: 'Cha et al. (2016) Bioresour. Technol.; Wiedner et al. (2013) Chemosphere.',
+      text: `Temperatures <550°C result in incomplete carbonization — residual volatile matter, tars, and oxygenated functional groups partially block nascent pores, reducing accessible surface area. Literature consistently recommends ≥600°C for biochar intended as a CO₂ adsorbent. Biochars from slow pyrolysis at 500°C show substantially lower surface area compared to higher-temperature equivalents. DB bracket mean: ${temperatureBracket?.mean?.toFixed(2) ?? '—'} mmol/g.`,
+      refs: [36, 28],
     });
   }
 
-  // Statistical quality note
+  // ── Statistical reliability ────────────────────────────────────────────────
   insights.push({
     type: matchLevel === 'exact' ? 'positive' : matchLevel === 'global' ? 'warning' : 'neutral',
     title: 'Estimate Reliability',
@@ -202,7 +203,7 @@ function ScientificInterpretation({ result, params }) {
       : matchLevel === 'biomass'
       ? `No temperature match found — result pools all ${biomass} records regardless of temperature. Mean±σ = ${mean.toFixed(2)}±${std} mmol/g. Use for order-of-magnitude reference only.`
       : `No biomass match in database — result is global fallback. Prediction is weakly constrained. Consider the sensitivity analysis for trend direction.`,
-    ref: `Database · ${n} records used · σ = ${std} mmol/g`,
+    refs: [12],
   });
 
   const typeStyle = {
@@ -226,11 +227,21 @@ function ScientificInterpretation({ result, params }) {
         {insights.map((ins, i) => (
           <div key={i} className={`p-3 rounded-xl ${typeStyle[ins.type]}`}>
             <p className="text-xs font-bold text-foreground mb-1">{ins.title}</p>
-            <p className="text-xs text-muted-foreground leading-relaxed">{ins.text}</p>
-            <p className="text-[10px] text-slate-400 mt-1.5 italic">Ref: {ins.ref}</p>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              {ins.text}
+            </p>
+            <p className="text-[10px] text-slate-500 mt-1.5 flex items-center gap-1">
+              <span className="font-medium">Ref:</span>
+              <Cite ids={ins.refs} />
+            </p>
           </div>
         ))}
       </div>
+      <p className="text-[10px] text-muted-foreground mt-3 text-right">
+        Reference numbers link to the{' '}
+        <a href="#references" className="text-green-500 hover:underline font-medium">Scientific References</a>
+        {' '}section below.
+      </p>
     </div>
   );
 }

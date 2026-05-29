@@ -1,6 +1,6 @@
 // @ts-nocheck
 /**
- * BiocharHub ML Predictor
+ * BiocharInformaticsThailand ML Predictor
  *
  * Three ML prediction methods for CO₂ estimation:
  *

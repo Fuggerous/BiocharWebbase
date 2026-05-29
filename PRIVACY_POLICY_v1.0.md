@@ -1,10 +1,10 @@
-Privacy Policy — BiocharHub (Version 1.0)
+Privacy Policy — BiocharInformaticsThailand (V.1.0)
 
 Effective date: 2026-05-15
 
 Summary
 
-BiocharHub (the “Site”, “we”, “our”) is an academic research platform that provides an open database of biochar experimental records and web-based prediction tools. This Privacy Policy explains what personal and non-personal data we collect, why we collect it, how we use it, and your rights.
+BiocharInformaticsThailand (the “Site”, “we”, “our”) is an academic research platform that provides an open database of biochar experimental records and web-based prediction tools. This Privacy Policy explains what personal and non-personal data we collect, why we collect it, how we use it, and your rights.
 
 1. Data We Collect
 
@@ -60,4 +60,4 @@ We may update this Policy; material changes will be posted with a new effective 
 
 Contact
 
-If you have questions or requests, contact: biocharhub@yourdomain.example
+If you have questions or requests, contact: biocharinformaticsthailand@yourdomain.example

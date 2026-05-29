@@ -20,7 +20,7 @@ export default function Footer() {
                 <Leaf className="w-5 h-5 text-white" />
               </div>
               <span className="font-space font-bold text-lg text-white">
-                Biochar<span className="text-green-400">Hub</span>
+                BiocharInformaticsThailand
               </span>
             </div>
             <p className="text-sm text-slate-400 leading-relaxed">
@@ -45,10 +45,12 @@ export default function Footer() {
             <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Platform</h4>
             <ul className="space-y-2.5">
               {[
+                { label: 'Home', path: '/' },
                 { label: 'Database', path: '/database' },
                 { label: 'Property Estimator', path: '/property-estimator' },
                 { label: 'CO₂ Estimator', path: '/predictor' },
                 { label: 'Materials Advisor', path: '/advisor' },
+                { label: 'Q&A / Help', path: '/faq' },
                 { label: 'Share Data', path: '/share' },
                 { label: 'About', path: '/about' },
               ].map(link => (
@@ -73,8 +75,8 @@ export default function Footer() {
           <div>
             <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Contact</h4>
             <ul className="space-y-2.5 text-sm">
-              <li className="flex items-center gap-2"><Mail className="w-4 h-4 text-green-400" /> contact@biocharhub.ai</li>
-              <li className="flex items-center gap-2"><Globe className="w-4 h-4 text-green-400" /> www.biocharhub.ai</li>
+              <li className="flex items-center gap-2"><Mail className="w-4 h-4 text-green-400" /> contact@biocharinformaticsthailand.ai</li>
+              <li className="flex items-center gap-2"><Globe className="w-4 h-4 text-green-400" /> www.biocharinformaticsthailand.ai</li>
             </ul>
             <div className="mt-5 p-3 rounded-xl bg-green-500/10 border border-green-500/20">
               <p className="text-xs text-green-400 font-medium">The Petroleum and Petrochemical College, Chulalongkorn University</p>
@@ -84,7 +86,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-10 pt-6 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-slate-500">© 2026 BiocharHub. All rights reserved. Advancing carbon capture science.</p>
+          <p className="text-xs text-slate-500">© 2026 BiocharInformaticsThailand. All rights reserved. Advancing carbon capture science.</p>
           <div className="flex items-center gap-4 text-xs text-slate-500">
             <button onClick={() => setOpen('privacy')} className="hover:text-slate-300">Privacy Policy</button>
             <button onClick={() => setOpen('terms')} className="hover:text-slate-300">Terms of Service</button>
@@ -93,13 +95,13 @@ export default function Footer() {
         </div>
       </div>
       {open === 'privacy' && (
-        <MarkdownModal open={true} title="Privacy Policy (v1.0)" content={PRIVACY} onClose={() => setOpen(null)} />
+        <MarkdownModal open={true} title="Privacy Policy (V.1.0)" content={PRIVACY} onClose={() => setOpen(null)} />
       )}
       {open === 'terms' && (
-        <MarkdownModal open={true} title="Terms of Service (v1.0)" content={TERMS} onClose={() => setOpen(null)} />
+        <MarkdownModal open={true} title="Terms of Service (V.1.0)" content={TERMS} onClose={() => setOpen(null)} />
       )}
       {open === 'license' && (
-        <MarkdownModal open={true} title="Data License (v1.0)" content={LICENSE} onClose={() => setOpen(null)} />
+        <MarkdownModal open={true} title="Data License (V.1.0)" content={LICENSE} onClose={() => setOpen(null)} />
       )}
     </footer>
   );

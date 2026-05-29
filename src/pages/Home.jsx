@@ -11,6 +11,7 @@ import TriplePhaseFlow from '../components/home/TriplePhaseFlow';
 import UseCaseScenarios from '../components/home/UseCaseScenarios';
 import HeatmapSection from '../components/home/HeatmapSection';
 import ScientificReferences from '../components/home/ScientificReferences';
+import FAQSection from '../components/home/FAQSection';
 import SectionNavDots from '../components/home/SectionNavDots';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -106,6 +107,11 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
+
+      {/* 9. Q&A / Help Centre */}
+      <div id="section-faq">
+        <FAQSection />
+      </div>
 
       <ScientificReferences />
       <Footer />

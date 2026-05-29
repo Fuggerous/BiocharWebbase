@@ -1,6 +1,6 @@
 // @ts-nocheck
 /**
- * BiocharHub – Data-Driven Knowledge Base
+ * BiocharInformaticsThailand – Data-Driven Knowledge Base
  * All statistics are computed dynamically from DB44_RECORDS.
  * No hardcoded values — numbers update automatically when the database grows.
  */

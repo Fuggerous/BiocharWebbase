@@ -1,5 +1,5 @@
 """
-BiocharHub – database44.js generator
+BiocharInformaticsThailand – database44.js generator
 Reads Database.xlsx → cleans → imputes → exports src/lib/database44.js
 """
 import sys, io, json, math
@@ -184,7 +184,7 @@ def rec_to_js(rec):
 lines = [
     "// @ts-nocheck",
     "/**",
-    " * BiocharHub - Database Full Records",
+    " * BiocharInformaticsThailand - Database Full Records",
     " * Auto-generated from Database.xlsx by generate_database.py",
     f" * {len(records)} experimental isotherm data points | DO NOT EDIT MANUALLY",
     " * Imputation: group-median per (biomass, activator) for residenceTime & heatingRate",

@@ -1,5 +1,6 @@
 // @ts-nocheck
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Gauge, CheckCircle, AlertTriangle, XCircle, Info } from 'lucide-react';
 
 // ── Blend complexity factor (unchanged) ──────────────────────────────────────
@@ -107,6 +108,7 @@ const TIERS = [
 ];
 
 export default function FeasibilityGauge({ activator, pyroTemp, blends = [], avgResidenceTime = null }) {
+  const [showFormula, setShowFormula] = useState(false);
   const { total: score, components } = computeFeasibilityBreakdown(activator, pyroTemp, blends, avgResidenceTime);
   const pct  = ((score - 1) / 9) * 100;
   const tier = TIERS.find(t => score >= t.min);
@@ -172,9 +174,42 @@ export default function FeasibilityGauge({ activator, pyroTemp, blends = [], avg
           ))}
         </div>
 
-        <div className="flex items-start gap-1.5 mt-1 text-[10px] text-muted-foreground">
-          <Info className="w-3 h-3 mt-0.5 flex-shrink-0" />
-          <span>Score = 0.35×Temp + 0.35×Activator + 0.20×ResTime + 0.10×Blend · normalized from actual DB ranges</span>
+        <div className="relative mt-1">
+          <button
+            onMouseEnter={() => setShowFormula(true)}
+            onMouseLeave={() => setShowFormula(false)}
+            onClick={() => setShowFormula(v => !v)}
+            className="flex items-center gap-1.5 text-[10px] text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded-lg hover:bg-muted/60"
+          >
+            <Info className="w-3 h-3 flex-shrink-0" />
+            <span>How is feasibility score calculated?</span>
+          </button>
+
+          <AnimatePresence>
+            {showFormula && (
+              <motion.div
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 6 }}
+                transition={{ duration: 0.15 }}
+                className="absolute bottom-full left-0 mb-2 z-50 w-[300px] p-3.5 rounded-xl bg-white border border-slate-200 shadow-xl"
+                onMouseEnter={() => setShowFormula(true)}
+                onMouseLeave={() => setShowFormula(false)}
+              >
+                <p className="text-[11px] font-semibold text-slate-700 mb-2 flex items-center gap-1.5">
+                  <Info className="w-3.5 h-3.5 text-slate-500" /> Feasibility Score Formula
+                </p>
+                <p className="text-[10px] text-slate-600 font-mono bg-slate-50 rounded-lg px-2.5 py-2 border border-slate-100 mb-2">
+                  Score = 0.35×Temp + 0.35×Activator<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ 0.20×ResTime + 0.10×Blend
+                </p>
+                <p className="text-[10px] text-slate-500 leading-relaxed">
+                  Each component is normalized from actual DB ranges. Higher score = more feasible synthesis condition based on historical experimental records.
+                </p>
+                <div className="absolute bottom-[-6px] left-4 w-3 h-3 bg-white border-b border-r border-slate-200 rotate-45" />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>

@@ -346,7 +346,7 @@ export default function PredictorForm() {
         </button>
 
         <p className="text-center text-xs text-muted-foreground">
-          BioPredict AI v1.7 · Statistical + ML Pipeline · Based on Historical Research Data
+          BioPredict AI V.1.0 · Statistical + ML Pipeline · Based on Historical Research Data
         </p>
       </div>
     </div>

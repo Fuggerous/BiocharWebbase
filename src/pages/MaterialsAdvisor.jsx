@@ -14,7 +14,10 @@ import {
   Cell, LabelList,
 } from 'recharts';
 import { Lightbulb, FlaskConical, Info, RotateCcw, Target, TrendingUp, Award, Sliders } from 'lucide-react';
+import AdvisorReportExporter from '../components/advisor/AdvisorReportExporter';
 import FeasibilityGauge from '../components/advisor/FeasibilityGauge';
+import AdvisorDataDensityGauge from '../components/advisor/AdvisorDataDensityGauge';
+import PredictionDisclaimer from '../components/shared/PredictionDisclaimer';
 
 const ACTIVATION_COLORS = {
   KOH:      '#22c55e',
@@ -193,6 +196,8 @@ export default function MaterialsAdvisor() {
       </div>
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
+
+        <PredictionDisclaimer accentColor="violet" />
 
         {/* Input Panel */}
         <AnimatePresence mode="wait">
@@ -380,10 +385,20 @@ export default function MaterialsAdvisor() {
                     {biomass !== 'All' ? ` · ${biomass}` : ''}
                   </p>
                 </div>
-                <button onClick={reset}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl border border-border hover:bg-muted text-sm font-medium transition-colors">
-                  <RotateCcw className="w-4 h-4" /> New Query
-                </button>
+                <div className="flex items-center gap-2">
+                  <AdvisorReportExporter
+                    result={result}
+                    targetCO2={targetCO2}
+                    tolerance={tolerance}
+                    biomass={biomass}
+                    secondaryObjective={secondaryObjective}
+                    tertiaryObjective={tertiaryObjective}
+                  />
+                  <button onClick={reset}
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border hover:bg-muted text-sm font-medium transition-colors">
+                    <RotateCcw className="w-4 h-4" /> New Query
+                  </button>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -427,6 +442,13 @@ export default function MaterialsAdvisor() {
 
                 {/* Right: Radar + Feasibility + bar */}
                 <div className="space-y-4">
+                  {/* Data Density & Confidence gauge */}
+                  <AdvisorDataDensityGauge
+                    result={result}
+                    targetCO2={targetCO2}
+                    biomass={biomass}
+                  />
+
                   {/* Feasibility Gauge for top result */}
                   {result.results[0] && (
                     <FeasibilityGauge

@@ -1,4 +1,4 @@
-BiocharHub Website Version History
+BiocharInformaticsThailand Website Version History
 
 Version format: A.B.C.D
 

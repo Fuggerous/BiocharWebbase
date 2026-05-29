@@ -5,11 +5,16 @@ import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import { Flame, Layers, ChevronDown, Thermometer, Clock, TrendingUp, FlaskConical, Database, ShieldCheck, ArrowRight, Brain } from 'lucide-react';
 import { estimateProperties } from '../lib/properyEstimatorLogic';
+import { buildPropertyShapAnalysis } from '../lib/properyEstimatorLogic';
+import PropReportExporter from '../components/property/PropReportExporter';
 import { BIOMASS_LIST, ACTIVATOR_LIST } from '../lib/database44';
 import { mlPipelineLookup, elasticnetSaLookup, mlpSaLookup } from '../lib/mlPredictor';
 import { PROP_MODELS, SA_COMPARISON, PV_NOTE } from '../lib/modelRegistry';
 import ModelSelector from '../components/shared/ModelSelector';
 import ModelAccuracyChart from '../components/shared/ModelAccuracyChart';
+import PropertyShapAnalysis from '../components/property/PropertyShapAnalysis';
+import PropDataDensityGauge from '../components/property/PropDataDensityGauge';
+import PredictionDisclaimer from '../components/shared/PredictionDisclaimer';
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const ELEM_COLORS = { C: '#22c55e', H: '#3b82f6', O: '#f59e0b', N: '#a855f7', S: '#ef4444' };
@@ -30,32 +35,52 @@ export default function PropertyEstimator() {
 
   const [mlResult, setMlResult] = useState(null);
   const [extraResult, setExtraResult] = useState(null); // elasticnet or mlp
+  const [shapAnalysis, setShapAnalysis] = useState(null);
 
   const handleRun = async () => {
     setLoading(true);
-    await new Promise(r => setTimeout(r, 900));
-    const res = estimateProperties(params);
-    setResult(res);
-    const knnPred = mlPipelineLookup({
-      biomass:       params.biomass,
-      temperature:   params.pyroTemp,
-      activator:     params.activator,
-      residenceTime: params.residenceTime,
-      heatingRate:   10,
-    });
-    setMlResult(knnPred);
+    try {
+      await new Promise(r => setTimeout(r, 900));
+      const res = estimateProperties(params);
+      setResult(res);
+      const knnPred = mlPipelineLookup({
+        biomass:       params.biomass,
+        temperature:   params.pyroTemp,
+        activator:     params.activator,
+        residenceTime: params.residenceTime,
+        heatingRate:   10,
+      });
+      setMlResult(knnPred);
 
-    // Run selected extra model if applicable
-    const lookupArgs = { biomass: params.biomass, temperature: params.pyroTemp,
-      activator: params.activator, residenceTime: params.residenceTime, heatingRate: 10 };
-    if (selectedModel === 'elasticnet') {
-      setExtraResult(elasticnetSaLookup(lookupArgs));
-    } else if (selectedModel === 'mlp') {
-      setExtraResult(mlpSaLookup(lookupArgs));
-    } else {
+      // Run selected extra model if applicable
+      const lookupArgs = { biomass: params.biomass, temperature: params.pyroTemp,
+        activator: params.activator, residenceTime: params.residenceTime, heatingRate: 10 };
+      if (selectedModel === 'elasticnet') {
+        setExtraResult(elasticnetSaLookup(lookupArgs));
+      } else if (selectedModel === 'mlp') {
+        setExtraResult(mlpSaLookup(lookupArgs));
+      } else {
+        setExtraResult(null);
+      }
+
+      // Build SHAP analysis safely
+      try {
+        const shap = buildPropertyShapAnalysis({ modelId: selectedModel, params });
+        setShapAnalysis(shap);
+      } catch (shapErr) {
+        console.error('SHAP analysis failed', shapErr);
+        setShapAnalysis(null);
+      }
+    } catch (err) {
+      console.error('Property estimation failed', err);
+      const stackShort = err?.stack ? err.stack.split('\n').slice(0,4).join('\n') : undefined;
+      setResult({ error: err?.message || String(err), stack: stackShort });
+      setMlResult(null);
       setExtraResult(null);
+      setShapAnalysis(null);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const elemData = result
@@ -108,6 +133,9 @@ export default function PropertyEstimator() {
       </div>
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="mb-6">
+          <PredictionDisclaimer accentColor="amber" />
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Input Form */}
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
@@ -226,6 +254,15 @@ export default function PropertyEstimator() {
                 <p className="text-muted-foreground font-medium">Configure parameters and run estimation</p>
                 <p className="text-sm text-muted-foreground/60 mt-1">Structural property estimates will appear here</p>
               </div>
+            ) : result.error ? (
+              <div className="glass-card rounded-2xl p-6 border border-rose-200 bg-rose-50">
+                <h3 className="font-space font-semibold text-base text-rose-700">Estimation Error</h3>
+                <p className="text-sm text-rose-700 mt-2">{result.error}</p>
+                {result.stack && (
+                  <pre className="text-[11px] mt-2 p-3 bg-white/50 rounded text-rose-800 overflow-auto">{result.stack}</pre>
+                )}
+                <p className="text-xs text-muted-foreground mt-2">See browser console for full stack trace.</p>
+              </div>
             ) : (
               <div className="space-y-5">
                 {/* Confidence header */}
@@ -260,18 +297,34 @@ export default function PropertyEstimator() {
                   <div>
                     <div className="flex justify-between text-xs mb-1">
                       <span className="text-muted-foreground font-medium">Pore Volume</span>
-                      <span className="font-bold text-purple-500">{result.poreVolume.mean} cm³/g (mean)</span>
+                      {result.poreVolume
+                        ? <span className="font-bold text-purple-500">{result.poreVolume.mean} cm³/g (mean)</span>
+                        : <span className="font-semibold text-amber-500 flex items-center gap-1">⚠ N/A</span>
+                      }
                     </div>
-                    <div className="h-6 bg-muted rounded-full overflow-hidden relative">
-                      <div className="h-full rounded-full bg-gradient-to-r from-purple-400/50 to-purple-500 flex items-center justify-end pr-2"
-                        style={{ width: `${Math.min(100, (result.poreVolume.mean / 1.6) * 100)}%` }}>
-                        <span className="text-[9px] font-bold text-white">{result.poreVolume.mean}</span>
+                    {result.poreVolume ? (
+                      <>
+                        <div className="h-6 bg-muted rounded-full overflow-hidden relative">
+                          <div className="h-full rounded-full bg-gradient-to-r from-purple-400/50 to-purple-500 flex items-center justify-end pr-2"
+                            style={{ width: `${Math.min(100, (result.poreVolume.mean / 1.6) * 100)}%` }}>
+                            <span className="text-[9px] font-bold text-white">{result.poreVolume.mean}</span>
+                          </div>
+                        </div>
+                        <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
+                          <span>Min: {result.poreVolume.min} cm³/g</span>
+                          <span>Max: {result.poreVolume.max} cm³/g</span>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="flex items-start gap-2 p-2.5 rounded-xl bg-amber-50 border border-amber-200 mt-1">
+                        <span className="text-amber-500 text-xs mt-0.5">⚠</span>
+                        <p className="text-[11px] text-amber-700 leading-snug">
+                          <strong>No pore volume data</strong> in the {result.dataPointsUsed} matched record{result.dataPointsUsed !== 1 ? 's' : ''}.
+                          Pore volume was not measured or reported for this synthesis condition.
+                          Use the KNN ML estimate below as a reference.
+                        </p>
                       </div>
-                    </div>
-                    <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
-                      <span>Min: {result.poreVolume.min} cm³/g</span>
-                      <span>Max: {result.poreVolume.max} cm³/g</span>
-                    </div>
+                    )}
                   </div>
                 </div>
 
@@ -290,21 +343,24 @@ export default function PropertyEstimator() {
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       {[
-                        { label: 'BET Surface Area', db: result.surfaceArea.mean, ml: mlResult.sa, unit: 'm²/g', color: '#f59e0b' },
-                        { label: 'Pore Volume', db: result.poreVolume.mean, ml: +(mlResult.pv * 1e6).toFixed(3), unit: 'cm³/kg×10⁶', color: '#a855f7' },
+                        { label: 'BET Surface Area', db: result.surfaceArea.mean, ml: mlResult.sa, unit: 'm²/g', color: '#f59e0b', dbNull: false },
+                        { label: 'Pore Volume', db: result.poreVolume?.mean ?? null, ml: +(mlResult.pv * 1e6).toFixed(3), unit: 'cm³/kg×10⁶', color: '#a855f7', dbNull: !result.poreVolume },
                       ].map(item => (
                         <div key={item.label} className="p-3 rounded-xl bg-muted/40 border border-border space-y-1">
                           <p className="text-[10px] font-semibold text-muted-foreground">{item.label}</p>
                           <div className="flex items-center justify-between text-xs">
                             <span className="text-muted-foreground">DB lookup</span>
-                            <span className={`font-bold ${selectedModel === 'db_lookup' ? 'text-amber-600 underline underline-offset-2' : 'text-amber-600'}`}>{item.db.toLocaleString()}</span>
+                            {item.dbNull
+                              ? <span className="font-semibold text-amber-500 text-[10px]">N/A</span>
+                              : <span className="font-bold text-amber-600">{item.db.toLocaleString()}</span>
+                            }
                           </div>
                           <div className="flex items-center justify-between text-xs">
                             <span className="text-muted-foreground">KNN model</span>
                             <span className={`font-bold ${selectedModel === 'knn' ? 'underline underline-offset-2' : ''}`} style={{ color: item.color }}>{item.ml.toLocaleString()}</span>
                           </div>
                           <div className="text-[10px] text-muted-foreground">
-                            Δ = {Math.abs(item.db - item.ml).toFixed(1)} {item.unit}
+                            {item.dbNull ? 'DB has no data — use KNN estimate' : `Δ = ${Math.abs(item.db - item.ml).toFixed(1)} ${item.unit}`}
                           </div>
                         </div>
                       ))}
@@ -352,6 +408,14 @@ export default function PropertyEstimator() {
                   </div>
                 )}
 
+                {/* Data Density & Confidence gauge */}
+                <PropDataDensityGauge result={result} params={params} />
+
+                {shapAnalysis && (
+                  <PropertyShapAnalysis analysis={shapAnalysis} />
+                )}
+
+
                 {/* Model Accuracy Chart — full training comparison */}
                 <ModelAccuracyChart
                   data={SA_COMPARISON}
@@ -384,6 +448,9 @@ export default function PropertyEstimator() {
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
+
+                {/* Export report */}
+                <PropReportExporter result={result} params={params} mlResult={mlResult} shapAnalysis={shapAnalysis} />
 
                 {/* Next phase CTA */}
                 <a href="/predictor"

@@ -104,10 +104,10 @@ export const REFS = [
   },
   {
     id: 12,
-    authors: 'Database (BiocharHub)',
+    authors: 'Database (BiocharInformaticsThailand)',
     year: '2025',
     title: 'Experimental CO₂ Adsorption Isotherm Records — Database.xlsx.',
-    journal: 'BiocharHub Internal Dataset',
+    journal: 'BiocharInformaticsThailand Internal Dataset',
     detail: '1,395 records across 8 biomass species, 6 activators, 92 unique isotherm experiments.',
     doi: null,
   },
@@ -362,7 +362,62 @@ export const REFS = [
     journal: 'Bioresource',
     detail: '12 (2017) 4652-4669',
     doi: 'https://doi.org/10.15376/biores.12.3.4652-4669',
-  }
+  },
+  // ── Applications tab refs [41–46] ──────────────────────────────────────────
+  {
+    id: 41,
+    authors: 'Inyang, M.I., Gao, B., Yao, Y., Xue, Y., Zimmerman, A., Mosa, A., Pullammanappallil, P., Ok, Y.S., Cao, X.',
+    year: '2016',
+    title: 'A review of biochar as a low-cost adsorbent for aqueous heavy metal removal',
+    journal: 'Critical Reviews in Environmental Science and Technology',
+    detail: '46(4), 406–433',
+    doi: 'https://doi.org/10.1080/10643389.2015.1096880',
+  },
+  {
+    id: 42,
+    authors: 'Ahmed, M.B., Zhou, J.L., Ngo, H.H., Guo, W., Chen, M.',
+    year: '2016',
+    title: 'Progress in the preparation and application of modified biochar for improved contaminant removal from water and wastewater',
+    journal: 'Bioresource Technology',
+    detail: '214, 836–851',
+    doi: 'https://doi.org/10.1016/j.biortech.2016.05.057',
+  },
+  {
+    id: 43,
+    authors: 'Creamer, A.E., Gao, B.',
+    year: '2016',
+    title: 'Carbon-based adsorbents for postcombustion CO₂ capture: a critical review',
+    journal: 'Environmental Science & Technology',
+    detail: '50(14), 7276–7289',
+    doi: 'https://doi.org/10.1021/acs.est.6b00627',
+  },
+  {
+    id: 44,
+    authors: 'Shen, Y.',
+    year: '2015',
+    title: 'Chars as carbonaceous adsorbents/catalysts for tar elimination during biomass pyrolysis or gasification',
+    journal: 'Renewable and Sustainable Energy Reviews',
+    detail: '43, 281–295',
+    doi: 'https://doi.org/10.1016/j.rser.2014.11.061',
+  },
+  {
+    id: 45,
+    authors: 'Wang, B., Gao, B., Fang, J.',
+    year: '2017',
+    title: 'Recent advances in engineered biochar productions and applications',
+    journal: 'Critical Reviews in Environmental Science and Technology',
+    detail: '47(22), 2158–2207',
+    doi: 'https://doi.org/10.1080/10643389.2017.1418191',
+  },
+  {
+    id: 46,
+    authors: 'Ding, Z., Hu, X., Wan, Y., Wang, S., Gao, B.',
+    year: '2016',
+    title: 'Removal of lead, copper, cadmium, zinc, and nickel from aqueous solutions by alkali-modified biochar: batch and column tests',
+    journal: 'Journal of Industrial and Engineering Chemistry',
+    detail: '33, 239–245',
+    doi: 'https://doi.org/10.1016/j.jiec.2015.10.007',
+  },
 ];
 
 /** Inline superscript citation: <Cite ids={[1,3]} /> */
@@ -446,7 +501,7 @@ export default function ScientificReferences() {
           viewport={{ once: true }}
           className="mt-6 text-center text-slate-600 text-xs"
         >
-          Database-derived statistics (marked [12]) are calculated directly from the BiocharHub Database.xlsx experimental records.
+          Database-derived statistics (marked [12]) are calculated directly from the BiocharInformaticsThailand Database.xlsx experimental records.
           All other figures cite published peer-reviewed sources. Last reviewed: April 2026.
         </motion.p>
       </div>

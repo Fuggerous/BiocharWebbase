@@ -14,8 +14,8 @@ __pycache__/
 *.pkl
 
 # Local docs that should not be committed
-BiocharHub_DevPlan_EN.docx
-BiocharHub_DevPlan_TH.docx
-BiocharHub_UserGuide_EN.docx
-BiocharHub_UserGuide_TH.docx
+BiocharInformaticsThailand_DevPlan_EN.docx
+BiocharInformaticsThailand_DevPlan_TH.docx
+BiocharInformaticsThailand_UserGuide_EN.docx
+BiocharInformaticsThailand_UserGuide_TH.docx
 node_modules

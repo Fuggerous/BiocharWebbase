@@ -82,7 +82,7 @@ export default function AdminGate({ children }) {
         </form>
 
         <p className="text-[11px] text-muted-foreground mt-6">
-          Contact the research team for access · Biochar Assistant Thailand
+          Contact the research team for access · BiocharInformaticsThailand
         </p>
       </div>
 

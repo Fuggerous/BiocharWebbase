@@ -1,5 +1,6 @@
 // @ts-nocheck
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { FlaskConical, AlertTriangle, Info, CheckCircle2 } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -33,6 +34,7 @@ function CustomTooltip({ active, payload, label }) {
 }
 
 export default function ModelAccuracyChart({ data = [], title, subtitle, note, xLabel = 'R² Score' }) {
+  const [showDisclaimer, setShowDisclaimer] = useState(false);
   if (!data.length) return null;
 
   const sorted = [...data].sort((a, b) => b.r2 - a.r2);
@@ -123,25 +125,52 @@ export default function ModelAccuracyChart({ data = [], title, subtitle, note, x
         </div>
       )}
 
-      {/* Disclaimer */}
-      <div className="px-5 pb-5">
-        <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-start gap-2">
-          <Info className="w-3.5 h-3.5 text-slate-500 mt-0.5 flex-shrink-0" />
-          <div className="text-[10px] text-slate-600 leading-relaxed space-y-1">
-            <p>
-              <strong>All ML models are under active development.</strong> R² values are from cross-validated test splits.
-              Training set is limited (~58–300 samples) — generalisation outside the training distribution is not guaranteed.
-            </p>
-            <p>
-              <strong className="text-slate-700">Grey bars</strong> = trained in Python, prediction grid not yet exported.
-              <strong className="text-slate-700"> Always cross-reference with DB Statistical Lookup</strong> before making production decisions.
-            </p>
-            <p>
-              <strong className="text-slate-700">Ridge*</strong> = deployed model evaluated with LOO-CV on PEAK_RECORDS (58 samples, 17-feature one-hot input).
-              Other grey Ridge bar in comparison uses Strategy-B test-set evaluation — different feature set and evaluation protocol, not directly comparable.
-            </p>
-          </div>
-        </div>
+      {/* Disclaimer — hover/click popup */}
+      <div className="px-5 pb-5 relative">
+        <button
+          onMouseEnter={() => setShowDisclaimer(true)}
+          onMouseLeave={() => setShowDisclaimer(false)}
+          onClick={() => setShowDisclaimer(v => !v)}
+          className="flex items-center gap-1.5 text-[11px] text-slate-500 hover:text-slate-700 transition-colors px-2.5 py-1.5 rounded-lg hover:bg-slate-50 border border-transparent hover:border-slate-200"
+        >
+          <Info className="w-3.5 h-3.5" />
+          <span>Model accuracy notes &amp; methodology</span>
+        </button>
+
+        <AnimatePresence>
+          {showDisclaimer && (
+            <motion.div
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 6 }}
+              transition={{ duration: 0.15 }}
+              className="absolute bottom-full left-5 mb-2 z-50 w-[340px] p-3.5 rounded-xl bg-white border border-slate-200 shadow-xl"
+              onMouseEnter={() => setShowDisclaimer(true)}
+              onMouseLeave={() => setShowDisclaimer(false)}
+            >
+              <div className="flex items-center gap-1.5 mb-2">
+                <Info className="w-3.5 h-3.5 text-slate-500" />
+                <p className="text-[11px] font-semibold text-slate-700">Model Accuracy Notes</p>
+              </div>
+              <div className="text-[10px] text-slate-600 leading-relaxed space-y-2">
+                <p>
+                  <strong>All ML models are under active development.</strong> R² values are from cross-validated test splits.
+                  Training set is limited (~58–300 samples) — generalisation outside the training distribution is not guaranteed.
+                </p>
+                <p>
+                  <strong className="text-slate-700">Grey bars</strong> = trained in Python, prediction grid not yet exported.
+                  <strong className="text-slate-700"> Always cross-reference with DB Statistical Lookup</strong> before making production decisions.
+                </p>
+                <p>
+                  <strong className="text-slate-700">Ridge*</strong> = deployed model evaluated with LOO-CV on PEAK_RECORDS (58 samples, 17-feature one-hot input).
+                  Other grey Ridge bar uses Strategy-B test-set evaluation — different feature set, not directly comparable.
+                </p>
+              </div>
+              {/* Arrow */}
+              <div className="absolute bottom-[-6px] left-5 w-3 h-3 bg-white border-b border-r border-slate-200 rotate-45" />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </motion.div>
   );

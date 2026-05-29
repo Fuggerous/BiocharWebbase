@@ -1,5 +1,5 @@
 """
-BiocharHub — Master Update Script
+BiocharInformaticsThailand — Master Update Script
 Run this whenever you have new data or improved ML models.
 
 Usage:

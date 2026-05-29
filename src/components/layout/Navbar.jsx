@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Leaf, Menu, X, ShieldCheck, ChevronDown, LayoutDashboard, BookOpen, Flame, Zap, FileText, Users, Layers, Sun, Moon } from 'lucide-react';
+import { Leaf, Menu, X, ShieldCheck, ChevronDown, LayoutDashboard, BookOpen, Flame, Zap, FileText, Users, Layers, Sun, Moon, HelpCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRole } from '../../lib/RoleContext';
 import { useTranslation } from 'react-i18next';
@@ -15,6 +15,7 @@ const HOME_SECTIONS = [
   { label: 'Research Docs',      anchor: 'section-documents',   icon: FileText },
   { label: 'Biochar Society',    anchor: 'section-society',     icon: Users },
   { label: 'CO₂ Heatmap',        anchor: 'section-heatmap',     icon: Flame },
+  { label: 'Q&A / Help',         anchor: 'section-faq',         icon: HelpCircle },
 ];
 
 const PUBLIC_LINKS = [
@@ -23,6 +24,7 @@ const PUBLIC_LINKS = [
   { labelKey: 'nav.propertyEstimator', path: '/property-estimator' },
   { labelKey: 'nav.co2Estimator',      path: '/predictor' },
   { labelKey: 'nav.advisor',           path: '/advisor' },
+  { labelKey: 'nav.faq',              path: '/faq' },
   { labelKey: 'nav.about',             path: '/about' },
 ];
 
@@ -75,21 +77,24 @@ export default function Navbar() {
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-      scrolled ? 'glass shadow-lg shadow-blue-900/10' : 'bg-transparent'
+      scrolled
+        ? 'glass shadow-lg shadow-blue-900/10 border-b border-white/40 dark:border-slate-700/40'
+        : 'bg-transparent'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-18">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 rounded-xl gradient-green flex items-center justify-center glow-green group-hover:scale-105 transition-transform">
+          <Link to="/" className="flex items-center gap-3 group min-w-0">
+            <div className="relative w-10 h-10 rounded-2xl gradient-green flex items-center justify-center glow-green group-hover:scale-105 transition-transform shadow-lg shadow-green-500/20">
               <Leaf className="w-5 h-5 text-white" />
+              <span className="absolute inset-0 rounded-2xl ring-1 ring-white/25" />
             </div>
-            <div>
-              <span className="font-space font-700 text-lg leading-none text-foreground">
-                Biochar<span className="text-gradient-green"> Assistant</span>
+            <div className="min-w-0 flex flex-col">
+              <span className="font-space font-bold text-base sm:text-lg leading-tight tracking-tight text-foreground truncate">
+                BiocharInformatics<span className="text-gradient-green">Thailand</span>
               </span>
-              <span className="text-[10px] text-muted-foreground font-medium tracking-wide leading-none">
-                Thailand
+              <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.24em] text-muted-foreground/80 leading-none mt-1 truncate">
+                Biochar research platform
               </span>
             </div>
           </Link>

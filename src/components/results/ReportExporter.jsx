@@ -11,7 +11,7 @@ export default function ReportExporter({ result, params }) {
     // Build text report content
     const lines = [
       '═══════════════════════════════════════════════════════',
-      '   BiocharHub · BioPredict AI v1.6 – Estimation Report ',
+      '   BiocharInformaticsThailand · BioPredict AI V.1.0 – Estimation Report ',
       '═══════════════════════════════════════════════════════',
       `Generated: ${new Date().toLocaleString()}`,
       `Total Database Records: ${TOTAL_DATA_POINTS.toLocaleString()} peer-reviewed experimental data points`,
@@ -52,7 +52,7 @@ export default function ReportExporter({ result, params }) {
       '  never exposed. Individual experimental outcomes may vary.',
       '  This report is for research planning purposes only.',
       '',
-      '  BiocharHub · biocharhub.ai · BioPredict AI v1.6',
+      '  BiocharInformaticsThailand · biocharinformaticsthailand.ai · BioPredict AI V.1.0',
       '═══════════════════════════════════════════════════════',
     ];
 

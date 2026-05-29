@@ -70,7 +70,7 @@ export default function FeaturesSection() {
           </h2>
           <p className="mt-3 text-muted-foreground text-lg max-w-2xl mx-auto">
             From raw synthesis conditions to optimised production parameters —
-            BiocharHub covers the full biochar CO₂ adsorption workflow.
+            BiocharInformaticsThailand covers the full biochar CO₂ adsorption workflow.
           </p>
         </motion.div>
 

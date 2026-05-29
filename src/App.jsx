@@ -11,6 +11,7 @@ import ShareData from './pages/ShareData';
 import About from './pages/About';
 import MaterialsAdvisor from './pages/MaterialsAdvisor';
 import PropertyEstimator from './pages/PropertyEstimator';
+import FAQ from './pages/FAQ';
 import { RoleProvider } from './lib/RoleContext';
 import AdminGate from './components/AdminGate';
 import { ThemeProvider } from './lib/ThemeContext';
@@ -31,6 +32,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/advisor" element={<MaterialsAdvisor />} />
             <Route path="/property-estimator" element={<PropertyEstimator />} />
+            <Route path="/faq" element={<FAQ />} />
             <Route path="*" element={<PageNotFound />} />
           </Routes>
         </Router>

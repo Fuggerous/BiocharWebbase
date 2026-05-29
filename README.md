@@ -1,6 +1,6 @@
-# BiocharWebbase
+# BiocharInformaticsThailand
 
-BiocharWebbase is a browser-based biochar research and decision-support platform focused on CO₂ adsorption, biochar property estimation, and data-driven material selection. It combines a curated experimental database, interactive analytics, and machine-learning-based prediction tools into a single React/Vite application.
+BiocharInformaticsThailand is a browser-based biochar research and decision-support platform focused on CO₂ adsorption, biochar property estimation, and data-driven material selection. It combines a curated experimental database, interactive analytics, and machine-learning-based prediction tools into a single React/Vite application.
 
 ## What this project does
 
