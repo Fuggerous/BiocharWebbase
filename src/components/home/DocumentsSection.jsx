@@ -103,8 +103,14 @@ const DOCS = [
     desc: 'ศูนย์กลางการแบ่งปันข้อมูลเกี่ยวกับไบโอชาร์ในประเทศไทย',
     descEn: 'Hub for sharing information about Biochar in Thailand.',
     tags: ['Database', 'Biochar'], featured: true, url: 'https://thaibiochar.net/#home',
-
-    
+  },
+  {
+    id: 12, uploadDate: '30/05/2026', category: 'สาระน่ารู้', catKey: 'docs.cat.info', type: 'website',
+    title: 'แนวทางการใช้งานไบโอชาร์ในภาคเกษตร โดย สมาคมการค้าไบโอชาร์นานาชาติ เอเชียแปซิฟิก (IBAP)',
+    titleEn: 'Guidelines for Using Biochar in Agriculture by the International Biochar Asia-Pacific Trade Association (IBAP)',
+    desc: 'แนวทางการใช้งานไบโอชาร์ในภาคเกษตร เพื่อปรับปรุงดิน ลดต้นทุนการผลิต แก้ปัญหาสิ่งแวดล้อม',
+    descEn: 'Guidelines for Using Biochar in Agriculture to improve soil, reduce production costs, and address environmental issues.',
+    tags: ['Agriculture', 'Biochar'], featured: false, url: 'https://drive.google.com/drive/folders/1BUQHIBj98t5xgs2cKprXjlLX10spLGvx',
   }
 
 ];

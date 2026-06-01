@@ -1,21 +1,23 @@
 // @ts-nocheck
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Leaf, Menu, X, ShieldCheck, ChevronDown, LayoutDashboard, BookOpen, Flame, Zap, FileText, Users, Layers, Sun, Moon, HelpCircle } from 'lucide-react';
+import { Leaf, Menu, X, ShieldCheck, ChevronDown, LayoutDashboard, BookOpen, Flame, Zap, FileText, Users, Layers, Sun, Moon, HelpCircle, Brain, MessageCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRole } from '../../lib/RoleContext';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../lib/ThemeContext';
 
 const HOME_SECTIONS = [
-  { label: 'Overview',           anchor: 'section-hero',        icon: LayoutDashboard },
-  { label: 'Database Summary',   anchor: 'section-chemical',    icon: Zap },
-  { label: 'Introduction',       anchor: 'section-intro',       icon: BookOpen },
-  { label: 'Knowledge Center',   anchor: 'section-knowledge',   icon: Layers },
-  { label: 'Research Docs',      anchor: 'section-documents',   icon: FileText },
-  { label: 'Biochar Society',    anchor: 'section-society',     icon: Users },
-  { label: 'CO₂ Heatmap',        anchor: 'section-heatmap',     icon: Flame },
-  { label: 'Q&A / Help',         anchor: 'section-faq',         icon: HelpCircle },
+  { label: 'Overview',                   anchor: 'section-hero',        icon: LayoutDashboard },
+  { label: 'Database Summary',           anchor: 'section-chemical',    icon: Zap },
+  { label: 'Introduction',              anchor: 'section-intro',       icon: BookOpen },
+  { label: 'Knowledge Center',          anchor: 'section-knowledge',   icon: Layers },
+  { label: 'Research Docs',             anchor: 'section-documents',   icon: FileText },
+  { label: 'Biochar Society',           anchor: 'section-society',     icon: Users },
+  { label: 'Prediction & Advisory Hub', anchor: 'section-triplephase', icon: Brain },
+  { label: 'Start with a Question',     anchor: 'section-usecase',     icon: MessageCircle },
+  { label: 'CO₂ Heatmap',              anchor: 'section-heatmap',     icon: Flame },
+  { label: 'Q&A / Help',               anchor: 'section-faq',         icon: HelpCircle },
 ];
 
 const PUBLIC_LINKS = [

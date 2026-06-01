@@ -13,6 +13,7 @@ import HeatmapSection from '../components/home/HeatmapSection';
 import ScientificReferences from '../components/home/ScientificReferences';
 import FAQSection from '../components/home/FAQSection';
 import SectionNavDots from '../components/home/SectionNavDots';
+import BackToTop from '../components/home/BackToTop';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Leaf } from 'lucide-react';
@@ -64,7 +65,9 @@ export default function Home() {
       </div>
 
       {/* 7b. Use-case scenarios — pre-filled shortcuts */}
-      <UseCaseScenarios />
+      <div id="section-usecase">
+        <UseCaseScenarios />
+      </div>
 
       {/* 8. CO₂ Adsorption Hotspots — Temperature × Activator Matrix */}
       <div id="section-heatmap">
@@ -115,6 +118,7 @@ export default function Home() {
 
       <ScientificReferences />
       <Footer />
+      <BackToTop />
     </div>
   );
 }

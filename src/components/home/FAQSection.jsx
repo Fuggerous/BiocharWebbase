@@ -275,7 +275,7 @@ export default function FAQSection() {
   return (
     <section className="py-24 relative overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-green-50/30 to-emerald-50/20" />
+      <div className="absolute inset-0 bg-gradient-to-br from-green-50/40 via-background to-emerald-50/20 dark:from-emerald-950/20 dark:via-background dark:to-background" />
       <div
         className="absolute inset-0 opacity-[0.04]"
         style={{

@@ -10,6 +10,7 @@ const SECTIONS = [
   { id: 'section-knowledge',    labelKey: 'navdots.knowledge' },
   { id: 'section-society',      labelKey: 'navdots.society' },
   { id: 'section-triplephase',  labelKey: 'navdots.triple' },
+  { id: 'section-usecase',      labelKey: 'navdots.usecase' },
   { id: 'section-heatmap',      labelKey: 'navdots.heatmap' },
   { id: 'section-faq',          labelKey: 'navdots.faq' },
 ];
