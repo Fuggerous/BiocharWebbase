@@ -28,7 +28,7 @@
   "hero.desc": "Built from {count} peer-reviewed experimental records and academic curation — supporting data exploration, machine-learning prediction, and design-oriented research for biochar adsorption performance and next-stage development of multifunctional adsorbent materials across carbon capture and broader environmental applications.",
   "hero.exploreData": "Explore Data",
   "hero.co2Estimator": "CO₂ Estimator",
-  "hero.records": "Records",
+  "hero.records": "isotherms",
   "hero.experiments": "Experiments",
   "hero.avgCO2": "Avg CO₂",
   "hero.topPerformers": "Top Performers · Live",

@@ -117,23 +117,35 @@ const COPY = {
     networkVisit: 'Visit Website',
     tagResearch: 'Research',
     tagDataset: 'Dataset',
+    tagFramework: 'Framework',
     tagML: 'ML Model',
     tagPlatform: 'Platform',
     tagLive: 'Live',
     tagPlanned: 'Planned',
     comingDate: 'Coming',
-    m1Title: 'Research Initiated',
-    m1Desc: 'Systematic literature review on biochar CO₂ adsorption mechanisms and experimental datasets. Identified key features: BET surface area, pore volume, activation method, and pyrolysis conditions.',
-    m2Title: '+2,000 Datapoints Collected',
-    m2Desc: 'Manual extraction and curation of CO₂ adsorption isotherm data from peer-reviewed journals. Standardized format covering 8 biomass species, 6 activators, and isotherm curves at multiple pressures.',
-    m3Title: 'PI-DNN Model Developed',
-    m3Desc: 'Physics-Informed Deep Neural Network (PI-DNN) developed with Langmuir, Freundlich, Temkin, and Sips isotherm constraints. Trained on the curated dataset with pressure-weighted loss function.',
-    m4Title: 'BiocharInformaticsThailand Launched',
-    m4Desc: 'Full-stack research web platform launched. Three predictor tools (CO₂ Estimator, Property Estimator, Materials Advisor) with real database integration, interactive heatmap, and correlation analysis.',
-    m5Title: '{count} Datapoints Published',
-    m5Desc: '{points} experimental isotherm records across {experiments} unique experiments now live on the platform. Sklearn ML pipeline (KNN → SVR) trained and integrated. Peak CO₂ recorded: {max} mmol/g.',
-    m6Title: 'Extended Dataset & PI-DNN V.1.0',
-    m6Desc: 'Additional biochar isotherm data from extended literature sources. Improved PI-DNN with monotonicity constraints, Clausius–Clapeyron temperature consistency, and transfer learning from synthetic isotherms.',
+    bmcHeading: 'Business Model Canvas',
+    bmcSubtitle: 'Value system framework positioning BiocharInformaticsThailand as an open AI platform for carbon-neutral biochar value chain development — serving farmers, industry, and the carbon market.',
+    bmcAlt: 'Business Model Canvas — Biochar Value System Platform',
+    m1Title: 'Project Initiation & Biochar Research',
+    m1Desc: 'Systematic literature review on biochar CO₂ adsorption mechanisms, experimental datasets, and feature engineering. Identified key parameters: BET surface area, pore volume, activation method, pyrolysis conditions, and biomass type.',
+    m2Title: 'Data Collection',
+    m2Desc: 'Manual extraction and academic curation of CO₂ adsorption isotherm data from peer-reviewed journals. Standardised format covering 8 biomass species, 6 activators, and isotherm curves at multiple pressures — 1,396 records across 59 experiments.',
+    m3Title: 'Estimator Framework Design',
+    m3Desc: 'Designed the prediction architecture for all three estimators. Defined input feature sets, tolerance-based database matching logic, confidence intervals, and output formats for CO₂ Estimator, Property Estimator, and Materials Advisor.',
+    m4Title: 'ML: Property Estimator',
+    m4Desc: 'Applied sklearn ML pipeline (KNN → SVR) for biochar surface property prediction. Trained on BET surface area and pore characteristics. Integrated Ridge regression as a fast approximation layer with prediction intervals.',
+    m5Title: 'ML: CO₂ Estimator',
+    m5Desc: 'Applied statistical database lookup combined with sklearn ML pipeline for CO₂ adsorption prediction. Database-driven approach uses real isotherm records for confidence intervals, with ML pipeline as a fallback estimator.',
+    m6Title: 'ML: Materials Advisor',
+    m6Desc: 'Applied inverse-design ML logic for the Materials Advisor. Given a target CO₂ uptake, the engine queries the database and ranks synthesis conditions — activator and pyrolysis temperature — by feasibility score and data density.',
+    m7Title: 'Platform Development',
+    m7Desc: 'Full-stack development of BiocharInformaticsThailand using React + Vite + Tailwind CSS. Integrated all three ML tools, interactive heatmap, knowledge center, correlation explorer, and bilingual EN/TH interface.',
+    m8Title: 'BiocharInformaticsThailand Launched',
+    m8Desc: 'Public launch of the platform with three predictor tools, live database, Q&A section, research documents, Biochar Society pages, and Network section. Deployed and accessible to researchers worldwide.',
+    m9Title: '{count} Records Live · Platform Improved',
+    m9Desc: '{points} experimental isotherm records across {experiments} unique experiments now live. Major improvements: Data Density gauges, Materials Advisor redesign, bilingual support, About page overhaul, and Q&A system.',
+    m10Title: 'PI-DNN & Extended Applications (Future)',
+    m10Desc: 'Physics-Informed Deep Neural Network (PI-DNN) with Langmuir, Freundlich, Temkin, and Sips isotherm constraints. Extended dataset from additional literature. New application modules planned for water treatment, heavy metal removal, and broader multifunctional adsorbent design.',
     teamOrg: 'Petroleum and Petrochemical College (PPC)\nChulalongkorn University',
     team1Role: 'Team Leader & Research Supervisor',
     team1Tag1: 'Research Direction',
@@ -143,6 +155,10 @@ const COPY = {
     team2Tag1: 'Machine Learning',
     team2Tag2: 'PI-DNN',
     team2Tag3: 'Web Development',
+    team3Role: 'Data Analysis Lead',
+    team3Tag1: 'Data Analysis',
+    team3Tag2: 'Statistics',
+    team3Tag3: 'Biochar Science',
   },
   th: {
     heroTitle1: 'เกี่ยวกับ',
@@ -174,23 +190,35 @@ const COPY = {
     networkVisit: 'เยี่ยมชมเว็บไซต์',
     tagResearch: 'งานวิจัย',
     tagDataset: 'ชุดข้อมูล',
+    tagFramework: 'กรอบงาน',
     tagML: 'โมเดล ML',
     tagPlatform: 'แพลตฟอร์ม',
     tagLive: 'ใช้งานจริง',
     tagPlanned: 'แผนถัดไป',
     comingDate: 'เร็ว ๆ นี้',
-    m1Title: 'เริ่มต้นงานวิจัย',
-    m1Desc: 'ทบทวนวรรณกรรมอย่างเป็นระบบเกี่ยวกับกลไกการดูดซับ CO₂ ของไบโอชาร์และชุดข้อมูลทดลอง โดยระบุคุณลักษณะสำคัญ เช่น BET surface area, pore volume, วิธีการ activation และเงื่อนไข pyrolysis',
-    m2Title: 'เก็บรวบรวมข้อมูลกว่า 2,000 จุด',
-    m2Desc: 'สกัดและจัดทำข้อมูลไอโซเธิร์มการดูดซับ CO₂ ด้วยมือจากวารสารที่ผ่านการตรวจสอบ จัดรูปแบบมาตรฐานครอบคลุมชีวมวล 8 ชนิด, activator 6 แบบ และเส้นโค้งไอโซเธิร์มที่หลายความดัน',
-    m3Title: 'พัฒนาโมเดล PI-DNN',
-    m3Desc: 'พัฒนา Physics-Informed Deep Neural Network (PI-DNN) พร้อมข้อจำกัด Langmuir, Freundlich, Temkin และ Sips โดยฝึกกับชุดข้อมูลที่คัดสรรและใช้ loss แบบถ่วงน้ำหนักด้วยความดัน',
-    m4Title: 'เปิดตัว BiocharInformaticsThailand',
-    m4Desc: 'เปิดตัวแพลตฟอร์มวิจัยแบบ full-stack มีเครื่องมือทำนาย 3 ตัว (CO₂ Estimator, Property Estimator, Materials Advisor) พร้อมเชื่อมฐานข้อมูลจริง heatmap แบบโต้ตอบ และการวิเคราะห์ความสัมพันธ์',
-    m5Title: 'เผยแพร่ข้อมูล {count} จุด',
-    m5Desc: 'ตอนนี้มีบันทึกไอโซเธิร์มการทดลอง {points} รายการจาก {experiments} การทดลองบนแพลตฟอร์มแล้ว Pipeline ของ sklearn (KNN → SVR) ถูกฝึกและเชื่อมใช้งานจริง ค่า CO₂ สูงสุดที่บันทึกได้คือ {max} mmol/g',
-    m6Title: 'ขยายชุดข้อมูล & PI-DNN V.1.0',
-    m6Desc: 'เพิ่มข้อมูลไอโซเธิร์มไบโอชาร์จากแหล่งวรรณกรรมเพิ่มเติม พร้อมปรับปรุง PI-DNN ด้วย monotonicity constraints, ความสอดคล้องของอุณหภูมิตาม Clausius–Clapeyron และ transfer learning จาก synthetic isotherms',
+    bmcHeading: 'Business Model Canvas',
+    bmcSubtitle: 'กรอบระบบคุณค่าที่วาง BiocharInformaticsThailand ในฐานะแพลตฟอร์ม AI แบบเปิดสำหรับการพัฒนาห่วงโซ่คุณค่าไบโอชาร์คาร์บอนต่ำ — รองรับเกษตรกร ภาคอุตสาหกรรม และตลาดคาร์บอน',
+    bmcAlt: 'Business Model Canvas — แพลตฟอร์มระบบคุณค่าไบโอชาร์',
+    m1Title: 'เริ่มต้นโครงการและวิจัยไบโอชาร์',
+    m1Desc: 'ทบทวนวรรณกรรมอย่างเป็นระบบเกี่ยวกับกลไกการดูดซับ CO₂ ของไบโอชาร์ ชุดข้อมูลทดลอง และการวิศวกรรมคุณลักษณะ โดยระบุพารามิเตอร์สำคัญ เช่น BET surface area, pore volume, วิธีการ activation, เงื่อนไข pyrolysis และชนิดชีวมวล',
+    m2Title: 'เก็บรวบรวมข้อมูล',
+    m2Desc: 'สกัดและจัดทำข้อมูลไอโซเธิร์มการดูดซับ CO₂ ด้วยมือจากวารสารที่ผ่านการตรวจสอบ จัดรูปแบบมาตรฐานครอบคลุมชีวมวล 8 ชนิด, activator 6 แบบ และเส้นโค้งไอโซเธิร์มที่หลายความดัน รวม 1,396 รายการจาก 59 การทดลอง',
+    m3Title: 'ออกแบบกรอบงานสำหรับตัวประมาณการแต่ละตัว',
+    m3Desc: 'ออกแบบสถาปัตยกรรมการพยากรณ์สำหรับตัวประมาณการทั้งสามตัว กำหนดชุดคุณลักษณะอินพุต ลอจิกการจับคู่ฐานข้อมูลแบบ tolerance-based ช่วงความเชื่อมั่น และรูปแบบผลลัพธ์สำหรับแต่ละเครื่องมือ',
+    m4Title: 'ML: Property Estimator',
+    m4Desc: 'ประยุกต์ใช้ ML pipeline ของ sklearn (KNN → SVR) สำหรับการทำนายคุณสมบัติพื้นผิวของไบโอชาร์ ฝึกกับข้อมูล BET surface area และ pore characteristics พร้อมผสาน Ridge regression เป็น layer ประมาณการเร็ว',
+    m5Title: 'ML: CO₂ Estimator',
+    m5Desc: 'ประยุกต์ใช้การค้นหาฐานข้อมูลเชิงสถิติรวมกับ ML pipeline ของ sklearn สำหรับการทำนายการดูดซับ CO₂ วิธีการขับเคลื่อนด้วยฐานข้อมูลใช้บันทึกไอโซเธิร์มจริงสำหรับช่วงความเชื่อมั่น โดยมี ML pipeline เป็นตัวประมาณการสำรอง',
+    m6Title: 'ML: Materials Advisor',
+    m6Desc: 'ประยุกต์ใช้ลอจิก ML แบบ inverse-design สำหรับ Materials Advisor เมื่อกำหนดค่า CO₂ uptake เป้าหมาย ระบบจะค้นหาฐานข้อมูลและจัดอันดับเงื่อนไขการสังเคราะห์ — activator และอุณหภูมิ pyrolysis — ตามคะแนนความเป็นไปได้',
+    m7Title: 'พัฒนาแพลตฟอร์ม',
+    m7Desc: 'พัฒนา full-stack ของ BiocharInformaticsThailand ด้วย React + Vite + Tailwind CSS เชื่อมเครื่องมือ ML ทั้งสามตัว, heatmap แบบโต้ตอบ, ศูนย์ความรู้, ตัวสำรวจความสัมพันธ์ และอินเทอร์เฟซสองภาษา EN/TH',
+    m8Title: 'เปิดตัว BiocharInformaticsThailand',
+    m8Desc: 'เปิดตัวแพลตฟอร์มสาธารณะพร้อมเครื่องมือพยากรณ์สามตัว ฐานข้อมูลสด หน้า Q&A เอกสารวิจัย หน้า Biochar Society และส่วนเครือข่าย เข้าถึงได้สำหรับนักวิจัยทั่วโลก',
+    m9Title: '{count} รายการใช้งานจริง · ปรับปรุงแพลตฟอร์ม',
+    m9Desc: 'บันทึกไอโซเธิร์มการทดลอง {points} รายการจาก {experiments} การทดลอง พร้อมการปรับปรุงหลัก: Data Density gauges, รีดีไซน์ Materials Advisor, รองรับสองภาษา, ปรับปรุงหน้า About และระบบ Q&A',
+    m10Title: 'PI-DNN และการประยุกต์ขยาย (แผนอนาคต)',
+    m10Desc: 'Physics-Informed Deep Neural Network (PI-DNN) พร้อมข้อจำกัด Langmuir, Freundlich, Temkin และ Sips เพิ่มชุดข้อมูลจากวรรณกรรมเพิ่มเติม วางแผนโมดูลการประยุกต์ใหม่สำหรับการบำบัดน้ำ การกำจัดโลหะหนัก และการออกแบบตัวดูดซับอเนกประสงค์ในวงกว้าง',
     teamOrg: 'วิทยาลัยปิโตรเลียมและปิโตรเคมี (PPC)\nจุฬาลงกรณ์มหาวิทยาลัย',
     team1Role: 'หัวหน้าทีมและที่ปรึกษางานวิจัย',
     team1Tag1: 'ทิศทางงานวิจัย',
@@ -200,6 +228,10 @@ const COPY = {
     team2Tag1: 'แมชชีนเลิร์นนิง',
     team2Tag2: 'PI-DNN',
     team2Tag3: 'พัฒนาเว็บ',
+    team3Role: 'นักวิเคราะห์ข้อมูล',
+    team3Tag1: 'การวิเคราะห์ข้อมูล',
+    team3Tag2: 'สถิติ',
+    team3Tag3: 'วิทยาศาสตร์ไบโอชาร์',
   },
 };
 
@@ -212,7 +244,7 @@ export default function About() {
 
   const team = [
     {
-      name: 'Dr. Nutthapong Sueviriyapan',
+      name: 'Dr. Natthapong Sueviriyapan',
       role: copy.team1Role,
       org: copy.teamOrg,
       avatar: 'NS',
@@ -227,6 +259,14 @@ export default function About() {
       color: 'from-blue-500 to-indigo-600',
       tags: [copy.team2Tag1, copy.team2Tag2, copy.team2Tag3],
     },
+     {
+      name: 'Dr. Weerawit Luewanichwong',
+      role: copy.team3Role,
+      org: copy.teamOrg,
+      avatar: 'WL',
+      color: 'from-red-500 to-indigo-600',
+      tags: [copy.team3Tag1, copy.team3Tag2, copy.team3Tag3],
+    }
   ];
 
   const missionCards = [
@@ -236,22 +276,23 @@ export default function About() {
   ];
 
   const milestones = [
-    { date: 'Jul 2025', title: copy.m1Title, desc: copy.m1Desc, color: '#22c55e', icon: '🌱', tag: copy.tagResearch },
-    { date: 'Aug 2025', title: copy.m2Title, desc: copy.m2Desc, color: '#3b82f6', icon: '📊', tag: copy.tagDataset },
-    { date: 'Feb 2026', title: copy.m3Title, desc: copy.m3Desc, color: '#a855f7', icon: '🧠', tag: copy.tagML },
-    { date: 'Apr 2026', title: copy.m4Title, desc: copy.m4Desc, color: '#f59e0b', icon: '🚀', tag: copy.tagPlatform },
+    { date: 'Aug 2025',      title: copy.m1Title, desc: copy.m1Desc, color: '#22c55e', icon: '🌱', tag: copy.tagResearch },
+    { date: 'Sep 2025',      title: copy.m2Title, desc: copy.m2Desc, color: '#3b82f6', icon: '📊', tag: copy.tagDataset },
+    { date: 'Oct 2025',      title: copy.m3Title, desc: copy.m3Desc, color: '#f59e0b', icon: '🏗️', tag: copy.tagFramework },
+    { date: 'Nov 2025',      title: copy.m4Title, desc: copy.m4Desc, color: '#8b5cf6', icon: '🧪', tag: copy.tagML },
+    { date: 'Dec 2025',      title: copy.m5Title, desc: copy.m5Desc, color: '#06b6d4', icon: '⚗️', tag: copy.tagML },
+    { date: 'Jan 2026',      title: copy.m6Title, desc: copy.m6Desc, color: '#ec4899', icon: '🤖', tag: copy.tagML },
+    { date: 'Feb–Mar 2026',  title: copy.m7Title, desc: copy.m7Desc, color: '#f59e0b', icon: '💻', tag: copy.tagPlatform },
+    { date: 'Apr 2026',      title: copy.m8Title, desc: copy.m8Desc, color: '#22c55e', icon: '🚀', tag: copy.tagLive },
     {
-      date: 'May 2026',
-      title: copy.m5Title.replace('{count}', TOTAL_DATA_POINTS.toLocaleString()),
-      desc: copy.m5Desc
+      date: 'May–Jun 2026',
+      title: copy.m9Title.replace('{count}', TOTAL_DATA_POINTS.toLocaleString()),
+      desc:  copy.m9Desc
         .replace('{points}', TOTAL_DATA_POINTS.toLocaleString())
-        .replace('{experiments}', TOTAL_EXPERIMENTS)
-        .replace('{max}', DB_OVERALL_MAX.toFixed(2)),
-      color: '#22c55e',
-      icon: '✅',
-      tag: copy.tagLive,
+        .replace('{experiments}', TOTAL_EXPERIMENTS),
+      color: '#22c55e', icon: '✅', tag: copy.tagLive,
     },
-    { date: copy.comingDate, title: copy.m6Title, desc: copy.m6Desc, color: '#94a3b8', icon: '🔬', tag: copy.tagPlanned },
+    { date: copy.comingDate, title: copy.m10Title, desc: copy.m10Desc, color: '#94a3b8', icon: '🔬', tag: copy.tagPlanned },
   ];
 
   const techStack = ['React + Vite', 'Python + scikit-learn', 'PyTorch (PI-DNN)', 'XGBoost', 'Recharts', 'Tailwind CSS', 'pandas + numpy', 'scipy optimize'];
@@ -310,11 +351,11 @@ export default function About() {
           viewport={{ once: true }} className="mb-16">
           <h2 className="font-space font-bold text-3xl mb-2 text-center">{copy.teamHeading}</h2>
           <p className="text-muted-foreground text-center mb-8 text-sm">{copy.teamSubtitle}</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {team.map((member, i) => (
               <motion.div key={member.name} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }} transition={{ delay: i * 0.15 }}>
-                <div className="glass-card rounded-2xl p-6 border border-border hover:scale-[1.02] transition-transform">
+                <div className="glass-card rounded-2xl p-6 border border-border hover:scale-[1.02] transition-transform h-full flex flex-col">
                   <div className="flex items-start gap-4 mb-4">
                     <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${member.color} flex-shrink-0 flex items-center justify-center shadow-lg`}>
                       <span className="text-white font-bold text-lg">{member.avatar}</span>
@@ -325,8 +366,8 @@ export default function About() {
                       <p className="text-muted-foreground text-[11px] mt-0.5 whitespace-pre-line">{member.org}</p>
                     </div>
                   </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {member.tags.map(tag => (
+                  <div className="flex flex-wrap gap-1.5 mt-auto">
+                    {member.tags.filter(Boolean).map(tag => (
                       <span key={tag} className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-muted border border-border text-muted-foreground">
                         {tag}
                       </span>
@@ -424,6 +465,25 @@ export default function About() {
                 </motion.div>
               ))}
             </div>
+          </div>
+        </motion.div>
+
+        {/* ── Business Model Canvas ── */}
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }} className="mb-16">
+          <h2 className="font-space font-bold text-3xl mb-2 text-center">{copy.bmcHeading}</h2>
+          <p className="text-muted-foreground text-center text-sm mb-8 max-w-2xl mx-auto">{copy.bmcSubtitle}</p>
+          <div className="glass-card rounded-2xl border border-border overflow-hidden shadow-lg">
+            <img
+              src={new URL('../assets/images/BMC.png', import.meta.url).href}
+              alt={copy.bmcAlt}
+              className="w-full h-auto object-contain"
+              onError={e => {
+                e.target.style.display = 'none';
+                e.target.parentElement.style.background = 'linear-gradient(135deg, #22c55e20, #22c55e08)';
+                e.target.parentElement.innerHTML = '<p class="text-center text-muted-foreground py-16 text-sm">BMC.png not found in src/assets/images/</p>';
+              }}
+            />
           </div>
         </motion.div>
 
