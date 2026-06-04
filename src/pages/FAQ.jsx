@@ -11,6 +11,9 @@ import {
   ShieldCheck, Beaker, BrainCircuit, Leaf,
 } from 'lucide-react';
 
+// URL for the user guide PDF placed in src/assets/Files
+const USER_GUIDE_URL = new URL('../assets/Files/BiocharHub_UserGuide_EN.pdf', import.meta.url).href;
+
 /* ─── Q&A data ─────────────────────────────────────────────────────────────── */
 const CATEGORIES_EN = [
   {
@@ -19,6 +22,15 @@ const CATEGORIES_EN = [
     color: 'green',
     label: 'General',
     questions: [
+      {
+        q: 'Where can I download the User Guide?',
+        a: (
+          <span>
+            Download the User Guide (PDF):{' '}
+            <a href={USER_GUIDE_URL} target="_blank" rel="noopener noreferrer" className="text-green-600 underline">BiocharInformaticsThailand User Guide</a>
+          </span>
+        ),
+      },
       {
         q: 'What is BiocharInformaticsThailand?',
         a: 'BiocharInformaticsThailand is a free, open-access AI-powered platform for biochar CO₂ adsorption research. It consolidates 1,396 peer-reviewed experimental records into one searchable database and wraps three machine-learning tools around that data — CO₂ Predictor, Property Estimator, and Materials Advisor — so researchers can get instant, evidence-based predictions without needing coding skills.',
@@ -186,6 +198,15 @@ const CATEGORIES_TH = [
     color: 'green',
     label: 'ทั่วไป',
     questions: [
+      {
+        q: 'ฉันสามารถดาวน์โหลดคู่มือผู้ใช้ได้ที่ไหน?',
+        a: (
+          <span>
+            ดาวน์โหลดคู่มือผู้ใช้ (PDF):{' '}
+            <a href={USER_GUIDE_URL} target="_blank" rel="noopener noreferrer" className="text-green-600 underline">ดาวน์โหลดคู่มือผู้ใช้</a>
+          </span>
+        ),
+      },
       {
         q: 'BiocharInformaticsThailand คืออะไร?',
         a: 'BiocharInformaticsThailand คือแพลตฟอร์มที่ขับเคลื่อนด้วย AI แบบเปิดและฟรีสำหรับการวิจัยการดูดซับ CO₂ ของไบโอชาร์ รวบรวมระเบียนการทดลองที่ผ่านการตรวจสอบ 1,396 รายการเข้าสู่ฐานข้อมูลที่ค้นหาได้ พร้อมเครื่องมือ ML สามชุด ได้แก่ ตัวพยากรณ์ CO₂ เครื่องมือประเมินคุณสมบัติ และที่ปรึกษาวัสดุ',

@@ -75,8 +75,8 @@ export default function Footer() {
           <div>
             <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Contact</h4>
             <ul className="space-y-2.5 text-sm">
-              <li className="flex items-center gap-2"><Mail className="w-4 h-4 text-green-400" /> contact@biocharinformaticsthailand.ai</li>
-              <li className="flex items-center gap-2"><Globe className="w-4 h-4 text-green-400" /> www.biocharinformaticsthailand.ai</li>
+              <li className="flex items-center gap-2"><Mail className="w-4 h-4 text-green-400" /> biocharinformaticthailand@gmail.com</li>
+              <li className="flex items-center gap-2"><Globe className="w-4 h-4 text-green-400" /> https://biochar-ai-th.netlify.app/about</li>
             </ul>
             <div className="mt-5 p-3 rounded-xl bg-green-500/10 border border-green-500/20">
               <p className="text-xs text-green-400 font-medium">The Petroleum and Petrochemical College, Chulalongkorn University</p>

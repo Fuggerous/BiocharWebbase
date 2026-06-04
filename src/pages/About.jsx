@@ -1,6 +1,7 @@
 // @ts-nocheck
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
+import BMCTree from '../components/about/BMCTree';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Leaf, Target, Globe, Brain, Database, LogOut, ExternalLink, X, Users } from 'lucide-react';
 import { useState } from 'react';
@@ -126,6 +127,7 @@ const COPY = {
     bmcHeading: 'Business Model Canvas',
     bmcSubtitle: 'Value system framework positioning BiocharInformaticsThailand as an open AI platform for carbon-neutral biochar value chain development — serving farmers, industry, and the carbon market.',
     bmcAlt: 'Business Model Canvas — Biochar Value System Platform',
+    bmcNote: 'Click any node to explore · 🌿 branches = customer-facing · 🌱 roots = foundational',
     m1Title: 'Project Initiation & Biochar Research',
     m1Desc: 'Systematic literature review on biochar CO₂ adsorption mechanisms, experimental datasets, and feature engineering. Identified key parameters: BET surface area, pore volume, activation method, pyrolysis conditions, and biomass type.',
     m2Title: 'Data Collection',
@@ -196,9 +198,10 @@ const COPY = {
     tagLive: 'ใช้งานจริง',
     tagPlanned: 'แผนถัดไป',
     comingDate: 'เร็ว ๆ นี้',
-    bmcHeading: 'Business Model Canvas',
+    bmcHeading: 'แผนผังโมเดลธุรกิจ',
     bmcSubtitle: 'กรอบระบบคุณค่าที่วาง BiocharInformaticsThailand ในฐานะแพลตฟอร์ม AI แบบเปิดสำหรับการพัฒนาห่วงโซ่คุณค่าไบโอชาร์คาร์บอนต่ำ — รองรับเกษตรกร ภาคอุตสาหกรรม และตลาดคาร์บอน',
     bmcAlt: 'Business Model Canvas — แพลตฟอร์มระบบคุณค่าไบโอชาร์',
+    bmcNote: 'คลิกที่โหนดใดก็ได้เพื่อดูรายละเอียด · 🌿 กิ่ง = ฝั่งลูกค้า · 🌱 ราก = ฐานราก',
     m1Title: 'เริ่มต้นโครงการและวิจัยไบโอชาร์',
     m1Desc: 'ทบทวนวรรณกรรมอย่างเป็นระบบเกี่ยวกับกลไกการดูดซับ CO₂ ของไบโอชาร์ ชุดข้อมูลทดลอง และการวิศวกรรมคุณลักษณะ โดยระบุพารามิเตอร์สำคัญ เช่น BET surface area, pore volume, วิธีการ activation, เงื่อนไข pyrolysis และชนิดชีวมวล',
     m2Title: 'เก็บรวบรวมข้อมูล',
@@ -250,6 +253,7 @@ export default function About() {
       avatar: 'NS',
       color: 'from-green-500 to-emerald-600',
       tags: [copy.team1Tag1, copy.team1Tag2, copy.team1Tag3],
+      linkedin: 'https://www.linkedin.com/in/natthapong-feem-sueviriyapan/',
     },
     {
       name: 'Affan Dulyadech',
@@ -258,6 +262,7 @@ export default function About() {
       avatar: 'AD',
       color: 'from-blue-500 to-indigo-600',
       tags: [copy.team2Tag1, copy.team2Tag2, copy.team2Tag3],
+      linkedin: 'https://www.linkedin.com/in/affan-dulyadech-a2a039369',
     },
      {
       name: 'Dr. Weerawit Luewanichwong',
@@ -266,6 +271,7 @@ export default function About() {
       avatar: 'WL',
       color: 'from-red-500 to-indigo-600',
       tags: [copy.team3Tag1, copy.team3Tag2, copy.team3Tag3],
+      linkedin: 'https://www.linkedin.com/in/weerawit-luewanichwong-083b76248/?locale=en',
     }
   ];
 
@@ -362,7 +368,15 @@ export default function About() {
                     </div>
                     <div>
                       <h4 className="font-space font-semibold text-sm leading-tight">{member.name}</h4>
-                      <p className="text-green-600 text-xs font-medium mt-0.5">{member.role}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-green-600 text-xs font-medium mt-0.5">{member.role}</p>
+                        {member.linkedin && (
+                          <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="text-muted-foreground text-[11px] inline-flex items-center gap-1 hover:text-green-700">
+                            <ExternalLink className="w-3 h-3" />
+                            <span className="sr-only">LinkedIn</span>
+                          </a>
+                        )}
+                      </div>
                       <p className="text-muted-foreground text-[11px] mt-0.5 whitespace-pre-line">{member.org}</p>
                     </div>
                   </div>
@@ -473,17 +487,11 @@ export default function About() {
           viewport={{ once: true }} className="mb-16">
           <h2 className="font-space font-bold text-3xl mb-2 text-center">{copy.bmcHeading}</h2>
           <p className="text-muted-foreground text-center text-sm mb-8 max-w-2xl mx-auto">{copy.bmcSubtitle}</p>
-          <div className="glass-card rounded-2xl border border-border overflow-hidden shadow-lg">
-            <img
-              src={new URL('../assets/images/BMC.png', import.meta.url).href}
-              alt={copy.bmcAlt}
-              className="w-full h-auto object-contain"
-              onError={e => {
-                e.target.style.display = 'none';
-                e.target.parentElement.style.background = 'linear-gradient(135deg, #22c55e20, #22c55e08)';
-                e.target.parentElement.innerHTML = '<p class="text-center text-muted-foreground py-16 text-sm">BMC.png not found in src/assets/images/</p>';
-              }}
-            />
+          <div className="glass-card rounded-2xl border border-border overflow-hidden shadow-lg p-2">
+            <p className="text-[11px] text-muted-foreground text-center mb-2 opacity-60">
+              {copy.bmcNote}
+            </p>
+            <BMCTree />
           </div>
         </motion.div>
 
