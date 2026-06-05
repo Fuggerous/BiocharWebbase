@@ -334,7 +334,6 @@ function BMCCard({ cell, isTh, onClick, isSelected, T }) {
         overflow:      'hidden',
         boxShadow:     T.cardShadow(cell.color, active),
         transition:    'box-shadow 0.22s ease, border-color 0.22s ease',
-        transformStyle:'preserve-3d',
       }}
     >
       {/* Top accent */}
@@ -478,20 +477,20 @@ export default function BMCTree() {
   const [selected, setSelected] = useState(null);
   const boardRef = useRef(null);
 
-  /* Live mouse-tilt */
+  /* Mouse tilt — board stays flat (rotateX 0) so hit-test areas always match
+     visuals. Only subtle rotateY follows cursor for the 3-D feel.         */
   const handleMouseMove = useCallback(e => {
     if (!boardRef.current) return;
     const r  = boardRef.current.getBoundingClientRect();
-    const px = (e.clientX - r.left)  / r.width  - 0.5;
-    const py = (e.clientY - r.top)   / r.height - 0.5;
+    const px = (e.clientX - r.left) / r.width - 0.5;
     boardRef.current.style.transform =
-      `perspective(2400px) rotateX(${5.5 - py * 3.5}deg) rotateY(${px * 2.5}deg) scale(0.97)`;
+      `perspective(2400px) rotateX(0deg) rotateY(${px * 1.2}deg) scale(1)`;
   }, []);
 
   const handleMouseLeave = useCallback(() => {
     if (boardRef.current)
       boardRef.current.style.transform =
-        'perspective(2400px) rotateX(5.5deg) rotateY(0deg) scale(0.97)';
+        'perspective(2400px) rotateX(0deg) rotateY(0deg) scale(1)';
   }, []);
 
   const selectedDetails = isTh && selected?.detailsTh?.length
@@ -504,7 +503,7 @@ export default function BMCTree() {
       style={{
         background:  T.canvasBg,
         border:      isDark ? '1px solid rgba(34,197,94,0.15)' : '1px solid rgba(34,197,94,0.25)',
-        minHeight:   640,
+        minHeight:   'auto',
         transition:  'background 0.35s ease, border-color 0.35s ease',
       }}
       onMouseMove={handleMouseMove}
@@ -543,14 +542,14 @@ export default function BMCTree() {
         </span>
       </div>
 
-      {/* 3-D wrapper */}
-      <div style={{ padding: '0 16px 18px' }}>
+      {/* 3-D wrapper — flat by default; rotateY-only tilt follows mouse */}
+      <div style={{ padding: '0 16px 20px' }}>
         <div
           ref={boardRef}
           style={{
-            transform:      'perspective(2400px) rotateX(5.5deg) rotateY(0deg) scale(0.97)',
-            transformStyle: 'preserve-3d',
-            transition:     'transform 0.13s ease-out',
+            transform:      'perspective(2400px) rotateX(0deg) rotateY(0deg) scale(1)',
+            transformStyle: 'flat',
+            transition:     'transform 0.14s ease-out',
             willChange:     'transform',
           }}
         >
